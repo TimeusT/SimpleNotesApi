@@ -25,55 +25,41 @@ namespace SimpleNotesApi.Controllers
         }
 
         [HttpGet("{id}")]
-        // GetById
-        // IF note doesnt exist, return NotFound()
         public IActionResult GetById(int id)
         {
             var existingNote = _noteService.GetById(id);
-            if (existingNote == null)
-            {
-                return NotFound();
-            }
 
-            return Create(existingNote);
+            if (existingNote == null) return NotFound();
+
+            return Ok(existingNote);
         }
 
         [HttpPost]
-        // CreateNote
-        // RETURN new ID of the created note
         public IActionResult Create(NoteItem noteItem)
         {
-            return Ok(_noteService.CreateNote(noteItem));
+            var createdNote = _noteService.CreateNote(noteItem);
+
+            return CreatedAtAction(nameof(GetById), new { id = createdNote.Id },createdNote);
         }
 
         [HttpPut("{id}")]
-        // Update
-        // IF note doesnt exist, return NotFound()
         public IActionResult Update(int id, NoteItem noteItem)
         {
             var existingNote = _noteService.GetById(id);
 
-            if (existingNote == null)
-            {
-                return NotFound();
-            }
+            if (existingNote == null) return NotFound();
 
-            return Ok();
+            return Ok(_noteService.Update(id, noteItem));
         }
 
         [HttpDelete("{id}")]
-        // Delete
-        // IF note doesnt exist, return NotFound()
         public IActionResult Delete(int id)
         {
             var existingNote = _noteService.GetById(id);
 
-            if (existingNote == null)
-            {
-                return NotFound();
-            }
+            if (existingNote == null) return NotFound();
 
-            return NoContent();
+            return Ok(_noteService.Delete(id));
         }
     }
 }
