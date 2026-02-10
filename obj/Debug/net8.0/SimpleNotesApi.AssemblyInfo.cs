@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SimpleNotesApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b8760f51819add9b4ba5db40ecbd2e9658bcbd38")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de106243228d9bbd0a469d260095738e35d3bc3a")]
 [assembly: System.Reflection.AssemblyProductAttribute("SimpleNotesApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SimpleNotesApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
