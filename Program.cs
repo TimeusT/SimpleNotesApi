@@ -1,3 +1,5 @@
+using SimpleNotesApi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+    // Register the service with a specific lifetime
+builder.Services.AddSingleton<INoteService, NoteService>();
+    // Add controllers support
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
