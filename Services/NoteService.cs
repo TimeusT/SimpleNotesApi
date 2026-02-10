@@ -30,6 +30,7 @@ namespace SimpleNotesApi.Services
             // 2. Assign the CreatedAt and LastUpdatedAt timestamps
             // 3. Add new not to the list
             // 4. return the new note
+            newNote.Id = _nextId;
             _nextId++;
 
             newNote.CreatedAt = DateTime.UtcNow;
