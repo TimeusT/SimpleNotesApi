@@ -134,6 +134,9 @@
   "components": {
     "schemas": {
       "NoteItem": {
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -141,8 +144,10 @@
             "format": "int32"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 25,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z\\s]+$",
+            "type": "string"
           },
           "content": {
             "type": "string",

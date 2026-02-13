@@ -1,6 +1,5 @@
-﻿using SimpleNotesApi.Models;
-using System.Collections.Immutable;
-using System.Data;
+﻿using SimpleNotesApi.Data;
+using SimpleNotesApi.Models;
 
 namespace SimpleNotesApi.Services
 {
@@ -8,23 +7,41 @@ namespace SimpleNotesApi.Services
     {
             // Need a private list to store the notes in memory
         private readonly List<NoteItem> _notes = new();
-            // Need a private variable to keep track of the next ID to assign to a new note
+        private readonly AppDbContext _context;
+
+        public NoteService(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // Need a private variable to keep track of the next ID to assign to a new note
         private int _nextId = 1;
 
             // GetAll just returns everything in the list
-        public IEnumerable<NoteItem> GetAll()
+        /*public IEnumerable<NoteItem> GetAll()
         {
             return _notes;
+        }*/
+        public IEnumerable<NoteItem> GetAll()
+        {
+            return _context.Notes.ToList();
         }
 
-            // FirstOrDefault iterates through all items in the list and returns the first one that matches the condition (x.Id == id). If no items match, it returns null.
-        public NoteItem? GetById(int id)
+
+        // FirstOrDefault iterates through all items in the list and returns the first one that matches the condition (x.Id == id). If no items match, it returns null.
+        /*public NoteItem? GetById(int id)
         {
             return _notes.FirstOrDefault(n => n.Id == id);
+        }*/
+
+        public NoteItem? GetById(int id)
+        {
+            return _context.Notes.Find(id);
         }
 
-            // Create method
-        public NoteItem CreateNote(NoteItem newNote)
+
+        // Create method
+        /*public NoteItem CreateNote(NoteItem newNote)
         {
             // 1. Assign a new ID
             // 2. Assign the CreatedAt and LastUpdatedAt timestamps
@@ -39,35 +56,53 @@ namespace SimpleNotesApi.Services
             _notes.Add(newNote);
 
             return newNote;
+        }*/
+        public NoteItem CreateNote(NoteItem noteItem)
+        {
+            _context.Notes.Add(noteItem);
+            _context.SaveChanges();
+            return noteItem;
         }
 
-            // Update Note
-        public bool Update(int id, NoteItem updateItem)
+
+        // Update Note
+        /*public bool Update(int id, NoteItem updateItem)
         {
-                // Iterate through IDs list and assign the matching one into existingNote variable
             var existingNote = GetById(id);
 
-               // If no note with the given ID is found, return false
             if (existingNote == null)
             {
                 return false;
             }
 
-                // IF the Title property is NOT null or whitespace, update to new Title
             if (!string.IsNullOrWhiteSpace(updateItem.Title))
                 existingNote.Title = updateItem.Title;
 
-                // IF the Content property is NOT null or whitespace, update to new Content
             if (!string.IsNullOrWhiteSpace(updateItem.Content))
                 existingNote.Content = updateItem.Content;
 
-                // Update the LastUpdatedAt timestamp to the current time
             existingNote.LastUpdatedAt = DateTime.UtcNow;
+            return true;
+        }*/
+
+        public bool Update(int id, NoteItem updatedNote)
+        {
+            var existingNote = _context.Notes.Find(id);
+
+            if (existingNote == null)
+                return false;
+
+            existingNote.Title = updatedNote.Title;
+            existingNote.Content = updatedNote.Content;
+            existingNote.LastUpdatedAt = DateTime.UtcNow;
+
+            _context.SaveChanges();
+
             return true;
         }
 
-            // Delete Note
-        public bool Delete(int id)
+        // Delete Note
+        /*public bool Delete(int id)
         {
                 // Checking whether the note exists
             var existingNote = GetById(id);
@@ -79,6 +114,20 @@ namespace SimpleNotesApi.Services
                 // Remove the note from the list and return true to indicate successful deletion
             _notes.Remove(existingNote);
             return true;
+        }*/
+
+        public bool Delete(int id)
+        {
+            var existingNote = _context.Notes.Find(id);
+
+            if (existingNote == null)
+                return false;
+
+            _context.Notes.Remove(existingNote);
+            _context.SaveChanges();
+
+            return true;
         }
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SimpleNotesApi.Models;
 using SimpleNotesApi.Services;
 
@@ -43,24 +42,24 @@ namespace SimpleNotesApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] NoteItem noteItem)
+        public IActionResult Update(int id,[FromBody] NoteItem noteItem)
         {
-            var existingNote = _noteService.GetById(id);
+            var updated = _noteService.Update(id, noteItem);
 
-            if (existingNote == null) return NotFound();
+            if (!updated)
+                return NotFound();
 
-            _noteService.Update(id, noteItem);
-            return NoContent();
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var existingNote = _noteService.GetById(id);
+            var deleted = _noteService.Delete(id);
 
-            if (existingNote == null) return NotFound();
+            if (!deleted)
+                return NotFound();
 
-            _noteService.Delete(id);
             return NoContent();
         }
     }
