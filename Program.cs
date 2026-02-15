@@ -17,11 +17,11 @@ builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddControllersWithViews();
 
     // Registering the database
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql
+(
+    builder.Configuration.GetConnectionString("DefaultConnection"),
+     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+ ));
 
 var app = builder.Build();
 

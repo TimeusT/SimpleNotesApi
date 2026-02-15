@@ -8,14 +8,12 @@ namespace SimpleNotesApi.Models
         // ID
         public int Id { get; set; }
 
-        // Title
-        [Required]
+        // Title      
         [MaxLength(25)]
-        [RegularExpression(@"^[a-zA-Z\s]+$",ErrorMessage = "Title can only contain letters and spaces.")]
+        [RegularExpression(@"^[a-zA-Z\s]+$",ErrorMessage = "The field {0} can only contain letters and spaces.")]
         public string Title { get; set; } = string.Empty;
 
         // Content
-        [Required]
         [MaxLength(100)]
         public string? Content { get; set; }
         
