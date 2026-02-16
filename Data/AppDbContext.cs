@@ -10,6 +10,6 @@ namespace SimpleNotesApi.Data
         {
         }
 
-        public DbSet<NoteItem> Notes { get; set; }
+        public DbSet<NoteItemEntity> Notes { get; set; }
     }
 }

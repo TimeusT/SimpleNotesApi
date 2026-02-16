@@ -6,19 +6,19 @@ namespace SimpleNotesApi.Services
     {
             // Reading notes (GET)
             // Use IEnumerable because you're getting everything from a 'collection'
-        IEnumerable<NoteItem> GetAll();
+        IEnumerable<NoteItemEntity> GetAll();
         
             // Getting notes by ID (GET)
             // ? means it might not exist. (It might return something it might return nothing)
             // "?" = Nullable
-        NoteItem? GetById(int id);
+        NoteItemEntity? GetById(int id);
 
             // Creating notes (POST)
-        NoteItem CreateNote(NoteItem note);
+        NoteItemEntity CreateNote(CreateOrUpdateNoteRequest note);
 
             // Updating notes (PUT)
             // Needs to take two parameters: id and what to update
-        bool Update(int id, NoteItem updateItem);
+        bool Update(int id, CreateOrUpdateNoteRequest updateItem);
 
             // Deleting notes (DELETE)
             // Needs ID to know which note to delete
@@ -26,7 +26,7 @@ namespace SimpleNotesApi.Services
 
         /*
          Think of Update and Delete as "actions" that you want to perform on a note.
-         They should return an indication os success or failure.
+         They should return an indication of success or failure.
         */
     }
 }

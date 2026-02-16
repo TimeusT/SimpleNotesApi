@@ -6,7 +6,7 @@ namespace SimpleNotesApi.Services
     public class NoteService : INoteService
     {
             // Need a private list to store the notes in memory
-        private readonly List<NoteItem> _notes = new();
+        private readonly List<NoteItemEntity> _notes = new();
         private readonly AppDbContext _context;
 
         public NoteService(AppDbContext context)
@@ -22,7 +22,7 @@ namespace SimpleNotesApi.Services
         {
             return _notes;
         }*/
-        public IEnumerable<NoteItem> GetAll()
+        public IEnumerable<NoteItemEntity> GetAll()
         {
             return _context.Notes.ToList();
         }
@@ -34,7 +34,7 @@ namespace SimpleNotesApi.Services
             return _notes.FirstOrDefault(n => n.Id == id);
         }*/
 
-        public NoteItem? GetById(int id)
+        public NoteItemEntity? GetById(int id)
         {
             return _context.Notes.Find(id);
         }
@@ -57,13 +57,21 @@ namespace SimpleNotesApi.Services
 
             return newNote;
         }*/
-        public NoteItem CreateNote(NoteItem noteItem)
+        public NoteItemEntity CreateNote(CreateOrUpdateNoteRequest noteItem)
         {
-            _context.Notes.Add(noteItem);
-            _context.SaveChanges();
-            return noteItem;
-        }
+            var newNote = new NoteItemEntity
+            {
+                Title = noteItem.Title,
+                Content = noteItem.Content,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdatedAt = DateTime.UtcNow
+            };
 
+            _context.Add(newNote);
+
+            _context.SaveChanges();
+            return newNote;
+        }
 
         // Update Note
         /*public bool Update(int id, NoteItem updateItem)
@@ -85,7 +93,7 @@ namespace SimpleNotesApi.Services
             return true;
         }*/
 
-        public bool Update(int id, NoteItem updatedNote)
+        public bool Update(int id, CreateOrUpdateNoteRequest updatedNote)
         {
             var existingNote = _context.Notes.Find(id);
 

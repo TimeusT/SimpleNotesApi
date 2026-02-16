@@ -34,7 +34,7 @@ namespace SimpleNotesApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] NoteItem noteItem)
+        public IActionResult Create([FromBody] CreateOrUpdateNoteRequest noteItem)
         {
             var createdNote = _noteService.CreateNote(noteItem);
 
@@ -42,7 +42,7 @@ namespace SimpleNotesApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id,[FromBody] NoteItem noteItem)
+        public IActionResult Update(int id,[FromBody] CreateOrUpdateNoteRequest noteItem)
         {
             var updated = _noteService.Update(id, noteItem);
 
