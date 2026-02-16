@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleNotesApi.Models;
 using SimpleNotesApi.Services;
+using SimpleNotesApi.Services.Domain;
 
 namespace SimpleNotesApi.Controllers
 {
@@ -18,33 +18,44 @@ namespace SimpleNotesApi.Controllers
 
         // This is where you use DI to get an instance of the NoteService class
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult<IEnumerable<NoteResponse>> GetAll()
         {
-            return Ok(_noteService.GetAll());
+            //TODO call service and map to response
+            var notes = _noteService.List().Select(note => note.ToResponse());
+            return Ok(notes);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public ActionResult<NoteResponse> GetById(int id)
         {
-            var existingNote = _noteService.GetById(id);
+            var existingNote = _noteService.Get(id);
 
             if (existingNote == null) return NotFound();
+
+            //TODO Map domain to response
+            var notes = _noteService.List().Select(note => note.ToResponse());
 
             return Ok(existingNote);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateOrUpdateNoteRequest noteItem)
+        public ActionResult<NoteResponse> Create([FromBody] CreateNoteRequest noteItem)
         {
-            var createdNote = _noteService.CreateNote(noteItem);
+            //TODO map request to domain and call service
+            var notes = _noteService.List().Select(note => note.ToResponse());
 
-            return CreatedAtAction(nameof(GetById), new { id = createdNote.Id },createdNote);
+            var createdNote = _noteService.Create(notes);
+
+            return CreatedAtAction(nameof(GetById), new { id = createdNote.Id }, createdNote);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id,[FromBody] CreateOrUpdateNoteRequest noteItem)
+        public ActionResult<NoteResponse> Update([FromBody] UpdateNoteRequest noteItem)
         {
-            var updated = _noteService.Update(id, noteItem);
+            //TODO map request to domain and call service
+            var notes = _noteService.List().Select(note => note.ToResponse());
+
+            var updated = _noteService.Update(notes);
 
             if (!updated)
                 return NotFound();
