@@ -1,83 +1,53 @@
-﻿using SimpleNotesApi.Models;
-using System.Collections.Immutable;
-using System.Data;
+﻿using SimpleNotesApi.Controllers;
+using SimpleNotesApi.Repository;
+using SimpleNotesApi.Services.Domain;
 
 namespace SimpleNotesApi.Services
 {
     public class NoteService : INoteService
     {
-            // Need a private list to store the notes in memory
-        private readonly List<NoteItem> _notes = new();
-            // Need a private variable to keep track of the next ID to assign to a new note
+        
+        private readonly INoteRepository _noteRepository;
+
+        public NoteService(INoteRepository noteRepository)
+        {
+            _noteRepository = noteRepository;
+        }
+
+        // Need a private variable to keep track of the next ID to assign to a new note
         private int _nextId = 1;
 
-            // GetAll just returns everything in the list
-        public IEnumerable<NoteItem> GetAll()
+        // Get all notes
+        public IEnumerable<NoteDomain> List()
         {
-            return _notes;
+            return _noteRepository.List().Select(x => x.ToDomain());
         }
 
-            // FirstOrDefault iterates through all items in the list and returns the first one that matches the condition (x.Id == id). If no items match, it returns null.
-        public NoteItem? GetById(int id)
+        // Get by ID
+        public NoteDomain? Get(int id)
         {
-            return _notes.FirstOrDefault(n => n.Id == id);
+            return _noteRepository.Get(id)?.ToDomain();
         }
 
-            // Create method
-        public NoteItem CreateNote(NoteItem newNote)
+        // Create a new note
+        public NoteDomain Create(NoteDomain note)
         {
-            // 1. Assign a new ID
-            // 2. Assign the CreatedAt and LastUpdatedAt timestamps
-            // 3. Add new not to the list
-            // 4. return the new note
-            _nextId++;
-
-            newNote.CreatedAt = DateTime.UtcNow;
-            newNote.LastUpdatedAt = DateTime.UtcNow;
-
-            _notes.Add(newNote);
-
-            return newNote;
+            //TODO call repo and map
+            
         }
 
-            // Update Note
-        public bool Update(int id, NoteItem updateItem)
+        // Update existing note
+        public bool Update(NoteDomain note)
         {
-                // Iterate through IDs list and assign the matching one into existingNote variable
-            var existingNote = GetById(id);
-
-               // If no note with the given ID is found, return false
-            if (existingNote == null)
-            {
-                return false;
-            }
-
-                // IF the Title property is NOT null or whitespace, update to new Title
-            if (!string.IsNullOrWhiteSpace(updateItem.Title))
-                existingNote.Title = updateItem.Title;
-
-                // IF the Content property is NOT null or whitespace, update to new Content
-            if (!string.IsNullOrWhiteSpace(updateItem.Content))
-                existingNote.Content = updateItem.Content;
-
-                // Update the LastUpdatedAt timestamp to the current time
-            existingNote.LastUpdatedAt = DateTime.UtcNow;
-            return true;
+            //TODO call repo and map
+            
         }
 
-            // Delete Note
+        // Delete existing note
         public bool Delete(int id)
         {
-                // Checking whether the note exists
-            var existingNote = GetById(id);
-            if (existingNote == null)
-            {
-                return false;
-            }
-
-                // Remove the note from the list and return true to indicate successful deletion
-            _notes.Remove(existingNote);
-            return true;
+            //TODO call repo and map
         }
+
     }
 }

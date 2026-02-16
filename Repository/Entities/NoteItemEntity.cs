@@ -1,14 +1,15 @@
-﻿namespace SimpleNotesApi.Models
+﻿namespace SimpleNotesApi.Repository.Entities
+
 {
     // Here are all the attributes that we can use for this class
-    public class NoteItem
+    public class NoteItemEntity
     {
         // ID
         public int Id { get; set; }
 
-        // Title
+        // Title      
         public string Title { get; set; } = string.Empty;
-        
+
         // Content
         public string? Content { get; set; }
         

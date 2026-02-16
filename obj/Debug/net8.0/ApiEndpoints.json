@@ -1,0 +1,81 @@
+[
+  {
+    "ContainingType": "SimpleNotesApi.Controllers.NoteController",
+    "Method": "GetAll",
+    "RelativePath": "api/Note",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SimpleNotesApi.Controllers.NoteController",
+    "Method": "Create",
+    "RelativePath": "api/Note",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "noteItem",
+        "Type": "SimpleNotesApi.Models.CreateOrUpdateNoteRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SimpleNotesApi.Controllers.NoteController",
+    "Method": "GetById",
+    "RelativePath": "api/Note/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SimpleNotesApi.Controllers.NoteController",
+    "Method": "Update",
+    "RelativePath": "api/Note/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "noteItem",
+        "Type": "SimpleNotesApi.Models.CreateOrUpdateNoteRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SimpleNotesApi.Controllers.NoteController",
+    "Method": "Delete",
+    "RelativePath": "api/Note/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
