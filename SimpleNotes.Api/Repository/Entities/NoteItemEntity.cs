@@ -1,4 +1,4 @@
-﻿namespace SimpleNotesApi.Repository.Entities
+﻿namespace SimpleNotes.Api.Repository.Entities
 
 {
     // Here are all the attributes that we can use for this class
@@ -12,10 +12,10 @@
 
         // Content
         public string? Content { get; set; }
-        
+
         // CreatedAt
         public DateTime CreatedAt { get; set; }
-        
+
         // LastUpdatedAt
         public DateTime LastUpdatedAt { get; set; }
     }

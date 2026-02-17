@@ -1,7 +1,7 @@
-﻿using SimpleNotesApi.Controllers;
-using SimpleNotesApi.Repository.Entities;
+﻿using SimpleNotes.Api.Controllers;
+using SimpleNotes.Api.Repository.Entities;
 
-namespace SimpleNotesApi.Services.Domain
+namespace SimpleNotes.Api.Services.Domain
 {
     public static class NoteDomainExtension
     {

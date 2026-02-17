@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace SimpleNotesApi.Services.Domain
+namespace SimpleNotes.Api.Services.Domain
 {
     public class AlphaText
     {

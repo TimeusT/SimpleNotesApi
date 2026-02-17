@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SimpleNotesApi.Repository.Entities;
+using SimpleNotes.Api.Repository.Entities;
 
-namespace SimpleNotesApi.Repository
+namespace SimpleNotes.Api.Repository
 {
     public class AppDbContext : DbContext
     {

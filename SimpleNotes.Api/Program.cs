@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SimpleNotesApi.Repository;
-using SimpleNotesApi.Services;
+using SimpleNotes.Api.Repository;
+using SimpleNotes.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,15 +10,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-/*builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "Simple Notes API",
-        Version = "v1"
-    });
-});*/
-
 
 // Register the service with a specific lifetime
 builder.Services.AddScoped<INoteService, NoteService>();

@@ -1,7 +1,7 @@
-﻿using SimpleNotesApi.Services.Domain;
+﻿using SimpleNotes.Api.Services.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleNotesApi.Controllers
+namespace SimpleNotes.Api.Controllers
 {
     public class CreateNoteRequest
     {

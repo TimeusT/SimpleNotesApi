@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleNotesApi.Services.Domain;
+using SimpleNotes.Api.Services;
+using SimpleNotes.Api.Services.Domain;
 
-namespace SimpleNotesApi.Controllers
+namespace SimpleNotes.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

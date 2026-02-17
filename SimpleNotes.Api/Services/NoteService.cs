@@ -1,8 +1,8 @@
-﻿using SimpleNotesApi.Controllers;
-using SimpleNotesApi.Repository;
-using SimpleNotesApi.Services.Domain;
+﻿using SimpleNotes.Api.Controllers;
+using SimpleNotes.Api.Repository;
+using SimpleNotes.Api.Services.Domain;
 
-namespace SimpleNotesApi.Services
+namespace SimpleNotes.Api.Services
 {
     public class NoteService : INoteService
     {

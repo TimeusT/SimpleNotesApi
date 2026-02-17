@@ -1,4 +1,4 @@
-﻿namespace SimpleNotesApi.Services.Domain
+﻿namespace SimpleNotes.Api.Services.Domain
 {
     public class NoteDomain
     {
