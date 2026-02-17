@@ -15,5 +15,17 @@ namespace SimpleNotesApi.Services.Domain
                 LastUpdatedAt = entity.LastUpdatedAt
             };
         }
+
+        public static NoteItemEntity ToEntity(this NoteDomain domain)
+        {
+            return new NoteItemEntity
+            {
+                Id = domain.Id,
+                Title = domain.Title.Value,
+                Content = domain.Content?.Value,
+                CreatedAt = domain.CreatedAt,
+                LastUpdatedAt = domain.LastUpdatedAt
+            };
+        }
     }
 }

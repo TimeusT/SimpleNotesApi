@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SimpleNotesApi.Services.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace SimpleNotesApi.Controllers
 {
@@ -12,6 +13,16 @@ namespace SimpleNotesApi.Controllers
         public string? Content { get; set; }
     }
 
+    public static class CreateNoteRequestExtension
+    {
+        public static NoteDomain ToDomain (this CreateNoteRequest request)
+        {
+            return new NoteDomain(
+                new AlphaText(request.Title),
+                AlphaText.Create(request.Content));
+        }
+    }
+
     public class UpdateNoteRequest
     {
         public int Id { get; set; }
@@ -22,6 +33,14 @@ namespace SimpleNotesApi.Controllers
 
         [MaxLength(100)]
         public string? Content { get; set; }
+    }
+
+    public static class UpdateNoteRequestExtension
+    {
+        public static NoteDomain ToDomain(this UpdateNoteRequest request)
+        {
+            return new NoteDomain(new AlphaText(request.Title), AlphaText.Create(request.Content), request.Id);
+        }
     }
 
     public class NoteResponse

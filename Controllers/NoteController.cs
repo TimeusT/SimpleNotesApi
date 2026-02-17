@@ -33,34 +33,43 @@ namespace SimpleNotesApi.Controllers
             if (existingNote == null) return NotFound();
 
             //TODO Map domain to response
-            var notes = _noteService.List().Select(note => note.ToResponse());
+            var responseNote = existingNote.ToResponse();
 
-            return Ok(existingNote);
+            return Ok(responseNote);
         }
 
         [HttpPost]
-        public ActionResult<NoteResponse> Create([FromBody] CreateNoteRequest noteItem)
+        public IActionResult Create([FromBody] CreateNoteRequest noteItem)
         {
             //TODO map request to domain and call service
-            var notes = _noteService.List().Select(note => note.ToResponse());
+            // turn to domain
+            var domainNote = noteItem.ToDomain();
+            // call the service
+            var createNote = _noteService.Create(domainNote);
 
-            var createdNote = _noteService.Create(notes);
+            var responseNote = createNote.ToResponse();
 
-            return CreatedAtAction(nameof(GetById), new { id = createdNote.Id }, createdNote);
+            return CreatedAtAction(nameof(GetById), new { id = responseNote.Id }, responseNote);
         }
 
         [HttpPut("{id}")]
         public ActionResult<NoteResponse> Update([FromBody] UpdateNoteRequest noteItem)
         {
             //TODO map request to domain and call service
-            var notes = _noteService.List().Select(note => note.ToResponse());
+            // Request to domain
+            var domainNote = noteItem.ToDomain();
 
-            var updated = _noteService.Update(notes);
+            // call the service
+            var updatedNote = _noteService.Update(domainNote);        
 
-            if (!updated)
+            // check update response
+            if (!updatedNote)
                 return NotFound();
 
-            return Ok(updated);
+            // create response
+            var responseNote = domainNote.ToResponse();
+
+            return Ok(responseNote);
         }
 
         [HttpDelete("{id}")]

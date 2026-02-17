@@ -33,21 +33,40 @@ namespace SimpleNotesApi.Services
         public NoteDomain Create(NoteDomain note)
         {
             //TODO call repo and map
-            
+            // convert domain to entity
+            var noteEntity = note.ToEntity();
+
+            // call create method in repo
+            var noteCreate = _noteRepository.Create(noteEntity);
+
+            // convert entity to domain
+            var noteDomain = noteCreate.ToDomain();
+
+            // returns domain
+            return noteDomain;
         }
 
         // Update existing note
         public bool Update(NoteDomain note)
         {
             //TODO call repo and map
-            
+            // convert domain to entity
+            var noteEntity = note.ToEntity();
+
+            // call update method
+            var noteUpdate = _noteRepository.Update(noteEntity);
+
+            return noteUpdate;
         }
 
         // Delete existing note
         public bool Delete(int id)
         {
             //TODO call repo and map
-        }
+            // call delete on repo
+            var noteDelete = _noteRepository.Delete(id);
 
+            return noteDelete;
+        }
     }
 }

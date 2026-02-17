@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SimpleNotesApi.Data;
+using SimpleNotesApi.Repository;
 using SimpleNotesApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,15 +13,15 @@ builder.Services.AddSwaggerGen();
 
 // Register the service with a specific lifetime
 builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
 // Add controllers support
 builder.Services.AddControllersWithViews();
 
-    // Registering the database
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql
+// Registering the database
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer
 (
-    builder.Configuration.GetConnectionString("DefaultConnection"),
-     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
- ));
+    builder.Configuration.GetConnectionString("DefaultConnection")
+));
 
 var app = builder.Build();
 
