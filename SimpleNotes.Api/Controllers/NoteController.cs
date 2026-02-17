@@ -9,7 +9,6 @@ namespace SimpleNotesApi.Controllers
     {
         private readonly INoteService _noteService;
 
-        // Constructor Injection
         public NoteController(INoteService noteService)
         {
             _noteService = noteService;
