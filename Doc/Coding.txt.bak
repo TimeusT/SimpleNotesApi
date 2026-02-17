@@ -1,0 +1,8 @@
+Left of equal sign is return value
+Right of equal sign is calling operation
+Any agrument inside () are params
+
+var test = _noteService.Create(noteDomain);
+
+var test2 = new AlphText("hello");
+

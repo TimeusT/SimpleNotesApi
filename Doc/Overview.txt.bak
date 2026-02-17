@@ -1,0 +1,12 @@
+Following clean architecture
+
+Client				Controller (API)							Service (Application)				Repository (Domain)
+
+Request    ->    	Controller action					->		Service class				->		Repository class
+					Validate request DTO structure				Validate Domain business			Call DBContext to save entity
+					Map Request DTO to Domain					Perform service logic
+					Call application service					Map Domain object to Entity
+Response    <-		Map Domain object to Response DTO			Call repository
+																Map Entity to Domain
+
+
