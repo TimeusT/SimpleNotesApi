@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SimpleNotes.Api.Repository;
-using SimpleNotes.Api.Services;
+using SimpleNotes.Infrastructure.Repositories;
+using SimpleNotes.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

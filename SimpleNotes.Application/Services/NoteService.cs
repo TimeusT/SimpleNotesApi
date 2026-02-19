@@ -2,7 +2,7 @@
 using SimpleNotes.Api.Repository;
 using SimpleNotes.Api.Services.Domain;
 
-namespace SimpleNotes.Api.Services
+namespace SimpleNotes.Application.Services;
 {
     public class NoteService : INoteService
     {

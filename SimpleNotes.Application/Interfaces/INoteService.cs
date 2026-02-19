@@ -1,6 +1,6 @@
-﻿using SimpleNotes.Api.Services.Domain;
+﻿using SimpleNotes.Domain;
 
-namespace SimpleNotes.Api.Services
+namespace SimpleNotes.Application.Interfaces;
 {
     public interface INoteService
     {
