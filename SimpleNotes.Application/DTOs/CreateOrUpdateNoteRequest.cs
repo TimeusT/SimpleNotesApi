@@ -1,4 +1,4 @@
-﻿using SimpleNotes.Api.Services.Domain;
+﻿using SimpleNotes.Domain;
 using System.ComponentModel.DataAnnotations;
 
 namespace SimpleNotes.Application.DTOs;

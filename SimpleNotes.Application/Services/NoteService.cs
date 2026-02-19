@@ -1,6 +1,7 @@
-﻿using SimpleNotes.Api.Controllers;
-using SimpleNotes.Api.Repository;
-using SimpleNotes.Api.Services.Domain;
+﻿using SimpleNotes.Application.Interfaces;
+using SimpleNotes.Domain;
+using SimpleNotes.Domain.Entities;
+using SimpleNotes.Infrastructure.Mapping;
 
 namespace SimpleNotes.Application.Services;
 {

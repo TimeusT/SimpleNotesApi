@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SimpleNotes.Api.Repository.Entities;
+using SimpleNotes.Domain.Entities;
 
 namespace SimpleNotes.Infrastructure.Data;
 

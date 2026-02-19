@@ -1,17 +1,17 @@
 ﻿using SimpleNotes.Domain;
 
 namespace SimpleNotes.Application.Interfaces;
+
+public interface INoteService
 {
-    public interface INoteService
-    {
-        IEnumerable<NoteDomain> List();
+    IEnumerable<NoteDomain> List();
 
-        NoteDomain? Get(int id);
+    NoteDomain? Get(int id);
 
-        NoteDomain Create(NoteDomain note);
+    NoteDomain Create(NoteDomain note);
 
-        bool Update(NoteDomain note);
+    bool Update(NoteDomain note);
 
-        bool Delete(int id);
-    }
+    bool Delete(int id);
 }
+

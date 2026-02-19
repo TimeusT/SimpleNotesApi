@@ -1,4 +1,6 @@
-﻿using SimpleNotes.Api.Repository.Entities;
+﻿using SimpleNotes.Domain;
+using SimpleNotes.Domain.Entities;
+using SimpleNotes.Application.DTOs;
 
 namespace SimpleNotes.Infrastructure.Mapping;
 
