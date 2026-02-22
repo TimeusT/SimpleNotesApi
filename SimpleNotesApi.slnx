@@ -1,2 +1,6 @@
 <Solution>
+  <Project Path="SimpleNotes.Api/SimpleNotes.Api.csproj" />
+  <Project Path="SimpleNotes.Application/SimpleNotes.Application.csproj" />
+  <Project Path="SimpleNotes.Domain/SimpleNotes.Domain.csproj" />
+  <Project Path="SimpleNotes.Infrastructure/SimpleNotes.Infrastructure.csproj" />
 </Solution>

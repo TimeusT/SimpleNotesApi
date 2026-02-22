@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SimpleNotes.Infrastructure.Repository;
-
+using SimpleNotes.Infrastructure.Repositories;
 #nullable disable
 
 namespace SimpleNotes.Infrastructure.Data.Migrations;
@@ -17,7 +16,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     {
 #pragma warning disable 612, 618
         modelBuilder
-            .HasAnnotation("ProductVersion", "9.0.13")
+            .HasAnnotation("ProductVersion", "9.0.0")
             .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
         SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

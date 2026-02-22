@@ -4,70 +4,68 @@ using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Mapping;
 
 namespace SimpleNotes.Application.Services;
+public class NoteService : INoteService
 {
-    public class NoteService : INoteService
+
+    private readonly INoteRepository _noteRepository;
+
+    public NoteService(INoteRepository noteRepository)
     {
+        _noteRepository = noteRepository;
+    }
 
-        private readonly INoteRepository _noteRepository;
+    // Need a private variable to keep track of the next ID to assign to a new note
+    private int _nextId = 1;
 
-        public NoteService(INoteRepository noteRepository)
-        {
-            _noteRepository = noteRepository;
-        }
+    // Get all notes
+    public IEnumerable<NoteDomain> List()
+    {
+        return _noteRepository.List().Select(x => x.ToDomain());
+    }
 
-        // Need a private variable to keep track of the next ID to assign to a new note
-        private int _nextId = 1;
+    // Get by ID
+    public NoteDomain? Get(int id)
+    {
+        return _noteRepository.Get(id)?.ToDomain();
+    }
 
-        // Get all notes
-        public IEnumerable<NoteDomain> List()
-        {
-            return _noteRepository.List().Select(x => x.ToDomain());
-        }
+    // Create a new note
+    public NoteDomain Create(NoteDomain note)
+    {
+        //TODO call repo and map
+        // convert domain to entity
+        var noteEntity = note.ToEntity();
 
-        // Get by ID
-        public NoteDomain? Get(int id)
-        {
-            return _noteRepository.Get(id)?.ToDomain();
-        }
+        // call create method in repo
+        var noteCreate = _noteRepository.Create(noteEntity);
 
-        // Create a new note
-        public NoteDomain Create(NoteDomain note)
-        {
-            //TODO call repo and map
-            // convert domain to entity
-            var noteEntity = note.ToEntity();
+        // convert entity to domain
+        var noteDomain = noteCreate.ToDomain();
 
-            // call create method in repo
-            var noteCreate = _noteRepository.Create(noteEntity);
+        // returns domain
+        return noteDomain;
+    }
 
-            // convert entity to domain
-            var noteDomain = noteCreate.ToDomain();
+    // Update existing note
+    public bool Update(NoteDomain note)
+    {
+        //TODO call repo and map
+        // convert domain to entity
+        var noteEntity = note.ToEntity();
 
-            // returns domain
-            return noteDomain;
-        }
+        // call update method
+        var noteUpdate = _noteRepository.Update(noteEntity);
 
-        // Update existing note
-        public bool Update(NoteDomain note)
-        {
-            //TODO call repo and map
-            // convert domain to entity
-            var noteEntity = note.ToEntity();
+        return noteUpdate;
+    }
 
-            // call update method
-            var noteUpdate = _noteRepository.Update(noteEntity);
+    // Delete existing note
+    public bool Delete(int id)
+    {
+        //TODO call repo and map
+        // call delete on repo
+        var noteDelete = _noteRepository.Delete(id);
 
-            return noteUpdate;
-        }
-
-        // Delete existing note
-        public bool Delete(int id)
-        {
-            //TODO call repo and map
-            // call delete on repo
-            var noteDelete = _noteRepository.Delete(id);
-
-            return noteDelete;
-        }
+        return noteDelete;
     }
 }
