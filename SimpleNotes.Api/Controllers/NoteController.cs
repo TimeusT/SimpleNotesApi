@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.DTOs;
-using SimpleNotes.Infrastructure.Mapping;
+using SimpleNotes.Application.Interfaces;
+using SimpleNotes.Application.Mapping;
 
 namespace SimpleNotes.Api.Controllers;
 

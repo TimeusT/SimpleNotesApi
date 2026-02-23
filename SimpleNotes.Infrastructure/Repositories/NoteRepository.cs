@@ -1,6 +1,6 @@
 ﻿using SimpleNotes.Domain.Entities;
-using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Infrastructure.Data;
+using SimpleNotes.Infrastructure.Interfaces;
 
 namespace SimpleNotes.Infrastructure.Repositories;
 

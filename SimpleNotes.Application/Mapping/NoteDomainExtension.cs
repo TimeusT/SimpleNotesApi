@@ -1,9 +1,8 @@
-﻿using SimpleNotes.Api.Controllers;
-using SimpleNotes.Application.DTOs;
+﻿using SimpleNotes.Application.DTOs;
 using SimpleNotes.Domain;
 using SimpleNotes.Domain.Entities;
 
-namespace SimpleNotes.Infrastructure.Mapping;
+namespace SimpleNotes.Application.Mapping;
 
 public static class NoteDomainExtension
 {

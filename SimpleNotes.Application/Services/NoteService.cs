@@ -1,7 +1,8 @@
 ﻿using SimpleNotes.Application.Interfaces;
+using SimpleNotes.Application.Mapping;
 using SimpleNotes.Domain;
-using SimpleNotes.Domain.Entities;
-using SimpleNotes.Infrastructure.Mapping;
+using SimpleNotes.Domain.Mapping;
+using SimpleNotes.Infrastructure.Interfaces;
 
 namespace SimpleNotes.Application.Services;
 public class NoteService : INoteService

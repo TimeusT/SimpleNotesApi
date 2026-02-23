@@ -1,6 +1,6 @@
 ﻿using SimpleNotes.Domain.Entities;
 
-namespace SimpleNotes.Application.Interfaces;
+namespace SimpleNotes.Infrastructure.Interfaces;
 
 public interface INoteRepository
 {

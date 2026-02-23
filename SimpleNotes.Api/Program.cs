@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.Services;
+using SimpleNotes.Infrastructure;
+using SimpleNotes.Infrastructure.Interfaces;
 using SimpleNotes.Infrastructure.Repositories;
-using SimpleNotes.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +18,7 @@ builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 
 // Registering the database
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer
-(
-    builder.Configuration.GetConnectionString("DefaultConnection")
-));
+builder.Services.AddNoteDbContext(builder.Configuration);
 
 var app = builder.Build();
 

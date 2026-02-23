@@ -1,8 +1,6 @@
-﻿using SimpleNotes.Domain;
-using SimpleNotes.Domain.Entities;
-using SimpleNotes.Application.DTOs;
+﻿using SimpleNotes.Domain.Entities;
 
-namespace SimpleNotes.Infrastructure.Mapping;
+namespace SimpleNotes.Domain.Mapping;
 
 public static class NoteEntityExtensions
 {
