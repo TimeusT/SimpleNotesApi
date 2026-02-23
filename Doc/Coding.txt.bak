@@ -6,7 +6,7 @@ var test = _noteService.Create(noteDomain);
 
 var test2 = new AlphText("hello");
 
-------------------------------------------------------
+-------------------------------------------------------
 
 Create DTO, usually has no constructor, we can uses below to create and set properties
 
@@ -20,6 +20,17 @@ dto.Prop2 = "prop2";
 
 -------------------------------------------------------
 
+Package
+- Always install the latest package
+- Check each package if there is any across dependency, try to remove dependency so its not duplicated
+- Create service extension so package is contain within the project, example SimpleNotes.Infrastrure ServiceCollectionExtensions
+
+
 Read and understand IServiceCollection https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-10.0
 Read and understand IConfiguration https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration
 
+-------------------------------------------------------
+
+Document all SimpleNotesApi project files and folder structure
+
+-------------------------------------------------------

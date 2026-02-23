@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 // Register the service with a specific lifetime
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Registering the database
 builder.Services.AddNoteDbContext(builder.Configuration);

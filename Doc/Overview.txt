@@ -9,6 +9,7 @@ Request    ->    	Controller action					->		Service class				->		Repository clas
 Response    <-		Map Domain object to Response DTO			Call repository
 																Map Entity to Domain
 
+-------------------------------------------------------
 
 Rules:
 - Request object (naming - {Operation}{Resource}Request, eg: CreateNoteRequest, operation usually CURD)
@@ -31,4 +32,8 @@ Rules:
 	- Should be DTO
 	- Only primary types (int, string, bool, etc), so the database types are mapped correctly
 	- Uses Data Annotation for length validation
+
+-------------------------------------------------------
+
+
 

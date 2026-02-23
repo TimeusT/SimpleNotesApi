@@ -9,4 +9,29 @@ Request    ->    	Controller action					->		Service class				->		Repository clas
 Response    <-		Map Domain object to Response DTO			Call repository
 																Map Entity to Domain
 
+-------------------------------------------------------
+
+Rules:
+- Request object (naming - {Operation}{Resource}Request, eg: CreateNoteRequest, operation usually CURD)
+	- Should be DTO
+	- Only primary types (int, string, bool, etc), so JSON serialise and deserialise correctly
+	- Uses Data Annotation for structure validation (https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/models-data/validation-with-the-data-annotation-validators-cs)
+
+- Response object (naming - {Operation}{Resource}Response, eg: CreateNoteResponse)
+	- Should be DTO
+	- Only primary types (int, string, bool, etc), so JSON serialise and deserialise correctly
+	- Not Data Annotation required
+	
+- Domain object (naming - {Resource}Domain, eg: NoteDomain)
+	- Not a DTO, need constructor
+	- Has business rules and operations
+	- Always in the valid state once created
+	- Using extension methods to map between layer (https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods)
+	
+- Entity object (naming - {Table}Entity, eg: NoteEntity)
+	- Should be DTO
+	- Only primary types (int, string, bool, etc), so the database types are mapped correctly
+	- Uses Data Annotation for length validation
+
+-------------------------------------------------------
 
