@@ -1,5 +1,4 @@
 ﻿using SimpleNotes.Domain;
-using SimpleNotes.Domain.Entities;
 
 namespace SimpleNotes.Application.Interfaces;
 
@@ -10,9 +9,9 @@ public interface IUserService
     // Get by Id
     UserDomain? GetUser(int id);
     // Create user
-    UserDomain CreateUser(UserEntity user);
+    UserDomain CreateUser(UserDomain user);
     // Update user
-    bool UpdateUser(int id);
+    bool UpdateUser(UserDomain user);
     // Delete user
     bool DeleteUser(int id);
 }

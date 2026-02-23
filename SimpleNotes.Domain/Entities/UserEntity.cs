@@ -11,7 +11,7 @@ public class UserEntity
 
     public int Age { get; set; }
 
-    public EmailText? Email { get; set; }
+    public string? Email { get; set; }
 
     public DateTime JoinDate { get; set; }
 }

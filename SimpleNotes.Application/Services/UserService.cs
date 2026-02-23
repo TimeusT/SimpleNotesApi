@@ -1,10 +1,12 @@
-﻿using SimpleNotes.Domain;
-using SimpleNotes.Domain.Entities;
+﻿using SimpleNotes.Application.Interfaces;
+using SimpleNotes.Application.Mapping;
+using SimpleNotes.Domain;
+using SimpleNotes.Domain.Mapping;
 using SimpleNotes.Infrastructure.Interfaces;
 
 namespace SimpleNotes.Application.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
 
@@ -13,39 +15,41 @@ public class UserService
         _userRepository = userRepository;
     }
 
-    public IEnumerable<UserEntity> ListUsers()
+    public IEnumerable<UserDomain> ListUsers()
     {
-        // TODO
-        // List all users
+        return _userRepository.ListUsers().Select(u => u.ToDomain());
     }
 
-    public UserDomain GetUser(int id)
+    public UserDomain? GetUser(int id)
     {
-        // TODO
-        // Get user by id
+        return _userRepository.GetUser(id)?.ToDomain();
     }
 
     public UserDomain CreateUser(UserDomain user)
     {
-        // TODO
         // Convert to Entity
+        var userEntity = user.ToEntity();
         // Create user
+        var userCreated = _userRepository.CreateUser(userEntity);
         // Convert to Domain
+        var userDomain = userCreated.ToDomain();
         // return
+        return userDomain;
     }
 
     public bool UpdateUser(UserDomain user)
     {
-        // TODO
         // Convert to Entity
+        var userEntity = user.ToEntity();
         // Update
+        var userUpdated = _userRepository.UpdateUser(userEntity);
         // Return
+        return userUpdated;
     }
 
-    public bool DeleteUser(UserDomain user)
+    public bool DeleteUser(int id)
     {
-        // TODO
         // Delete user
-        // Return
+        return _userRepository.DeleteUser(id);
     }
 }

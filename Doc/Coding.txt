@@ -33,6 +33,22 @@ Read and understand IConfiguration https://learn.microsoft.com/en-us/dotnet/core
 
 Document all SimpleNotesApi project files and folder structure
 
+IUserRepository - framework
+	v
+UserRepository - functionality
+	v
+UserService - uses to update the database
+
 -------------------------------------------------------
 
+Optional parameters are in order
 
+
+add new dbset
+- Need to run entity migirations to create new delter script
+  example: dotnet ef migrations add AddUser --project SimpleNotes.Infrastructure --startup-project SimpleNotes.Api
+- Then run db up to run delter script
+  example: dotnet ef database update --project SimpleNotes.Infrastructure --startup-project SimpleNotes.Api
+  
+Conventional Commits
+https://www.conventionalcommits.org/en/v1.0.0-beta.3a

@@ -25,8 +25,6 @@ public static class CreateNoteRequestExtension
 
 public class UpdateNoteRequest
 {
-    public int Id { get; set; }
-
     [MaxLength(25)]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters and spaces.")]
     public string Title { get; set; } = string.Empty;
@@ -37,9 +35,9 @@ public class UpdateNoteRequest
 
 public static class UpdateNoteRequestExtension
 {
-    public static NoteDomain ToDomain(this UpdateNoteRequest request)
+    public static NoteDomain ToDomain(this UpdateNoteRequest request, int id)
     {
-        return new NoteDomain(new AlphaText(request.Title), AlphaText.Create(request.Content), request.Id);
+        return new NoteDomain(new AlphaText(request.Title), AlphaText.Create(request.Content), id);
     }
 }
 

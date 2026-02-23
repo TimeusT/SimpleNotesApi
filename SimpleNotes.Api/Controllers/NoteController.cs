@@ -53,11 +53,11 @@ public class NoteController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public ActionResult<NoteResponse> Update([FromBody] UpdateNoteRequest noteItem)
+    public ActionResult<NoteResponse> Update(int id, [FromBody] UpdateNoteRequest noteItem)
     {
         //TODO map request to domain and call service
         // Request to domain
-        var domainNote = noteItem.ToDomain();
+        var domainNote = noteItem.ToDomain(id);
 
         // call the service
         var updatedNote = _noteService.Update(domainNote);

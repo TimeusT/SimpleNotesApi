@@ -31,21 +31,39 @@ public class UserRepository : IUserRepository
     // Create user
     public UserEntity CreateUser(UserEntity user)
     {
-        // TODO
+        // Create user
+        _context.Users.Add(user);
+        // Save
+        _context.SaveChanges();
+
         return user;
     }
 
     // Update user
     public bool UpdateUser(UserEntity user)
     {
-        // TODO
+        // Find user + error handling
+        if (!_context.Users.Any(x => x.Id == user.Id)) return false;
+
+        // Update user
+        _context.Update(user);
+
+        // Save
+        _context.SaveChanges();
+
         return true;
     }
 
     // Delete user
     public bool DeleteUser(int id)
     {
-        // TODO
+        // Find user + error handling
+        if (_context.Users.Find(id) == null) return false;
+        // Delete user
+        _context.Remove(id);
+        // save changes
+        _context.SaveChanges();
+
         return true;
     }
 }
