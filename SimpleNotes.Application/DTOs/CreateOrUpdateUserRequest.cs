@@ -6,21 +6,30 @@ namespace SimpleNotes.Application.DTOs;
 public class UserResponse
 {
     public int Id { get; set; }
-    public string FName { get; set; }
-    public string LName { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
     public int Age { get; set; }
     public string? Email { get; set; }
+}
+
+public class UserNotesResponse
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Content { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime LastUpdatedAt { get; set; }
 }
 
 public class CreateUserRequest
 {
     [MaxLength(50)]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters.")]
-    public string FName { get; set; }
+    public string FirstName { get; set; } = string.Empty;
 
     [MaxLength(50)]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters.")]
-    public string LName { get; set; }
+    public string LastName { get; set; } = string.Empty;
 
     public int Age { get; set; }
 
@@ -35,8 +44,8 @@ public static class CreateUserRequestExtension
     {
         return new UserDomain
         (
-            request.FName,
-            request.LName,
+            request.FirstName,
+            request.LastName,
             request.Age,
             request.JoinDate,
             email: EmailText.Create(request.Email)
@@ -48,12 +57,12 @@ public class UpdateUserRequest
 {
     [MaxLength(50)]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters.")]
-    public string FName { get; set; }
+    public string FirstName { get; set; } = string.Empty;
 
     [MaxLength(50)]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters.")]
 
-    public string LName { get; set; }
+    public string LastName { get; set; } = string.Empty;
 
     public int Age { get; set; }
 
@@ -69,8 +78,8 @@ public static class UpdateUserRequestExtension
     {
         return new UserDomain
         (
-            request.FName,
-            request.LName,
+            request.FirstName,
+            request.LastName,
             request.Age,
             request.JoinDate,
             id,

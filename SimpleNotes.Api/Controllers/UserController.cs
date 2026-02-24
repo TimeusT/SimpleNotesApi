@@ -6,10 +6,6 @@ using SimpleNotes.Domain.Mapping;
 
 namespace SimpleNotes.Api.Controllers;
 
-/*
-Here should be the server response
-*/
-
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
@@ -42,6 +38,23 @@ public class UserController : ControllerBase
         var userResponse = user.ToResponse();
 
         // Return id user
+        return Ok(userResponse);
+    }
+
+    // Get all the notes with the user Id
+    [HttpGet("{id}/note")]
+    public ActionResult GetUserNotes(int id)
+    {
+        // USING UserId, Find Notes
+        var user = _userService.GetUser(id);
+        // Error handling
+        if (user == null) return NotFound();
+        // List all notes related to user
+        var listNotes = _userService.GetUserNotes(user.Id); // List of notes related to User
+        // Convert to response
+        var userResponse = listNotes.Select(d => d.ToResponse());
+
+        // return Ok(notesFound)
         return Ok(userResponse);
     }
 

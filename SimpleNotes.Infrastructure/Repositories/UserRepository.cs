@@ -28,6 +28,14 @@ public class UserRepository : IUserRepository
     {
         return _context.Users.Find(id);
     }
+
+    // Get notes using User Id
+    public IEnumerable<NoteItemEntity> GetUserNotes(int id)
+    {
+        // return the list of notes
+        return _context.Notes.Where(n => n.UserId == id).ToList();
+    }
+
     // Create user
     public UserEntity CreateUser(UserEntity user)
     {

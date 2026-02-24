@@ -9,6 +9,7 @@ public static class NoteEntityExtensions
         return new NoteDomain
         (
             AlphaText.Create(entity.Title),
+            entity.UserId,
             AlphaText.Create(entity.Content),
             entity.Id,
             entity.CreatedAt,

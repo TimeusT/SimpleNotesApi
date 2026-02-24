@@ -8,6 +8,8 @@ public interface IUserRepository
 
     UserEntity? GetUser(int id);
 
+    IEnumerable<NoteItemEntity> GetUserNotes(int id);
+
     UserEntity CreateUser(UserEntity user);
 
     bool UpdateUser(UserEntity user);

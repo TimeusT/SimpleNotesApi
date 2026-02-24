@@ -25,6 +25,12 @@ public class UserService : IUserService
         return _userRepository.GetUser(id)?.ToDomain();
     }
 
+    public IEnumerable<NoteDomain> GetUserNotes(int id)
+    {
+        // return to domain
+        return _userRepository.GetUserNotes(id).Select(n => n.ToDomain());
+    }
+
     public UserDomain CreateUser(UserDomain user)
     {
         // Convert to Entity

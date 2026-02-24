@@ -8,6 +8,8 @@ public interface IUserService
     IEnumerable<UserDomain> ListUsers();
     // Get by Id
     UserDomain? GetUser(int id);
+    // Get notes with User Id
+    IEnumerable<NoteDomain> GetUserNotes(int id);
     // Create user
     UserDomain CreateUser(UserDomain user);
     // Update user

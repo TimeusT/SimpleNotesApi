@@ -8,12 +8,13 @@ public static class UserEntityExtension
     {
         return new UserDomain
         (
-            entity.FName,
-            entity.LName,
+            entity.FirstName,
+            entity.LastName,
             entity.Age,
             entity.JoinDate,
             entity.Id,
-            EmailText.Create(entity.Email)
+            EmailText.Create(entity.Email),
+            entity.Notes
         );
     }
 }

@@ -11,6 +11,8 @@ public class CreateNoteRequest
 
     [MaxLength(100)]
     public string? Content { get; set; }
+
+    public int UserId { get; set; }
 }
 
 public static class CreateNoteRequestExtension
@@ -19,6 +21,7 @@ public static class CreateNoteRequestExtension
     {
         return new NoteDomain(
             new AlphaText(request.Title),
+            request.UserId,
             AlphaText.Create(request.Content));
     }
 }
@@ -31,13 +34,15 @@ public class UpdateNoteRequest
 
     [MaxLength(100)]
     public string? Content { get; set; }
+
+    public int UserId { get; set; }
 }
 
 public static class UpdateNoteRequestExtension
 {
     public static NoteDomain ToDomain(this UpdateNoteRequest request, int id)
     {
-        return new NoteDomain(new AlphaText(request.Title), AlphaText.Create(request.Content), id);
+        return new NoteDomain(new AlphaText(request.Title), request.UserId, AlphaText.Create(request.Content), id);
     }
 }
 
@@ -47,4 +52,5 @@ public class NoteResponse
     public string Title { get; set; } = string.Empty;
     public string? Content { get; set; }
     public DateTime LastUpdatedAt { get; set; }
+    public int UserId { get; set; }
 }

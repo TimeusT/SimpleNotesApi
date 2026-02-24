@@ -1,13 +1,16 @@
-﻿namespace SimpleNotes.Domain;
+﻿using SimpleNotes.Domain.Entities;
+
+namespace SimpleNotes.Domain;
 
 public class UserDomain
 {
     public int Id { get; private set; }
-    public string FName { get; private set; }
-    public string LName { get; private set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
     public int Age { get; private set; }
     public DateTime JoinDate { get; private set; }
     public EmailText? Email { get; private set; }
+    public ICollection<NoteItemEntity>? Notes { get; set; } = new List<NoteItemEntity>();
 
     public UserDomain(
         string fName,
@@ -15,14 +18,16 @@ public class UserDomain
         int age,
         DateTime joinDate,
         int? id = default,
-        EmailText? email = default
+        EmailText? email = default,
+        ICollection<NoteItemEntity>? note = null!
         )
     {
-        FName = fName;
-        LName = lName;
+        FirstName = fName;
+        LastName = lName;
         Age = age;
         JoinDate = joinDate;
         Id = id ?? 0;
         Email = email;
+        Notes = note;
     }
 }

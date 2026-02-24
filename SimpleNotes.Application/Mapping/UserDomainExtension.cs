@@ -11,11 +11,12 @@ public static class UserDomainExtension
         return new UserEntity
         {
             Id = domain.Id,
-            FName = domain.FName,
-            LName = domain.LName,
+            FirstName = domain.FirstName,
+            LastName = domain.LastName,
             Age = domain.Age,
             Email = domain.Email?.Value,
-            JoinDate = domain.JoinDate
+            JoinDate = domain.JoinDate,
+            Notes = domain.Notes.ToList()
         };
     }
 
@@ -24,10 +25,10 @@ public static class UserDomainExtension
         return new UserResponse
         {
             Id = domain.Id,
-            FName = domain.FName,
-            LName = domain.LName,
+            FirstName = domain.FirstName,
+            LastName = domain.LastName,
             Age = domain.Age,
-            Email = domain.Email?.Value
+            Email = domain.Email?.Value,
         };
     }
 }
