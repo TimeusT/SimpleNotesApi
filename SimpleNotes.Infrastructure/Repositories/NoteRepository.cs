@@ -24,7 +24,8 @@ public class NoteRepository : INoteRepository
     // Getting the ID
     public NoteItemEntity? Get(int id)
     {
-        return _context.Notes.Find(id);
+        //_context.Notes.Find(id);
+        return _context.Notes.FirstOrDefault(x => x.Id == id);
     }
 
     // Create method

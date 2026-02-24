@@ -1,6 +1,8 @@
 <Solution>
   <Project Path="SimpleNotes.Api/SimpleNotes.Api.csproj" />
   <Project Path="SimpleNotes.Application/SimpleNotes.Application.csproj" />
+  <Project Path="SimpleNotes.Domain.Tests/SimpleNotes.Domain.Tests.csproj" Id="aefa8735-e0d4-4677-9bab-85998a12aed7" />
   <Project Path="SimpleNotes.Domain/SimpleNotes.Domain.csproj" />
+  <Project Path="SimpleNotes.Infrastructure.Tests/SimpleNotes.Infrastructure.Tests.csproj" Id="ac37ec63-5112-4f73-af0f-7f8c61feb298" />
   <Project Path="SimpleNotes.Infrastructure/SimpleNotes.Infrastructure.csproj" />
 </Solution>

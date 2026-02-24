@@ -3,6 +3,7 @@ using SimpleNotes.Domain.Entities;
 
 namespace SimpleNotes.Infrastructure.Data;
 
+
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -10,6 +11,6 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<NoteItemEntity> Notes { get; set; }
-    public DbSet<UserEntity> Users { get; set; }
+    public virtual DbSet<NoteItemEntity> Notes { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 }
