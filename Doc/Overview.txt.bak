@@ -20,7 +20,7 @@ Rules:
 - Response object (naming - {Operation}{Resource}Response, eg: CreateNoteResponse)
 	- Should be DTO
 	- Only primary types (int, string, bool, etc), so JSON serialise and deserialise correctly
-	- Not Data Annotation required
+	- No Data Annotation required
 	
 - Domain object (naming - {Resource}Domain, eg: NoteDomain)
 	- Not a DTO, need constructor
@@ -35,5 +35,14 @@ Rules:
 
 -------------------------------------------------------
 
+	ToList():
+- Materializes into a list the moment its used, acts on the database query right away
+- It's eager
+
+	AsEnumerable():
+- Does not access the database until you numerate it (Select(...))
+- It's lazy
+
+-------------------------------------------------------
 
 

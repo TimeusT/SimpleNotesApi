@@ -52,3 +52,18 @@ add new dbset
   
 Conventional Commits
 https://www.conventionalcommits.org/en/v1.0.0-beta.3a
+
+-------------------------------------------------------
+
+= null!  suppresses the warning that the property is null
+This tells the complier, "This looks like it could be null, it won't be null when used."
+
+-------------------------------------------------------
+
+1. Create User with nullable note
+2. Create Note that NEEDS to link to a UserId
+
+-------------------------------------------------------
+
+NEVER need to map an IEnumerable, just use ToList()
+

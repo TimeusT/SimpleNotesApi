@@ -35,5 +35,15 @@ Rules:
 
 -------------------------------------------------------
 
+	ToList():
+- Materializes into a list the moment its used, acts on the database query right away
+- It's eager
 
+	AsEnumerable():
+- Does not access the database until you numerate it (Select(...))
+- It's lazy
+
+-------------------------------------------------------
+
+MOQ mock and X unit
 

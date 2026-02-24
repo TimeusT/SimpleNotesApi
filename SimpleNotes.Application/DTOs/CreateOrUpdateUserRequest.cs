@@ -12,15 +12,6 @@ public class UserResponse
     public string? Email { get; set; }
 }
 
-public class UserNotesResponse
-{
-    public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string? Content { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime LastUpdatedAt { get; set; }
-}
-
 public class CreateUserRequest
 {
     [MaxLength(50)]

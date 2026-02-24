@@ -1,4 +1,5 @@
-﻿using SimpleNotes.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
 using SimpleNotes.Infrastructure.Interfaces;
 
@@ -65,11 +66,19 @@ public class UserRepository : IUserRepository
     // Delete user
     public bool DeleteUser(int id)
     {
-        // Find user + error handling
-        if (_context.Users.Find(id) == null) return false;
         // Delete user
-        _context.Remove(id);
+        //_context.Remove(id);
+        // Iterate through all notes and remove them
+        //_context.Remove(_context.Notes.Where(n => n.UserId == id).ToList());
         // save changes
+        //_context.SaveChanges();
+
+        var user = _context.Users.Include(u => u.Notes).FirstOrDefault(n => n.Id == id);
+
+        if (user != null)
+        {
+            _context.Users.Remove(user);
+        }
         _context.SaveChanges();
 
         return true;
