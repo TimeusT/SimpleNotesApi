@@ -15,9 +15,6 @@ public class NoteService : INoteService
         _noteRepository = noteRepository;
     }
 
-    // Need a private variable to keep track of the next ID to assign to a new note
-    private int _nextId = 1;
-
     // Get all notes
     public IEnumerable<NoteDomain> List()
     {

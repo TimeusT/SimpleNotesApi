@@ -20,7 +20,7 @@ public static class CreateNoteRequestExtension
     public static NoteDomain ToDomain(this CreateNoteRequest request)
     {
         return new NoteDomain(
-            new AlphaText(request.Title),
+            AlphaText.Create(request.Title),
             request.UserId,
             AlphaText.Create(request.Content));
     }
@@ -42,7 +42,7 @@ public static class UpdateNoteRequestExtension
 {
     public static NoteDomain ToDomain(this UpdateNoteRequest request, int id)
     {
-        return new NoteDomain(new AlphaText(request.Title), request.UserId, AlphaText.Create(request.Content), id);
+        return new NoteDomain(AlphaText.Create(request.Title), request.UserId, AlphaText.Create(request.Content), id);
     }
 }
 
