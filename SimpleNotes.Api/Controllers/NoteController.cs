@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SimpleNotes.Application.DTOs;
 using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.Mapping;
@@ -18,6 +19,7 @@ public class NoteController : ControllerBase
 
     // This is where you use DI to get an instance of the NoteService class
     [HttpGet]
+    [Authorize]
     public ActionResult<IEnumerable<NoteResponse>> GetAll()
     {
         //TODO call service and map to response
