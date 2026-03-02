@@ -48,6 +48,11 @@ Rules:
 Unit testing
 MOQ mock and X unit
 
-MOQ Mock testing - Creates a mock object that behaves however you decide
+MOQ Mock Testing - Creates a mock object that behaves however you decide
 				 - Theres "Setup" (setting up to get expected result) and "Returns" (the expecting outcome)
-				 
+				 - ".Object" gives the fake implementations
+				 - There are two different types of testing, State and Interaction testing (should use both)
+
+X Unit Testing	 - Use for automated tests
+				 - Catch bugs early
+				 - Verifies single unit behaviors (unit means method/class/small logic)

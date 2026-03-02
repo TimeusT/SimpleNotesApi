@@ -56,3 +56,7 @@ MOQ Mock Testing - Creates a mock object that behaves however you decide
 X Unit Testing	 - Use for automated tests
 				 - Catch bugs early
 				 - Verifies single unit behaviors (unit means method/class/small logic)
+				 
+-------------------------------------------------------
+
+Monoliphic + Aggregate Root

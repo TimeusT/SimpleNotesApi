@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace SimpleNotes.Domain.Tests;
+﻿namespace SimpleNotes.Domain.Tests;
 
 public class AlphaTextTests
 {
@@ -18,6 +16,7 @@ public class AlphaTextTests
         Assert.False(alphaText.IsNull);
     }
 
+    [Fact]
     public void Given_InvalidValue_When_CreateAlphaText_Then_ThrowArgumentException()
     {
         // Assign

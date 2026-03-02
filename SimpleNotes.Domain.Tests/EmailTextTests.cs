@@ -16,7 +16,7 @@ public class EmailTextTests
         Assert.False(emailText.IsNull);
     }
 
-
+    [Fact]
     public void Given_InvalidValue_When_CreateEmailText_Then_ThrowArgumentException()
     {
         // Assign
