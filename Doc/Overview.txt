@@ -60,3 +60,13 @@ X Unit Testing	 - Use for automated tests
 -------------------------------------------------------
 
 Monoliphic + Aggregate Root
+
+-------------------------------------------------------
+
+In testing:
+1. Arrange(Assign) 	=	preparing all the necessary components for the test
+2. Act				=	executing the logic
+3. Assert			=	verifying the results
+
+-------------------------------------------------------
+
