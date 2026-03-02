@@ -3,7 +3,7 @@ using SimpleNotes.Domain.Mapping;
 
 namespace SimpleNotes.Domain.Tests.Mapping;
 
-public class UserEntityExtensionsTests
+public class UserEntityExtensionTests
 {
     [Fact]
     public void Given_ValidUserEntity_When_ToDomain_Then_ReturnToDomain()

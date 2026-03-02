@@ -3,7 +3,7 @@ using SimpleNotes.Domain.Mapping;
 
 namespace SimpleNotes.Domain.Tests.Mapping;
 
-public class NoteEntityExtensionsTests
+public class NoteEntityExtensionTests
 {
     [Fact]
     public void Given_ValidNoteItemEntity_When_ToDomain_Then_ReturnNoteDomain()
