@@ -1,0 +1,14 @@
+OAUTH
+OAUTH 2
+OPEN ID CONNECT
+OIDC
+
+well known endpoint
+https://{domain}/.well-known/openid-configuration
+
+Machine to Machine
+we use the token endpoint 
+"token_endpoint": "https://dev-1yj0rug3dgjp141r.us.auth0.com/oauth/token",
+
+JWKS - JSON WEB KEY SET to verify the signiture
+"jwks_uri": "https://dev-1yj0rug3dgjp141r.us.auth0.com/.well-known/jwks.json",
