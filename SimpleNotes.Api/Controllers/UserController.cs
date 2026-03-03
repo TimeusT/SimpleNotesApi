@@ -8,6 +8,7 @@ namespace SimpleNotes.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+
 public class UserController : ControllerBase
 {
     // DI

@@ -2,7 +2,7 @@
 
 namespace SimpleNotes.Domain.Mapping;
 
-public static class NoteEntityExtensions
+public static class NoteEntityExtension
 {
     public static NoteDomain ToDomain(this NoteItemEntity entity)
     {

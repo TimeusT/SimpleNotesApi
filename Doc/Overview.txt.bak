@@ -35,6 +35,16 @@ Rules:
 
 -------------------------------------------------------
 
+Order in which you should code your ASP.NET projects:
+1. Entity (Have all the properties)
+2. Repository (Make sure the entities load into the db properly)
+3. Controller
+4. Domain
+5. Service
+
+
+-------------------------------------------------------
+
 	ToList():
 - Materializes into a list the moment its used, acts on the database query right away
 - It's eager

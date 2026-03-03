@@ -14,7 +14,20 @@ public static class UserEntityExtension
             entity.JoinDate,
             entity.Id,
             EmailText.Create(entity.Email),
-            entity.Notes
+            entity.ToAddressDomain()
         );
+    }
+
+    public static AddressDomain? ToAddressDomain(this UserEntity entity)
+    {
+        if (entity.Address == null) return null;
+
+        return new AddressDomain(
+            entity.Address.StreetNo,
+            entity.Address.City,
+            entity.Address.State,
+            entity.Address.PostalCode,
+            entity.Address.Country
+            );
     }
 }

@@ -8,6 +8,7 @@ namespace SimpleNotes.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+
 public class NoteController : ControllerBase
 {
     private readonly INoteService _noteService;

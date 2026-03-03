@@ -1,6 +1,4 @@
-﻿using SimpleNotes.Domain.Entities;
-
-namespace SimpleNotes.Domain;
+﻿namespace SimpleNotes.Domain;
 
 public class UserDomain
 {
@@ -10,7 +8,7 @@ public class UserDomain
     public int Age { get; private set; }
     public DateTime JoinDate { get; private set; }
     public EmailText? Email { get; private set; }
-    public ICollection<NoteItemEntity>? Notes { get; set; } = new List<NoteItemEntity>();
+    public AddressDomain? Address { get; private set; }
 
     public UserDomain(
         string fName,
@@ -19,7 +17,7 @@ public class UserDomain
         DateTime joinDate,
         int? id = default,
         EmailText? email = default,
-        ICollection<NoteItemEntity>? note = null!
+        AddressDomain? address = default
         )
     {
         FirstName = fName;
@@ -28,6 +26,6 @@ public class UserDomain
         JoinDate = joinDate;
         Id = id ?? 0;
         Email = email;
-        Notes = note;
+        Address = address;
     }
 }

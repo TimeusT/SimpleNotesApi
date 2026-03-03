@@ -14,7 +14,6 @@ public class NoteRepository : INoteRepository
         _context = context;
     }
 
-
     // Get all notes
     public IEnumerable<NoteItemEntity> List()
     {
@@ -31,6 +30,7 @@ public class NoteRepository : INoteRepository
     // Create method
     public NoteItemEntity Create(NoteItemEntity note)
     {
+        // !! If userId doesn't match, return NotFound()
         _context.Notes.Add(note);
         _context.SaveChanges();
         return note;

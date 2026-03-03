@@ -28,7 +28,26 @@ public class CreateUserRequest
 
     [RegularExpression("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", ErrorMessage = "The field {0} should follow email format.")]
     public string? Email { get; set; }
+
+    public UserAddress? UserAddress { get; set; }
 }
+
+
+public class UserAddress
+{
+    [Required]
+    public string StreetNo { get; set; } = string.Empty;
+    [Required]
+    public string City { get; set; } = string.Empty;
+    [Required]
+    public string State { get; set; } = string.Empty;
+    [Required]
+    public string PostalCode { get; set; } = string.Empty;
+    [Required]
+    public string Country { get; set; } = string.Empty;
+}
+
+
 public static class CreateUserRequestExtension
 {
     public static UserDomain ToDomain(this CreateUserRequest request)
@@ -39,10 +58,25 @@ public static class CreateUserRequestExtension
             request.LastName,
             request.Age,
             request.JoinDate,
-            email: EmailText.Create(request.Email)
+            email: EmailText.Create(request.Email),
+            address: request.ToAddressDomain()
         );
     }
+
+    public static AddressDomain? ToAddressDomain(this CreateUserRequest request)
+    {
+        if (request.UserAddress == null) return null;
+
+        return new AddressDomain(
+            request.UserAddress.StreetNo,
+            request.UserAddress.City,
+            request.UserAddress.State,
+            request.UserAddress.PostalCode,
+            request.UserAddress.Country);
+    }
 }
+
+
 
 public class UpdateUserRequest
 {

@@ -1,16 +1,17 @@
-﻿using SimpleNotes.Application.Tests;
-using SimpleNotes.Domain;
+﻿using SimpleNotes.Domain;
 
 namespace SimpleNotes.Application.Interfaces;
 
 public interface IAddressService
 {
+    // Get all existing addresses
+    IEnumerable<AddressDomain> GetAllAddress();
     // Get Address by User
-    UserDomain? GetAddress(int id);
+    AddressDomain? GetAddress(int id);
     // Create the Address
-    AddressDomain Create(AddressDomain address);
+    AddressDomain CreateAddress(AddressDomain address);
     // Update Address
-    bool Update(UserDomain user);
+    bool UpdateAddress(AddressDomain user);
     // Delete Address
-    bool Delete(UserDomain id);
+    bool DeleteAddress(int id);
 }

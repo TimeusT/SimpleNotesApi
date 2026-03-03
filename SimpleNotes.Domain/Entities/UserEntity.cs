@@ -15,8 +15,8 @@ public class UserEntity
 
     public DateTime JoinDate { get; set; }
 
-    public ICollection<NoteItemEntity> Notes { get; set; } = null!; // Navigation (points to NoteItemEntity)
+    public ICollection<NoteItemEntity> Notes { get; set; } = new List<NoteItemEntity>(); // Navigation (points to NoteItemEntity)
 
     // Link Address one-to-one relation
-    public AddressEntity Address { get; set; } = null!;
+    public AddressEntity? Address { get; set; }
 }

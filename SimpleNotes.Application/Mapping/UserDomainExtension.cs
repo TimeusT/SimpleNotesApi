@@ -28,7 +28,22 @@ public static class UserDomainExtension
             Age = domain.Age,
             Email = domain.Email?.Value,
             JoinDate = domain.JoinDate,
-            Notes = domain.Notes.ToList()
+            Address = domain.ToAddressEntity()
+        };
+    }
+
+    public static AddressEntity? ToAddressEntity(this UserDomain domain)
+    {
+        if (domain.Address == null) return null;
+
+        return new AddressEntity
+        {
+            Id = domain.Address.Id,
+            StreetNo = domain.Address.StreetNo,
+            City = domain.Address.City,
+            State = domain.Address.State,
+            PostalCode = domain.Address.PostalCode,
+            Country = domain.Address.Country
         };
     }
 }
