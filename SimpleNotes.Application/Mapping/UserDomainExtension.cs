@@ -15,6 +15,21 @@ public static class UserDomainExtension
             LastName = domain.LastName,
             Age = domain.Age,
             Email = domain.Email?.Value,
+            Address = domain.ToAddressResponse()
+        };
+    }
+
+    public static UserAddress? ToAddressResponse(this UserDomain domain)
+    {
+        if (domain.Address == null) return null;
+
+        return new UserAddress
+        {
+            StreetNo = domain.Address.StreetNo,
+            City = domain.Address.City,
+            State = domain.Address.State,
+            PostalCode = domain.Address.PostalCode,
+            Country = domain.Address.Country
         };
     }
 

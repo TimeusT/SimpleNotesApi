@@ -20,6 +20,7 @@ public static class UserEntityExtension
 
     public static AddressDomain? ToAddressDomain(this UserEntity entity)
     {
+        // passing as null here !
         if (entity.Address == null) return null;
 
         return new AddressDomain(

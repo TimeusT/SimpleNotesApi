@@ -21,13 +21,15 @@ public class UserRepository : IUserRepository
     // List all users
     public IEnumerable<UserEntity> ListUsers()
     {
-        return _context.Users.ToList();
+        return _context.Users.Include(x => x.Address).ToList();
     }
 
     // Get their id
     public UserEntity? GetUser(int id)
     {
-        return _context.Users.Find(id);
+        return _context.Users
+            .Include(x => x.Address)
+            .FirstOrDefault(x => x.Id == id);
     }
 
     // Get notes using User Id
@@ -51,13 +53,34 @@ public class UserRepository : IUserRepository
     // Update user
     public bool UpdateUser(UserEntity user)
     {
-        // Find user + error handling
-        if (!_context.Users.Any(x => x.Id == user.Id)) return false;
+        if (user == null) return false;
 
-        // Update user
-        _context.Update(user);
+        var updatedUser = _context.Users
+            .Include(u => u.Address)
+            .FirstOrDefault(u => u.Id == user.Id);
 
-        // Save
+        if (updatedUser == null) return false;
+
+        // Update User
+        updatedUser.FirstName = user.FirstName;
+        updatedUser.LastName = user.LastName;
+        updatedUser.Age = user.Age;
+
+        // Update or create address
+        if (updatedUser.Address == null && user.Address != null)
+        {
+            updatedUser.Address = new AddressEntity();
+        }
+
+        if (updatedUser.Address != null && user.Address != null)
+        {
+            updatedUser.Address.StreetNo = user.Address.StreetNo;
+            updatedUser.Address.City = user.Address.City;
+            updatedUser.Address.State = user.Address.State;
+            updatedUser.Address.PostalCode = user.Address.PostalCode;
+            updatedUser.Address.Country = user.Address.Country;
+        }
+
         _context.SaveChanges();
 
         return true;
@@ -66,19 +89,18 @@ public class UserRepository : IUserRepository
     // Delete user
     public bool DeleteUser(int id)
     {
-        // Delete user
-        //_context.Remove(id);
-        // Iterate through all notes and remove them
-        //_context.Remove(_context.Notes.Where(n => n.UserId == id).ToList());
-        // save changes
-        //_context.SaveChanges();
+        // Find user that matched Id
+        var user = _context.Users
+            .Include(n => n.Notes)
+            .Include(a => a.Address)
+            .FirstOrDefault(u => u.Id == id);
 
-        var user = _context.Users.Include(u => u.Notes).FirstOrDefault(n => n.Id == id);
+        // If no user, then false
+        if (user == null) return false;
 
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-        }
+        // Remove user and address
+        _context.Users.Remove(user);
+
         _context.SaveChanges();
 
         return true;
