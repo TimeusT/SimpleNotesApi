@@ -66,3 +66,4 @@ NEVER need to map an IEnumerable, use ToList()
 
 GetById
 GetAll
+Update
