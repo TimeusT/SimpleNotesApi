@@ -6,12 +6,14 @@ namespace SimpleNotes.Application.DTOs;
 public class CreateNoteRequest
 {
     [MaxLength(25)]
+    [Required]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters and spaces.")]
     public string Title { get; set; } = string.Empty;
 
     [MaxLength(100)]
     public string? Content { get; set; }
 
+    [Required]
     public int UserId { get; set; }
 }
 
@@ -29,12 +31,14 @@ public static class CreateNoteRequestExtension
 public class UpdateNoteRequest
 {
     [MaxLength(25)]
+    [Required]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The field {0} can only contain letters and spaces.")]
     public string Title { get; set; } = string.Empty;
 
     [MaxLength(100)]
     public string? Content { get; set; }
 
+    [Required]
     public int UserId { get; set; }
 }
 

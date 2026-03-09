@@ -1,14 +1,16 @@
 // SimpleNotes Create Note Form
-import { useState } from 'react';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 
 const schema = yup
   .object({
-    userId: yup.number().typeError("Must be a number").positive("Must be a positive number").integer("Must be a int").required(),
-    title: yup.string().required(),
+    userId: yup.number().typeError(" Must be a number").positive(" Must be a positive number").integer(" Must be a int").required(),
+    title: yup.string().trim().required(" A proper Title is required"),
     content: yup.string()
   })
   .required()
@@ -33,20 +35,41 @@ export default function CreateNote() {
       console.error("Error:", error); 
     });
   };
-  
+
   return(
     <form onSubmit={handleSubmit(postNote)}>
-      <input {...register("userId")} />
-      {errors.userId && <span>{errors.userId.message}</span>}
-
-      <input {...register("title")} />
-      {errors.title && <span>{errors.title.message}</span>}
-
-      <textarea {...register("content")} />
-      {errors.content && <span>{errors.content.message}</span>}
-
-      <button type='submit'>Submit</button>
-
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+          <Grid size={12}>
+            <TextField
+              required
+              label="User ID"
+              variant="outlined"
+              {...register("userId")}
+              helperText={errors.userId && <span>{errors.userId.message}</span>}
+              error={errors.userId} />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              required
+              label="Title"
+              variant="outlined"
+              {...register("title")}
+              helperText={errors.title && <span>{errors.title.message}</span>} />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              multiline
+              label="Content"
+              rows={4}
+              {...register("content")}
+              helperText={errors.content && <span>{errors.content.message}</span>} />
+          </Grid>
+          <Grid>
+            <button type='submit'>Submit</button>
+          </Grid>
+        </Grid>
+      </Box>
     </form>
   );
 }

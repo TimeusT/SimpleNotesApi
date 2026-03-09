@@ -85,3 +85,14 @@ In testing:
 Open Web Interface for .NET (OWIN)
 
 CORS (Cross Origin Resource Sharing)
+
+-------------------------------------------------------
+
+Before you start coding:
+1. Do I understand the task?
+2. Do I have the knowledge to complete the task?
+3. Are there existing libraries I could use?
+4. Do I know where to start?
+
+-------------------------------------------------------
+
