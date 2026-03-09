@@ -33,6 +33,8 @@ Rules:
 	- Only primary types (int, string, bool, etc), so the database types are mapped correctly
 	- Uses Data Annotation for length validation
 
+	Microsoft SQL Server Management Studio 18
+
 -------------------------------------------------------
 
 Order in which you should code your ASP.NET projects:

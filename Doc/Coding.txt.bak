@@ -62,8 +62,4 @@ This tells the complier, "This looks like it could be null, it won't be null whe
 
 NEVER need to map an IEnumerable, use ToList()
 
-
-
-GetById
-GetAll
-Update
+https://react.dev/learn

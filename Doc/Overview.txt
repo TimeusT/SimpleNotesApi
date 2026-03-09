@@ -83,3 +83,5 @@ In testing:
 -------------------------------------------------------
 
 Open Web Interface for .NET (OWIN)
+
+CORS (Cross Origin Resource Sharing)
