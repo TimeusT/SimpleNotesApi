@@ -14,7 +14,11 @@ public class KnownError : Error
 
 public class ValidationError : KnownError
 {
-    public ValidationError() : base(400)
+    public ValidationError() : this(400)
+    {
+    }
+
+    public ValidationError(int statusCode) : base(statusCode)
     {
         Errors = new Dictionary<string, string[]>();
     }

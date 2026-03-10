@@ -120,7 +120,7 @@ public class NoteService : INoteService
 
             if (isNoteExist == null)
             {
-                return Result.Fail(new ValidationError().WithError("Id", "Note ID does not exist."));
+                return Result.Fail(new ValidationError(404).WithError("Id", "Note ID does not exist."));
             }
 
             // call delete on repo

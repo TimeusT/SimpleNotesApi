@@ -21,7 +21,7 @@ namespace SimpleNotes.Api.Common
                 error = new ValidationProblemDetails(validationError.Errors)
                 {
                     Title = validationError.Message,
-                    Status = StatusCodes.Status400BadRequest
+                    Status = validationError.StatusCode
                 };
             }
             else if (firstError is KnownError knownError)

@@ -24,28 +24,20 @@ export default function CreateNote() {
     resolver: yupResolver(schema)
   });
 
-  // constant to hold response
-  // check if response is !ok
-  // convert to JSON
-  async function ErrorResponse() {
-    fetch("https://localhost:7183/api/Note")
-      .then(response => response.json())
-      .then(data => {
-          return(data.errors.value);
-      });
-  }
-
   const postNote = (data) => {
     axios.post("https://localhost:7183/api/Note", {
-      userId: data.userId,
-      title: data.title,
-      content: data.content
-    }).then((response) => {
-      console.log("User created:", response.data);
-    }).catch((error) => {
-      console.error("Error:", error); 
-    });
-  };
+        userId: data.userId,
+        title: data.title,
+        content: data.content})
+      .then((response) => {console.log("User created:", response.data)})
+      .catch((error) => {
+        const problem = error.response;
+        if (problem) {
+          console.log("Response Data:", problem.data.title);
+        } else {
+          console.log("Else data:", problem?.title);
+        }});
+      };
 
   return(
     <form onSubmit={handleSubmit(postNote)}>
@@ -57,8 +49,7 @@ export default function CreateNote() {
               label="User ID"
               variant="outlined"
               {...register("userId")}
-              //helperText={errors.userId && <span>{errors.userId.message}</span>}
-              helperText={ErrorResponse}
+              helperText={errors.userId && <span>{errors.userId?.message}</span>}
               error={errors.userId} />
           </Grid>
           <Grid size={12}>
@@ -67,7 +58,8 @@ export default function CreateNote() {
               label="Title"
               variant="outlined"
               {...register("title")}
-              helperText={errors.title && <span>{errors.title.message}</span>} />
+              helperText={errors.title && <span>{errors.title.message}</span>}
+              error={errors.title} />
           </Grid>
           <Grid size={12}>
             <TextField
@@ -75,7 +67,8 @@ export default function CreateNote() {
               label="Content"
               rows={4}
               {...register("content")}
-              helperText={errors.content && <span>{errors.content.message}</span>} />
+              helperText={errors.content && <span>{errors.content.message}</span>}
+              error={errors.content} />
           </Grid>
           <Grid>
             <button type='submit'>Submit</button>
