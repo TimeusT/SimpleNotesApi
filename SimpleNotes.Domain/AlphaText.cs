@@ -26,4 +26,9 @@ public class AlphaText
 
         return new AlphaText(value);
     }
+
+    public static implicit operator string(AlphaText text)
+    {
+        return text.Value;
+    }
 }

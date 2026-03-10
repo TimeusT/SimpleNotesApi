@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleNotes.Api.Common;
 using SimpleNotes.Application.DTOs;
 using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.Mapping;
@@ -11,6 +11,7 @@ namespace SimpleNotes.Api.Controllers;
 
 public class NoteController : ControllerBase
 {
+    // This is where you use DI to get an instance of the NoteService class
     private readonly INoteService _noteService;
 
     public NoteController(INoteService noteService)
@@ -18,47 +19,57 @@ public class NoteController : ControllerBase
         _noteService = noteService;
     }
 
-    // This is where you use DI to get an instance of the NoteService class
     [HttpGet]
-    [Authorize]
-    public ActionResult<IEnumerable<NoteResponse>> GetAll()
+    public IActionResult GetAll()
     {
-        //TODO call service and map to response
-        var notes = _noteService.List().Select(note => note.ToResponse());
-        return Ok(notes);
+        var notes = _noteService.List().Map(notes => notes.Select(n => n.ToResponse()));
+
+        if (notes.IsFailed)
+        {
+            return notes.GetFailedActionResult();
+        }
+
+        return Ok(notes.Value);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<NoteResponse> GetById(int id)
+    public IActionResult GetById(int id)
     {
         var existingNote = _noteService.Get(id);
 
-        if (existingNote == null) return NotFound();
+        // If there IS a note
+        if (existingNote.IsSuccess && existingNote.Value != null)
+        {
+            var responseNote = existingNote.Value.ToResponse();
+            return Ok(responseNote);
+        }
 
-        //TODO Map domain to response
-        var responseNote = existingNote.ToResponse();
-
-        return Ok(responseNote);
+        // If there ISNT a note
+        return existingNote.GetFailedActionResult();
     }
 
     [HttpPost]
     public IActionResult Create([FromBody] CreateNoteRequest noteItem)
     {
-        //TODO map request to domain and call service
         // turn to domain
         var domainNote = noteItem.ToDomain();
-        // call the service
-        var createNote = _noteService.Create(domainNote);
 
-        var responseNote = createNote.ToResponse();
+        // call the service
+        var createNoteResult = _noteService.Create(domainNote);
+
+        if (createNoteResult.IsFailed)
+        {
+            return createNoteResult.GetFailedActionResult();
+        }
+
+        var responseNote = createNoteResult.Value.ToResponse();
 
         return CreatedAtAction(nameof(GetById), new { id = responseNote.Id }, responseNote);
     }
 
     [HttpPut("{id}")]
-    public ActionResult<NoteResponse> Update(int id, [FromBody] UpdateNoteRequest noteItem)
+    public IActionResult Update(int id, [FromBody] UpdateNoteRequest noteItem)
     {
-        //TODO map request to domain and call service
         // Request to domain
         var domainNote = noteItem.ToDomain(id);
 
@@ -66,8 +77,10 @@ public class NoteController : ControllerBase
         var updatedNote = _noteService.Update(domainNote);
 
         // check update response
-        if (!updatedNote)
-            return NotFound();
+        if (updatedNote.IsFailed)
+        {
+            return updatedNote.GetFailedActionResult();
+        }
 
         // create response
         var responseNote = domainNote.ToResponse();
@@ -80,8 +93,10 @@ public class NoteController : ControllerBase
     {
         var deleted = _noteService.Delete(id);
 
-        if (!deleted)
-            return NotFound();
+        if (deleted.IsFailed)
+        {
+            return deleted.GetFailedActionResult();
+        }
 
         return NoContent();
     }

@@ -6,15 +6,15 @@ namespace SimpleNotes.Application.Mapping;
 
 public static class NoteDomainExtension
 {
-    public static NoteResponse ToResponse(this NoteDomain entity)
+    public static NoteResponse ToResponse(this NoteDomain domain)
     {
         return new NoteResponse
         {
-            Id = entity.Id,
-            Title = entity.Title.Value,
-            Content = entity.Content?.Value,
-            LastUpdatedAt = entity.LastUpdatedAt,
-            UserId = entity.UserId
+            Id = domain.Id,
+            Title = domain.Title.Value,
+            Content = domain.Content?.Value,
+            LastUpdatedAt = domain.LastUpdatedAt,
+            UserId = domain.UserId
         };
     }
 

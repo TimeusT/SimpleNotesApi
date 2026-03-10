@@ -24,6 +24,17 @@ export default function CreateNote() {
     resolver: yupResolver(schema)
   });
 
+  // constant to hold response
+  // check if response is !ok
+  // convert to JSON
+  async function ErrorResponse() {
+    fetch("https://localhost:7183/api/Note")
+      .then(response => response.json())
+      .then(data => {
+          return(data.errors.value);
+      });
+  }
+
   const postNote = (data) => {
     axios.post("https://localhost:7183/api/Note", {
       userId: data.userId,
@@ -46,7 +57,8 @@ export default function CreateNote() {
               label="User ID"
               variant="outlined"
               {...register("userId")}
-              helperText={errors.userId && <span>{errors.userId.message}</span>}
+              //helperText={errors.userId && <span>{errors.userId.message}</span>}
+              helperText={ErrorResponse}
               error={errors.userId} />
           </Grid>
           <Grid size={12}>

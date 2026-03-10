@@ -1,17 +1,18 @@
-﻿using SimpleNotes.Domain;
+﻿using FluentResults;
+using SimpleNotes.Domain;
 
 namespace SimpleNotes.Application.Interfaces;
 
 public interface INoteService
 {
-    IEnumerable<NoteDomain> List();
+    Result<IEnumerable<NoteDomain>> List();
 
-    NoteDomain? Get(int id);
+    Result<NoteDomain?> Get(int id);
 
-    NoteDomain Create(NoteDomain note);
+    Result<NoteDomain> Create(NoteDomain note);
 
-    bool Update(NoteDomain note);
+    Result<bool> Update(NoteDomain note);
 
-    bool Delete(int id);
+    Result<bool> Delete(int id);
 }
 

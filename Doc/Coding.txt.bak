@@ -62,4 +62,8 @@ This tells the complier, "This looks like it could be null, it won't be null whe
 
 NEVER need to map an IEnumerable, use ToList()
 
-https://react.dev/learn
+-------------------------------------------------------
+
+preventdefault() - stops the default browser action (e.g. refresh page when submitting forms)
+
+RESULT WRAPPER

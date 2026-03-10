@@ -65,3 +65,6 @@ NEVER need to map an IEnumerable, use ToList()
 -------------------------------------------------------
 
 preventdefault() - stops the default browser action (e.g. refresh page when submitting forms)
+
+RESULT WRAPPER
+Implicit and Explicit casts
