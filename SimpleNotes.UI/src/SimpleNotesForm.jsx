@@ -19,9 +19,11 @@ export default function CreateNote() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema, { abortEarly: false }),
+    mode: "onChange"
   });
 
   const postNote = (data) => {
@@ -31,13 +33,18 @@ export default function CreateNote() {
         content: data.content})
       .then((response) => {console.log("User created:", response.data)})
       .catch((error) => {
-        const problem = error.response;
-        if (problem) {
-          console.log("Response Data:", problem.data.title);
-        } else {
-          console.log("Else data:", problem?.title);
-        }});
-      };
+        if (error.response?.data?.errors) {
+          const apiErrors = error.response.data.errors;
+
+          Object.keys(apiErrors).forEach((key) => {
+            setError(key.toLowerCase(), {
+              type: "server",
+              message: apiErrors[key][0],
+            });
+          });
+        }
+      });
+    }
 
   return(
     <form onSubmit={handleSubmit(postNote)}>
@@ -49,8 +56,8 @@ export default function CreateNote() {
               label="User ID"
               variant="outlined"
               {...register("userId")}
-              helperText={errors.userId && <span>{errors.userId?.message}</span>}
-              error={errors.userId} />
+              helperText={errors.userId?.message}
+              error={!!errors.userId} />
           </Grid>
           <Grid size={12}>
             <TextField
@@ -58,8 +65,8 @@ export default function CreateNote() {
               label="Title"
               variant="outlined"
               {...register("title")}
-              helperText={errors.title && <span>{errors.title.message}</span>}
-              error={errors.title} />
+              helperText={errors.title?.message}
+              error={!!errors.title}/>
           </Grid>
           <Grid size={12}>
             <TextField
@@ -67,8 +74,8 @@ export default function CreateNote() {
               label="Content"
               rows={4}
               {...register("content")}
-              helperText={errors.content && <span>{errors.content.message}</span>}
-              error={errors.content} />
+              helperText={errors.content?.message}
+              error={!!errors.content} />
           </Grid>
           <Grid>
             <button type='submit'>Submit</button>
