@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimpleNotes.Api.Common;
 using SimpleNotes.Application.DTOs;
 using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.Mapping;
+using SimpleNotes.Domain;
 using SimpleNotes.Domain.Mapping;
 
 namespace SimpleNotes.Api.Controllers;
@@ -20,36 +22,76 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult GetAllUsers()
+    public IActionResult GetAllUsers()
     {
         // Convert to Response
-        var users = _userService.ListUsers().Select(user => user.ToResponse());
+        var users = _userService.ListUsers().Map(user => user.Select(u => u.ToResponse()));
+
+        if (users.IsFailed)
+        {
+            return users.GetFailedActionResult();
+        }
         // return all users
         return Ok(users);
     }
 
-    [HttpGet("{id}")]
-    public ActionResult GetUserId(int id)
+    [HttpGet("{id:int}")]
+    public IActionResult GetUserId(int id)
     {
-        // Find Id
         var user = _userService.GetUser(id);
-        // Error handling
-        if (user == null) return NotFound();
-        // Convert to Response
-        var userResponse = user.ToResponse();
 
-        // Return id user
+        // If there IS a note
+        if (user.IsSuccess && user.Value != null)
+        {
+            var responseNote = user.Value.ToResponse();
+            return Ok(responseNote);
+        }
+
+        // If there ISNT a note
+        return user.GetFailedActionResult();
+    }
+
+    [HttpGet("{email:string}")]
+    public IActionResult GetByEmail(string email)
+    {
+        if (!TryCreateEmailText(email, out EmailText emailText))
+        {
+            //return BadRequest
+        }
+
+        var userEmail = _userService.GetByEmail(emailText);
+
+        if (userEmail == null) return NotFound();
+
+        var userResponse = userEmail.ToResponse();
+
         return Ok(userResponse);
     }
 
+    private bool TryCreateEmailText(string emailString, out EmailText email)
+    {
+        try
+        {
+            email = EmailText.Create(emailString);
+            return true;
+        }
+        catch (Exception)
+        {
+            email = default!;
+            return false;
+        }
+    }
     // Get all the notes with the user Id
-    [HttpGet("{id}/note")]
-    public ActionResult GetUserNotes(int id)
+    /*[HttpGet("{id}/note")]
+    public IActionResult GetUserNotes(int id)
     {
         // USING UserId, Find Notes
         var user = _userService.GetUser(id);
         // Error handling
-        if (user == null) return NotFound();
+        if (user.IsFailed)
+        {
+            return user.GetFailedActionResult();
+        }
         // List all notes related to user
         var listNotes = _userService.GetUserNotes(user.Id); // List of notes related to User
         // Convert to response
@@ -57,7 +99,7 @@ public class UserController : ControllerBase
 
         // return Ok(notesFound)
         return Ok(userResponse);
-    }
+    }*/
 
     [HttpPost]
     public IActionResult CreateUser([FromBody] CreateUserRequest user)
@@ -67,6 +109,11 @@ public class UserController : ControllerBase
         // Call the service
         var userCreated = _userService.CreateUser(userDomain);
         // Convert to Response
+        if (userCreated.IsFailed)
+        {
+
+        }
+
         var userResponse = userCreated.ToResponse();
         // Return ok + user
         return CreatedAtAction(nameof(GetUserId), new { id = userResponse.Id }, userResponse);

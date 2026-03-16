@@ -1,4 +1,5 @@
-﻿using SimpleNotes.Domain.Entities;
+﻿using SimpleNotes.Domain;
+using SimpleNotes.Domain.Entities;
 
 namespace SimpleNotes.Infrastructure.Interfaces;
 
@@ -7,6 +8,8 @@ public interface IUserRepository
     IEnumerable<UserEntity> ListUsers();
 
     UserEntity? GetUser(int id);
+
+    UserEntity? GetByEmail(EmailText id);
 
     IEnumerable<NoteItemEntity> GetUserNotes(int id);
 

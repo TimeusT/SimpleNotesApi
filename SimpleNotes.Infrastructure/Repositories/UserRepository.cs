@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SimpleNotes.Domain;
 using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
 using SimpleNotes.Infrastructure.Interfaces;
@@ -30,6 +31,14 @@ public class UserRepository : IUserRepository
         return _context.Users
             .Include(x => x.Address)
             .FirstOrDefault(x => x.Id == id);
+    }
+
+    // Get their email
+    public UserEntity? GetByEmail(EmailText email)
+    {
+        return _context.Users
+            .Include(x => x.Address)
+            .FirstOrDefault(e => e.Email == email.Value);
     }
 
     // Get notes using User Id
