@@ -5,6 +5,7 @@ using SimpleNotes.Application.Services;
 using SimpleNotes.Infrastructure;
 using SimpleNotes.Infrastructure.Interfaces;
 using SimpleNotes.Infrastructure.Repositories;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Override JSON serializer for camel case
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    });
 
 // Register the service with a specific lifetime
 builder.Services.AddScoped<INoteService, NoteService>();

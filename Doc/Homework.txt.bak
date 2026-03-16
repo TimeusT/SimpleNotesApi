@@ -1,6 +1,6 @@
 UserId: input field
 Title: input field
-Content: textbox field 
+Content: textbox field
 Submit: button
  onclick-> post to note api
 

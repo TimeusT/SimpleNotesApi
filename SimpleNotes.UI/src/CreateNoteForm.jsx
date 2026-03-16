@@ -31,13 +31,13 @@ export default function CreateNote() {
         userId: data.userId,
         title: data.title,
         content: data.content})
-      .then((response) => {console.log("User created:", response.data)})
+      .then((response) => {console.log("Note created:", response.data)})
       .catch((error) => {
         if (error.response?.data?.errors) {
           const apiErrors = error.response.data.errors;
 
           Object.keys(apiErrors).forEach((key) => {
-            setError(key.toLowerCase(), {
+            setError(key, {
               type: "server",
               message: apiErrors[key][0],
             });
@@ -48,6 +48,7 @@ export default function CreateNote() {
 
   return(
     <form onSubmit={handleSubmit(postNote)}>
+      <h1>Create a Note</h1>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           <Grid size={12}>
@@ -66,7 +67,7 @@ export default function CreateNote() {
               variant="outlined"
               {...register("title")}
               helperText={errors.title?.message}
-              error={!!errors.title}/>
+              error={!!errors.title} />
           </Grid>
           <Grid size={12}>
             <TextField
