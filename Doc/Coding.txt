@@ -71,5 +71,7 @@ Implicit and Explicit casts
 
 -------------------------------------------------------
 
-1. Change GetUserId => GetByEmail
-2. Make sure that works
+React Query - storing state
+
+1. Fix response details
+2. React query to post note

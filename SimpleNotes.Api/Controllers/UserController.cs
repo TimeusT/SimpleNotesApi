@@ -5,6 +5,7 @@ using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.Mapping;
 using SimpleNotes.Domain;
 using SimpleNotes.Domain.Mapping;
+using SimpleNotes.Infrastructure;
 
 namespace SimpleNotes.Api.Controllers;
 
@@ -51,21 +52,25 @@ public class UserController : ControllerBase
         return user.GetFailedActionResult();
     }
 
-    [HttpGet("{email:string}")]
+    [HttpGet("{email}")]
     public IActionResult GetByEmail(string email)
     {
         if (!TryCreateEmailText(email, out EmailText emailText))
         {
             //return BadRequest
+            var validationError = new ValidationError().WithError("Email", "Invalid email format.");
+            return BadRequest(validationError);
         }
 
         var userEmail = _userService.GetByEmail(emailText);
 
-        if (userEmail == null) return NotFound();
+        if (userEmail.IsSuccess && userEmail.Value != null)
+        {
+            var userResponse = userEmail.Value.ToResponse();
+            return Ok(userResponse);
+        }
 
-        var userResponse = userEmail.ToResponse();
-
-        return Ok(userResponse);
+        return userEmail.GetFailedActionResult();
     }
 
     private bool TryCreateEmailText(string emailString, out EmailText email)
@@ -82,7 +87,7 @@ public class UserController : ControllerBase
         }
     }
     // Get all the notes with the user Id
-    /*[HttpGet("{id}/note")]
+    [HttpGet("{id}/note")]
     public IActionResult GetUserNotes(int id)
     {
         // USING UserId, Find Notes
@@ -92,14 +97,14 @@ public class UserController : ControllerBase
         {
             return user.GetFailedActionResult();
         }
-        // List all notes related to user
-        var listNotes = _userService.GetUserNotes(user.Id); // List of notes related to User
-        // Convert to response
-        var userResponse = listNotes.Select(d => d.ToResponse());
+        // List all notes with same userID
+        var listNotes = _userService.GetUserNotes(id);
 
+        // To response
+        var noteResponse = listNotes.Value.Select(n => n.ToResponse());
         // return Ok(notesFound)
-        return Ok(userResponse);
-    }*/
+        return Ok(noteResponse);
+    }
 
     [HttpPost]
     public IActionResult CreateUser([FromBody] CreateUserRequest user)
@@ -111,23 +116,26 @@ public class UserController : ControllerBase
         // Convert to Response
         if (userCreated.IsFailed)
         {
-
+            return userCreated.GetFailedActionResult();
         }
 
-        var userResponse = userCreated.ToResponse();
+        var userResponse = userCreated.Value.ToResponse();
         // Return ok + user
         return CreatedAtAction(nameof(GetUserId), new { id = userResponse.Id }, userResponse);
     }
 
     [HttpPut("{id}")]
-    public ActionResult<UserResponse> UpdateUser(int id, [FromBody] UpdateUserRequest user)
+    public IActionResult UpdateUser(int id, [FromBody] UpdateUserRequest user)
     {
         // Convert to Domain
         var userDomain = user.ToDomain(id);
         // Call the service
         var userUpdated = _userService.UpdateUser(userDomain);
         // Error handling
-        if (!userUpdated) return NotFound();
+        if (userUpdated.IsFailed)
+        {
+            return userUpdated.GetFailedActionResult();
+        }
         // Create Response
         var userResponse = userDomain.ToResponse();
 
@@ -140,8 +148,11 @@ public class UserController : ControllerBase
         // Error handling
         var deleted = _userService.DeleteUser(id);
 
-        if (!deleted) return NotFound();
+        if (deleted.IsFailed)
+        {
+            return deleted.GetFailedActionResult();
+        }
 
-        return Ok();
+        return NoContent();
     }
 }

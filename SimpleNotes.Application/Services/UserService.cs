@@ -55,15 +55,42 @@ public class UserService : IUserService
         }
     }
 
-    public UserDomain? GetByEmail(EmailText email)
+    public Result<UserDomain?> GetByEmail(EmailText email)
     {
-        return _userRepository.GetByEmail(email)?.ToDomain();
+        try
+        {
+            var userEmail = _userRepository.GetByEmail(email)?.ToDomain();
+
+            if (userEmail == null)
+            {
+                return Result.Fail(new ValidationError().WithError("Email", "This email does not exist."));
+            }
+
+            return userEmail;
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(ex.Message);
+        }
     }
 
-    public IEnumerable<NoteDomain> GetUserNotes(int id)
+    public Result<IEnumerable<NoteDomain>> GetUserNotes(int id)
     {
-        // return to domain
-        return _userRepository.GetUserNotes(id).Select(n => n.ToDomain());
+        try
+        {
+            var userNotes = _userRepository.GetUserNotes(id).Select(n => n.ToDomain());
+
+            if (!userNotes.Any())
+            {
+                return Result.Fail(new ValidationError().WithError("Id", "User ID does not exist."));
+            }
+
+            return Result.Ok(userNotes);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(ex.Message);
+        }
     }
 
     public Result<UserDomain> CreateUser(UserDomain user)

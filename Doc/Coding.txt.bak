@@ -68,3 +68,8 @@ preventdefault() - stops the default browser action (e.g. refresh page when subm
 
 RESULT WRAPPER
 Implicit and Explicit casts
+
+-------------------------------------------------------
+
+1. Change GetUserId => GetByEmail
+2. Make sure that works

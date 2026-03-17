@@ -10,9 +10,9 @@ public interface IUserService
     // Get by Id
     Result<UserDomain?> GetUser(int id);
     // Get by Email
-    UserDomain? GetByEmail(EmailText email);
+    Result<UserDomain?> GetByEmail(EmailText email);
     // Get notes with User Id
-    //Result<IEnumerable<NoteDomain>> GetUserNotes(int id);
+    Result<IEnumerable<NoteDomain>> GetUserNotes(int id);
     // Create user
     Result<UserDomain> CreateUser(UserDomain user);
     // Update user
