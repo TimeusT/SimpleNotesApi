@@ -70,6 +70,8 @@ RESULT WRAPPER
 Implicit and Explicit casts
 
 -------------------------------------------------------
+Snackbar
+React Query - storing state
 
-1. Change GetUserId => GetByEmail
-2. Make sure that works
+1. Successful Login takes you to create note page
+2. If user email not found, take to signup page

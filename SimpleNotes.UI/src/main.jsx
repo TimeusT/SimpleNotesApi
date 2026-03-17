@@ -1,12 +1,23 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-//import App from './App.jsx'
-import CreateNote from './CreateNoteForm.jsx'
-import CreateUser from './CreateUserForm.jsx'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Auth0Provider } from '@auth0/auth0-react';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <CreateNote />
-    <CreateUser />
-  </StrictMode>,
-)
+const queryClient = new QueryClient();
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <Auth0Provider
+      domain="dev-kgtk8ordbs6z6d26.us.auth0.com"
+      clientId="SQp4JNKu6hd2MOqb1bGI5wXkKbd7Tj33"
+      authorizationParams={{
+        redirect_uri: window.location.origin
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </Auth0Provider>
+  </React.StrictMode>
+);

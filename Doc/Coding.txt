@@ -70,8 +70,8 @@ RESULT WRAPPER
 Implicit and Explicit casts
 
 -------------------------------------------------------
-
+Snackbar
 React Query - storing state
 
-1. Fix response details
-2. React query to post note
+1. If login email matches existing emails, home page + no create user
+2. IF login email !matches existing emails, only show create user page => then home page + no create user
