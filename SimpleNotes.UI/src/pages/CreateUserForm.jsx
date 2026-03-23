@@ -6,9 +6,8 @@ import * as yup from "yup";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import { Link } from "react-router-dom";
-import AuthButton from "../components/AuthButton";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useCreateUser } from "../hooks/useUserByEmail";
 
 // schema
 const schema = yup
@@ -28,6 +27,7 @@ const schema = yup
 // default function
 export default function CreateUser() {
   const { user, isAuthenticated } = useAuth0();
+  const createUserMutation = useCreateUser();
 
   // error handler
   const {
@@ -42,13 +42,17 @@ export default function CreateUser() {
 
   // object function
   const postUser = (data) => {
-    axios.post("https://localhost:7183/api/User", {
+    createUserMutation
+      .mutateAsync({
         firstName: data.firstName,
         lastName: data.lastName,
         age: data.age,
         email: data.email,
-        address: data.address})
-      .then((response) => {console.log("User created:", response.data)})
+        address: data.address,
+      })
+      .then((user) => {
+        console.log("User created:", user);
+      })
       .catch((error) => {
         if (error.response?.data?.errors) {
           const apiErrors = error.response.data.errors;
@@ -66,11 +70,6 @@ export default function CreateUser() {
   // return grid
   return (
     <form onSubmit={handleSubmit(postUser)}>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/dashboard">Dashboard</Link> |
-        <Link to="/create-user">Create User</Link> |
-        <AuthButton />
-      </nav>
       <h1>Create a User</h1>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
