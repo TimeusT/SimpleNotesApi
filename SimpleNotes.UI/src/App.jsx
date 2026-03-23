@@ -2,15 +2,19 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
   Navigate,
 } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import useUserByEmail from "./hooks/useUserByEmail"; // The hook we created earlier
+import useUserByEmail from "./hooks/useUserByEmail";
 import Home from "./pages/Home";
 import CreateUser from "./pages/CreateUserForm";
 import CreateNote from "./pages/CreateNoteForm";
 import Layout from "./components/Layout";
+import {
+  GuardHomePage,
+  RequireAuthNoUser,
+  RequireAuthWithUser,
+} from "./components/guard";
 
 function App() {
   const { isAuthenticated, isLoading: authLoading } = useAuth0();
@@ -24,43 +28,35 @@ function App() {
     <Router>
       <Routes>
         <Route element={<Layout />}>
-          {/* 1. Home: Accessible to everyone, but redirects if logged in */}
           <Route
             path="/"
             element={
-              !isAuthenticated ? <Home /> : <Navigate to="/check-status" />
+              <GuardHomePage
+                isAuthenticated={isAuthenticated}
+                user={user}>
+                <Home />
+              </GuardHomePage>
             }
           />
-          {/* 2. Traffic Controller: Logic to decide where a logged-in user goes */}
-          <Route
-            path="/check-status"
-            element={
-              user ? (
-                <Navigate to="/create-note" />
-              ) : (
-                <Navigate to="/create-user" />
-              )
-            }
-          />
-          {/* 3. Create User: Only if Authenticated but NOT in DB */}
           <Route
             path="/create-user"
             element={
-              isAuthenticated && !user ? <CreateUser /> : <Navigate to="/" />
+              <RequireAuthNoUser isAuthenticated={isAuthenticated} user={user}>
+                <CreateUser />
+              </RequireAuthNoUser>
             }
           />
-          {/* 4. Create Note: Only if Authenticated AND in DB */}
           <Route
             path="/create-note"
             element={
-              isAuthenticated && user ? (
+              <RequireAuthWithUser
+                isAuthenticated={isAuthenticated}
+                user={user}
+              >
                 <CreateNote />
-              ) : (
-                <Navigate to="/check-status" />
-              )
+              </RequireAuthWithUser>
             }
           />
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Routes>

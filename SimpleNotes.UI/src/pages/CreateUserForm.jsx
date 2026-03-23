@@ -26,7 +26,7 @@ const schema = yup
 
 // default function
 export default function CreateUser() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
   const createUserMutation = useCreateUser();
 
   // error handler

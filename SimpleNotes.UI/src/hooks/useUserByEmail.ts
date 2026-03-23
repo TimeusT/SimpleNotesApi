@@ -24,7 +24,7 @@ export default function useUserByEmail(): UseQueryResult<User | null, Error> {
 
 export function useCreateUser() {
   const queryClient = useQueryClient();
-  const { getAccessTokenSilently, user } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   return useMutation({
     mutationFn: async (newUser: User) => {
@@ -32,7 +32,7 @@ export function useCreateUser() {
       return createUser(newUser, token);
     },
     onSuccess: (createdUser) => {
-      // ✅ instantly update cache (no refetch needed)
+      // instantly update cache (no refetch needed)
       queryClient.setQueryData(
         ["user", createdUser.email],
         createdUser
