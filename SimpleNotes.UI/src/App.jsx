@@ -1,23 +1,33 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import AuthButton from './components/AuthButton';
-import ProtectedRoute from './components/ProtectedRoute';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import CreateUser from "./pages/CreateUserForm";
+import AuthGate from "./components/AuthGate";
 
 function App() {
-  return(
+  return (
     <Router>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/dashboard">Dashboard</Link> | <AuthButton />
-      </nav>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
+            <AuthGate>
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            </AuthGate>
+          }
+        />
+        <Route
+          path="/create-user"
+          element={
+            <AuthGate>
+              <ProtectedRoute>
+                <CreateUser />
+              </ProtectedRoute>
+            </AuthGate>
           }
         />
       </Routes>

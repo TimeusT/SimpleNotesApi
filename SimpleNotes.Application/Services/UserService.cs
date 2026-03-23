@@ -99,9 +99,9 @@ public class UserService : IUserService
         {
             var userExists = _userRepository.GetUser(user.Id);
 
-            if (userExists == null)
+            if (userExists != null)
             {
-                return Result.Fail(new ValidationError().WithError("Id", "User ID does not exist"));
+                return Result.Fail(new ValidationError().WithError("Id", "User ID already exist"));
             }
 
             var userEntity = user.ToEntity();
