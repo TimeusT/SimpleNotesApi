@@ -77,3 +77,11 @@ understand useEffect
 - It keeps an eye on the provided state variable/hook variable
 - If any variables in the list changes, it will run the code inside
 - ! Can only 'watch' state and hooks, consts wont work
+
+understand useQueryClient
+- It takes the closest instance of something at the time it is called
+- It hooks that instance into a constant so we can use it
+- This includes the content related to that instance (user.id)
+
+understand querykey
+- 

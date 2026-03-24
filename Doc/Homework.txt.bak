@@ -1,12 +1,12 @@
-TODO:
+TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
 display all notes from the user on the home page (ONLY WHEN AUTHENTICATED)
 use MUI list components
 cache refreshes every minute (Simulate to test)
 
-create api for all notes
+create api for retrieved notes
 create hook to get all note data (setQueryData - refetches(refresh) the data)
-should display title at top, content at bottom
+make a function to list all notes based on the user details
 
 ...
 
