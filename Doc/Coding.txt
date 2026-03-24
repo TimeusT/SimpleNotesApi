@@ -73,5 +73,7 @@ Implicit and Explicit casts
 
 React Query - storing state
 
-1. Fix response details
-2. React query to post note
+understand useEffect
+- It keeps an eye on the provided state variable/hook variable
+- If any variables in the list changes, it will run the code inside
+- ! Can only 'watch' state and hooks, consts wont work
