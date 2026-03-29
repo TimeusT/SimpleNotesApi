@@ -1,19 +1,13 @@
-UserId: input field
-Title: input field
-Content: textbox field
-Submit: button
- onclick-> post to note api
+TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-Update create note to check if user exist, if not exist then return 400 bad request (problem details response)
-Update UI to process 400 bad request, and mark userID error with server-side error message
+display all notes from the user on the home page (ONLY WHEN AUTHENTICATED)
+use MUI list components
+cache refreshes every minute (Simulate to test)
 
-Timeline:
-submit pressed
-	v
-server checks db
-	v
-invalid ID
-	v
-map response body to client side
-	v
-display response body.error.title
+create api for retrieved notes
+create hook to get all note data (setQueryData - refetches(refresh) the data)
+make a function to list all notes based on the user details
+
+...
+
+edit and delete button at the bottom of the list component

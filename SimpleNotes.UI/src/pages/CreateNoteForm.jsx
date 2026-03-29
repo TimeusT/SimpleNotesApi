@@ -1,76 +1,101 @@
 // SimpleNotes Create Note Form
-import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { useMutation } from '@tanstack/react-query';
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import { useCreateNote } from "../hooks/useCreateNote";
+import useUserByEmail from "../hooks/useUserByEmail";
+import { Alert } from "@mui/material";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const schema = yup
   .object({
-    userId: yup.number().typeError(" Must be a number").positive(" Must be a positive number").integer(" Must be a int").required(),
-    title: yup.string().trim().required(" A proper Title is required"),
-    content: yup.string()
+    title: yup.string().trim().required("Title is required"),
+    content: yup.string(),
+    userId: yup.number().required("User ID is required"),
   })
-  .required()
+  .required();
 
 export default function CreateNote() {
+  const { data: user } = useUserByEmail();
+  const createNoteMutation = useCreateNote();
+  const [severityState, setSeverityState] = useState(null);
+
   const {
     register,
     handleSubmit,
     setError,
     reset,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
-    mode: "onChange"
+    resolver: yupResolver(schema, { abortEarly: false }),
+    mode: "onChange",
   });
 
-  const mutation = useMutation({
-    mutationFn: (data) => axios.post("https://localhost:7183/api/Note", data),
-    onError: (error) => {
+  useEffect(() => {
+    if (user?.id) {
+      reset({
+        userId: user.id,
+      });
+    }
+  }, [user]);
+
+  const postNote = async (data) => {
+    try {
+      const note = await createNoteMutation.mutateAsync(data);
+      console.log("Note create:", note);
+      setSeverityState("success");
+      reset();
+    } catch (error) {
+      setSeverityState("error");
       if (error.response?.data?.errors) {
-        const errorResponse = error.response.data.errors;
-        Object.keys(errorResponse).forEach((key) => {
+        const apiErrors = error.response.data.errors;
+
+        Object.keys(apiErrors).forEach((key) => {
           setError(key, {
             type: "server",
-            message: errorResponse[key][0] });
+            message: apiErrors[key][0],
+          });
         });
       }
-    },
-    onSuccess: (data) => {
-      console.log("Post successful:", data);
-      reset();
     }
-  });
+  };
 
-  const submitNote = (data) => mutation.mutate(data);
-
-  return(
-    <form onSubmit={handleSubmit(submitNote)}>
+  return (
+    <form onSubmit={handleSubmit(postNote)}>
       <h1>Create a Note</h1>
+      {Object.keys(errors).length > 0 && severityState === "error" && (
+        <Box sx={{ my: 2 }}>
+          <Alert severity="error">
+            <ul>
+              {Object.entries(errors).map(([field, error]) => (
+                <li key={field}>{error.message}</li>
+              ))}
+            </ul>
+          </Alert>
+        </Box>
+      )}
+      {severityState === "success" && (
+        <Box sx={{ my: 2 }}>
+          <Alert severity="success">
+            Note Created Successfully!
+          </Alert>
+        </Box>
+      )}
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
-          <Grid size={12}>
-            <TextField
-              required
-              label="User ID"
-              variant="outlined"
-              {...register("userId")}
-              error={!!errors.userId}
-              helperText={errors.userId?.message} />
-          </Grid>
           <Grid size={12}>
             <TextField
               required
               label="Title"
               variant="outlined"
               {...register("title")}
+              helperText={errors.title?.message}
               error={!!errors.title}
-              helperText={errors.title?.message} />
+            />
           </Grid>
           <Grid size={12}>
             <TextField
@@ -78,11 +103,12 @@ export default function CreateNote() {
               label="Content"
               rows={4}
               {...register("content")}
+              helperText={errors.content?.message}
               error={!!errors.content}
-              helperText={errors.content?.message} />
+            />
           </Grid>
           <Grid>
-            <Button variant="contained" type='submit'>Submit</Button>
+            <button type="submit">Submit</button>
           </Grid>
         </Grid>
       </Box>

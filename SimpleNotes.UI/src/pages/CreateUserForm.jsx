@@ -1,100 +1,133 @@
-import axios from 'axios';
+// import
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { useMutation } from '@tanstack/react-query';
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useCreateUser } from "../hooks/useUserByEmail";
 
+// schema
 const schema = yup
   .object({
-    firstName: yup.string().trim().required(" Valid First Name is required."),
-    lastName: yup.string().trim().required(" Valid Last Name is required."),
-    age: yup.number().typeError(" Must be valid age.").positive(" Must be a positive number.").required(" Valid Age is required."),
-    email: yup.string().trim().required(" Valid Email is required.")
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    age: yup
+      .number()
+      .typeError(" Can only be a number")
+      .positive(" Can only be a positive number")
+      .required(),
+    email: yup.string(),
+    address: yup.string(),
   })
-  .required()
+  .required();
 
-  export default function CreateUser() {
-    const {
-      register,
-      handleSubmit,
-      setError,
-      reset,
-      formState: { errors }
-    } = useForm({
-      resolver: yupResolver(schema),
-      mode: "onChange"
-    });
+// default function
+export default function CreateUser() {
+  const { user } = useAuth0();
+  const createUserMutation = useCreateUser();
 
-    const mutation = useMutation({
-      mutationFn: (data) => axios.post("https://localhost:7183/api/User", data),
-      onError: (error) => {
+  // error handler
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema, { abortEarly: false }),
+    mode: "onChange",
+  });
+
+  // object function
+  const postUser = (data) => {
+    createUserMutation
+      .mutateAsync({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        age: data.age,
+        email: data.email,
+        address: data.address,
+      })
+      .then((user) => {
+        console.log("User created:", user);
+      })
+      .catch((error) => {
         if (error.response?.data?.errors) {
-          const errorResponse = error.response.data.errors;
-          Object.keys(errorResponse).forEach((key) => {
+          const apiErrors = error.response.data.errors;
+
+          Object.keys(apiErrors).forEach((key) => {
             setError(key, {
               type: "server",
-              message: errorResponse[key][0]});
-          })
+              message: apiErrors[key][0],
+            });
+          });
         }
-      },
-      onSuccess: (data) => {
-        console.log("Post successful:", data);
-        reset();
-      }
-    });
+      });
+  };
 
-    const submitUser = (data) => mutation.mutate(data);
-
-    return(
-      <form onSubmit={handleSubmit(submitUser)}>
-        <h1>Create a User</h1>
-        <Box sx={{flexGrow: 1}}>
-          <Grid container spacing={2}>
-            <Grid size={12}>
-              <TextField
-                required
-                label="First Name"
-                variant="outlined"
-                {...register("firstName")}
-                error={!!errors.firstName}
-                helperText={errors.firstName?.message} />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                required
-                label="Last Name"
-                variant="outlined"
-                {...register("lastName")}
-                error={!!errors.lastName}
-                helperText={errors.lastName?.message} />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                required
-                label="Age"
-                variant="outlined"
-                {...register("age")}
-                error={!!errors.age}
-                helperText={errors.age?.message} />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                required
-                label="Email"
-                variant="outlined"
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email?.message} />
-            </Grid>
-            <Grid>
-              <Button variant="contained" type="submit">Submit</Button>
-            </Grid>
+  // return grid
+  return (
+    <form onSubmit={handleSubmit(postUser)}>
+      <h1>Create a User</h1>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+          <Grid size={12}>
+            <TextField
+              required
+              label="First Name"
+              variant="outlined"
+              {...register("firstName")}
+              helperText={errors.firstName?.message}
+              error={!!errors.firstName}
+            />
           </Grid>
-        </Box>
-      </form>
-    );
-  }
+          <Grid size={12}>
+            <TextField
+              required
+              label="Last Name"
+              variant="outlined"
+              {...register("lastName")}
+              helperText={errors.lastName?.message}
+              error={!!errors.lastName}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              required
+              label="Age"
+              variant="outlined"
+              {...register("age")}
+              helperText={errors.age?.message}
+              error={!!errors.age}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              slotProps={{ input: { readonly: true } }}
+              value={user.email || ""}
+              label="Email"
+              variant="outlined"
+              {...register("email")}
+              helperText={errors.email?.message}
+              error={!!errors.email}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              required
+              label="Address"
+              variant="outlined"
+              {...register("address")}
+              helperText={errors.address?.message}
+              error={!!errors.address}
+            />
+          </Grid>
+          <Grid>
+            <button type="submit">Submit</button>
+          </Grid>
+        </Grid>
+      </Box>
+    </form>
+  );
+}

@@ -1,9 +1,3 @@
-UserId: input field
-Title: input field
-Content: textbox field
-Submit: button
- onclick-> post to note api
+TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-Update create note to check if user exist, if not exist then return 400 bad request (problem details response)
-Update UI to process 400 bad request, and mark userID error with server-side error message
-
+edit and delete button at the bottom of the list component

@@ -80,11 +80,6 @@ public class UserService : IUserService
         {
             var userNotes = _userRepository.GetUserNotes(id).Select(n => n.ToDomain());
 
-            if (!userNotes.Any())
-            {
-                return Result.Fail(new ValidationError().WithError("Id", "User ID does not exist."));
-            }
-
             return Result.Ok(userNotes);
         }
         catch (Exception ex)
