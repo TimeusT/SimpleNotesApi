@@ -87,5 +87,7 @@ react query:
 - calls the API if theres nothing there
 - deleted the original state, replace it with the new state
 
-
 MEDIA QUERY
+
+React Context:
+https://react.dev/learn/passing-data-deeply-with-context#step-1-create-the-context

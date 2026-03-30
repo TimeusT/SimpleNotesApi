@@ -78,10 +78,11 @@ export default function CreateNote() {
         </Box>
       )}
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          <Grid size={12}>
+        <Grid container spacing={2} direction="column">
+          <Grid item xs={12} lg={6}>
             <TextField
               required
+              fullWidth
               label="Title"
               variant="outlined"
               {...register("title")}
@@ -89,9 +90,11 @@ export default function CreateNote() {
               error={!!errors.title}
             />
           </Grid>
-          <Grid size={12}>
+          <Box sx={{ width: "100%" }} />
+          <Grid item xs={12} lg={6}>
             <TextField
               multiline
+              fullWidth
               label="Content"
               rows={4}
               {...register("content")}
@@ -99,7 +102,8 @@ export default function CreateNote() {
               error={!!errors.content}
             />
           </Grid>
-          <Grid>
+          <Box sx={{ width: "100%" }} />
+          <Grid size={12}>
             <button type="submit">Submit</button>
           </Grid>
         </Grid>

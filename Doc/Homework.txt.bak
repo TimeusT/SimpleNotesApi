@@ -1,3 +1,4 @@
 TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-make the popup messages on a separate file
+1. Message snackbar for all forms
+2. Media query to center the form - all devices can use

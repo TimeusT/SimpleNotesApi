@@ -1,15 +1,14 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
+import { Box, Container } from "@mui/material";
 
-const Layout = () => {
+export default function Layout() {
   return (
     <>
-      <Navbar />
-      <main style={{ padding: "20px" }}>
+    <Navbar/>
+      <main>
         <Outlet /> {/* This is where Home, CreateUser, etc., will render */}
       </main>
-    </>
+    </> 
   );
-};
-
-export default Layout;
+}

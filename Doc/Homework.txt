@@ -1,5 +1,4 @@
 TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-Message snackbar for all forms
-
-Media query to center the form - all devices can use
+1. Message snackbar for all actions
+2. Media query to center the form - all devices can use
