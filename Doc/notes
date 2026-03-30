@@ -40,6 +40,9 @@ CONCEPTS:
 		- useState
 		- MUI (Material UI)
 		- Grid + Box
+		- Modal
+		- TextField (helperText and error)
+		- Alerts
 
 
 BACKEND:
@@ -74,6 +77,8 @@ FRONTEND:
 	- MUI Lists to display all user notes
 	- Live update of notes (Edit and Delete)
 	- Snackbar and client-side error handling
+	- Modal (for the edit note popup)
+	- Alerts (for error message)
  4. Types
 	- Same as entities
  5. API
