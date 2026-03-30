@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useCreateUser } from "../hooks/useUserByEmail";
+import { useMessage } from "../hooks/useMessage";
 
 // schema
 const schema = yup
@@ -15,8 +16,8 @@ const schema = yup
     lastName: yup.string().required(),
     age: yup
       .number()
-      .typeError(" Can only be a number")
-      .positive(" Can only be a positive number")
+      .typeError("Can only be a number")
+      .positive("Can only be a positive number")
       .required(),
     email: yup.string(),
     address: yup.string(),
@@ -27,6 +28,7 @@ const schema = yup
 export default function CreateUser() {
   const { user } = useAuth0();
   const createUserMutation = useCreateUser();
+  const { showMessage } = useMessage();
 
   // error handler
   const {
@@ -49,10 +51,11 @@ export default function CreateUser() {
         email: data.email,
         address: data.address,
       })
-      .then((user) => {
-        console.log("User created:", user);
+      .then(() => {
+        showMessage("User Created!");
       })
       .catch((error) => {
+        showMessage("User Not Created.", "error");
         if (error.response?.data?.errors) {
           const apiErrors = error.response.data.errors;
 

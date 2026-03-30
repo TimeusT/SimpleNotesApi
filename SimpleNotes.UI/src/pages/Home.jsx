@@ -72,7 +72,7 @@ const Home = () => {
                   aria-label="Edit"
                   onClick={() => onEdit(note)}
                 >
-                  edit
+                  Edit
                 </IconButton>
 
                 <IconButton
@@ -80,7 +80,7 @@ const Home = () => {
                   aria-label="Delete"
                   onClick={() => onDelete(note.id)}
                 >
-                  delete
+                  Delete
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>

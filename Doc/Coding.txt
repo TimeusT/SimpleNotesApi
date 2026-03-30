@@ -83,5 +83,9 @@ understand useQueryClient
 - It hooks that instance into a constant so we can use it
 - This includes the content related to that instance (user.id)
 
-understand querykey
-- 
+react query:
+- calls the API if theres nothing there
+- deleted the original state, replace it with the new state
+
+
+MEDIA QUERY

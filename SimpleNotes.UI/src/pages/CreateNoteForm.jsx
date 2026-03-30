@@ -9,7 +9,7 @@ import { useCreateNote } from "../hooks/useCreateNote";
 import useUserByEmail from "../hooks/useUserByEmail";
 import { Alert } from "@mui/material";
 import { useEffect } from "react";
-import { useState } from "react";
+import { useMessage } from "../hooks/useMessage";
 
 const schema = yup
   .object({
@@ -22,7 +22,7 @@ const schema = yup
 export default function CreateNote() {
   const { data: user } = useUserByEmail();
   const createNoteMutation = useCreateNote();
-  const [severityState, setSeverityState] = useState(null);
+  const { showMessage } = useMessage();
 
   const {
     register,
@@ -45,12 +45,11 @@ export default function CreateNote() {
 
   const postNote = async (data) => {
     try {
-      const note = await createNoteMutation.mutateAsync(data);
-      console.log("Note create:", note);
-      setSeverityState("success");
+      await createNoteMutation.mutateAsync(data);
+      showMessage("Note created");
       reset();
     } catch (error) {
-      setSeverityState("error");
+      showMessage("Create note failed", "error");
       if (error.response?.data?.errors) {
         const apiErrors = error.response.data.errors;
 
@@ -67,7 +66,7 @@ export default function CreateNote() {
   return (
     <form onSubmit={handleSubmit(postNote)}>
       <h1>Create a Note</h1>
-      {Object.keys(errors).length > 0 && severityState === "error" && (
+      {Object.keys(errors).length > 0 && (
         <Box sx={{ my: 2 }}>
           <Alert severity="error">
             <ul>
@@ -75,13 +74,6 @@ export default function CreateNote() {
                 <li key={field}>{error.message}</li>
               ))}
             </ul>
-          </Alert>
-        </Box>
-      )}
-      {severityState === "success" && (
-        <Box sx={{ my: 2 }}>
-          <Alert severity="success">
-            Note Created Successfully!
           </Alert>
         </Box>
       )}

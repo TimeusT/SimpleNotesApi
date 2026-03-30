@@ -1,13 +1,3 @@
 TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-display all notes from the user on the home page (ONLY WHEN AUTHENTICATED)
-use MUI list components
-cache refreshes every minute (Simulate to test)
-
-create api for retrieved notes
-create hook to get all note data (setQueryData - refetches(refresh) the data)
-make a function to list all notes based on the user details
-
-...
-
-edit and delete button at the bottom of the list component
+make the popup messages on a separate file

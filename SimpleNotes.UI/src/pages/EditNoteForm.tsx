@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import { useEditNote } from "../hooks/useEditNote";
 import { Alert, Button } from "@mui/material";
 import { Note } from "../types/Note";
+import { useMessage } from "../hooks/useMessage";
 
 const schema = yup
   .object({
@@ -25,6 +26,7 @@ interface EditNoteProps {
 
 export default function EditNote({ note, onSuccess, onCancel }: EditNoteProps) {
   const editNoteMutation = useEditNote();
+  const { showMessage } = useMessage();
 
   const {
     register,
@@ -46,8 +48,10 @@ export default function EditNote({ note, onSuccess, onCancel }: EditNoteProps) {
     try {
       const note = await editNoteMutation.mutateAsync(data);
       onSuccess(note);
+      showMessage("Note Updated!");
     } catch (error: any) {
       if (error.response?.data?.errors) {
+        showMessage("Something went wrong.", "error");
         const apiErrors = error.response.data.errors;
         Object.keys(apiErrors).forEach((key: any) => {
           setError(key, {

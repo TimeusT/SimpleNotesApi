@@ -1,3 +1,5 @@
 TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-edit and delete button at the bottom of the list component
+Message snackbar for all forms
+
+Media query to center the form - all devices can use
