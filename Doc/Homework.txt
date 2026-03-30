@@ -1,4 +1,3 @@
 TODO: UNDERSTAND THE CODE YOU'RE WRITING
 
-1. Message snackbar for all actions
-2. Media query to center the form - all devices can use
+- Revise and understand every line of code you've done in the past 8 weeks
