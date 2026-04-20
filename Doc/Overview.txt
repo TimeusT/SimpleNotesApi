@@ -37,16 +37,6 @@ Rules:
 
 -------------------------------------------------------
 
-Order in which you should code your ASP.NET projects:
-1. Entity (Have all the properties)
-2. Repository (Make sure the entities load into the db properly)
-3. Controller
-4. Domain
-5. Service
-
-
--------------------------------------------------------
-
 	ToList():
 - Materializes into a list the moment its used, acts on the database query right away
 - It's eager
@@ -99,6 +89,57 @@ Writing the code:
 2. Create the new features and make sure it works
 - You can see what is breaking the code
 3. delete ONLY WHEN the new code works perfectly
+
+-------------------------------------------------------
+
+SQL Database:
+- mostly used for 'write'
+
+Azure Table Storage (NoSQL - follows AP from CAP Theorum):
+- mostly used for 'read' - optimised for fast key-based lookups but can also write
+- stores non-relational structured data (structured NoSQL data)
+- it is schemaless = each entity has different properties
+- In the context of shopping list:
+  - PartitionKey = User
+  - RowKey = List Items
+  - Secondary = Address, Name, List name, Item name, Quantity
+- Tables scale horizontally
+- Each row contains its own entity
+- The purpose of partitioning is to group things together
+
+It should look something like:
+PartitionKey	RowKey			UserName	ListName		ItemName	Quantity
+user123			list1_item1		Alice		Weekly shop		Milk		2
+user123			list1_item2		Alice		Weekly shop 	Bread 		1
+user123			list2_item1		Alice 		Party snacks	Chips		3
+user312			list1_item1		Bob			Lunch			Sandwich	2
+
+If user also consists of their phone number, a new column would be added:
+	Phone
+	123-123
+	123-123
+	123-123
+	111-111
+! No new row !
+
+CAP Theorum:
+- Can deliver only 2 of the 3 desired characteristics
+- Consistency
+  - All clients see the same data at the same time
+- Availability
+  - Any client that makes a request gets a response
+- Partition Tolerance
+  - a communication break within a distributed system
+
+CP database - when a partition occurs between any two nodes, the system has to shut down the non-consisten node until the partition is resolved.
+AP database - when a partition occurs, all notes remain available but those at the wrong end of a partition might return an older version of the data.
+CA database - it can’t do this if there is a partition between any two nodes in the system, however, and therefore can’t deliver fault tolerance.
+
+Azure Cosmos DB, Paritioning:
+https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning
+
+CAP Theorum:
+https://www.ibm.com/think/topics/cap-theorem
 
 -------------------------------------------------------
 
