@@ -34,7 +34,7 @@ public class UserTableStorageEntity : UserEntity, ITableEntity
     public ETag ETag { get; set; }
 }
 
-public class UserIdLookupEnity : ITableEntity
+public class UserIdLookupEntity : ITableEntity
 {
     public required string PartitionKey { get; set; }
 

@@ -137,24 +137,38 @@ public class TableStorageUserRepository : IUserRepository
     }
     public IEnumerable<UserEntity> ListUsers()
     {
-        //var entities = _tableClient.Query<UserEntity>();
-        //var list = new List<UserEntity>();
-        //foreach (var entity in entities)
-        //{
-        //    list.Add(entity);
-        //}
-        //return list;
-        throw new NotImplementedException();
+        try
+        {
+            // get all entities
+            var entities = _tableClient.Query<UserTableStorageEntity>();
+
+            // make a list
+            var list = new List<UserEntity>();
+
+            // store entites into list
+            foreach (var entity in entities)
+            {
+                list.Add(entity);
+            }
+
+            // return list
+            return list;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
+        }
+
     }
 
-    public UserEntity? GetByEmail(EmailText id)
+    public UserEntity? GetByEmail(EmailText email)
     {
         // TODO
         try
         {
             var entityResponse = _tableClient.GetEntity<UserTableStorageEntity>(
-                partitionKey: id.Value,
-                rowKey: id.Value
+                partitionKey: email.Value,
+                rowKey: email.Value
             );
 
             return entityResponse;
@@ -170,7 +184,7 @@ public class TableStorageUserRepository : IUserRepository
         // TODO
         try
         {
-            var lookupResponse = _tableClient.GetEntity<UserIdLookupEnity>(
+            var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
                 partitionKey: "UserId",
                 rowKey: id.ToString()
             );
