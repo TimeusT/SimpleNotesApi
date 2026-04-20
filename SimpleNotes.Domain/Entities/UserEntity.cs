@@ -1,4 +1,6 @@
-﻿
+﻿using Azure;
+using Azure.Data.Tables;
+
 namespace SimpleNotes.Domain.Entities;
 
 public class UserEntity
@@ -19,4 +21,28 @@ public class UserEntity
 
     // Link Address one-to-one relation
     public AddressEntity? Address { get; set; }
+}
+
+public class UserTableStorageEntity : UserEntity, ITableEntity
+{
+    public required string PartitionKey { get; set; }
+
+    public required string RowKey { get; set; }
+
+    public DateTimeOffset? Timestamp { get; set; }
+
+    public ETag ETag { get; set; }
+}
+
+public class UserIdLookupEnity : ITableEntity
+{
+    public required string PartitionKey { get; set; }
+
+    public required string RowKey { get; set; }
+
+    public DateTimeOffset? Timestamp { get; set; }
+
+    public ETag ETag { get; set; }
+
+    public required string Email { get; set; }
 }

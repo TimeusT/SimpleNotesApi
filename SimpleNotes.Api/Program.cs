@@ -9,6 +9,10 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<TableStorageOptions>(
+    builder.Configuration.GetSection(nameof(TableStorageOptions))
+);
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -28,7 +32,7 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, TableStorageUserRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 

@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Azure.Data.Tables;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SimpleNotes.Domain;
 using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
@@ -116,3 +119,88 @@ public class UserRepository : IUserRepository
     }
 }
 
+public class TableStorageOptions
+{
+    public required string ConnectionString { get; set; }
+    public string UserTableName { get; set; } = "SimpleNotesUser";
+}
+
+public class TableStorageUserRepository : IUserRepository
+{
+    private readonly TableClient _tableClient;
+
+    public TableStorageUserRepository(IOptions<TableStorageOptions> options)
+    {
+        var serviceClient = new TableServiceClient(options.Value.ConnectionString);
+        _tableClient = serviceClient.GetTableClient(options.Value.UserTableName);
+        _tableClient.CreateIfNotExists();
+    }
+    public IEnumerable<UserEntity> ListUsers()
+    {
+        //var entities = _tableClient.Query<UserEntity>();
+        //var list = new List<UserEntity>();
+        //foreach (var entity in entities)
+        //{
+        //    list.Add(entity);
+        //}
+        //return list;
+        throw new NotImplementedException();
+    }
+
+    public UserEntity? GetByEmail(EmailText id)
+    {
+        // TODO
+        try
+        {
+            var entityResponse = _tableClient.GetEntity<UserTableStorageEntity>(
+                partitionKey: id.Value,
+                rowKey: id.Value
+            );
+
+            return entityResponse;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
+        }
+    }
+
+    public UserEntity? GetUser(int id)
+    {
+        // TODO
+        try
+        {
+            var lookupResponse = _tableClient.GetEntity<UserIdLookupEnity>(
+                partitionKey: "UserId",
+                rowKey: id.ToString()
+            );
+
+            return GetByEmail(EmailText.Create(lookupResponse.Value.Email));
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
+        }
+
+    }
+
+    public IEnumerable<NoteItemEntity> GetUserNotes(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public UserEntity CreateUser(UserEntity user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool UpdateUser(UserEntity user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool DeleteUser(int id)
+    {
+        throw new NotImplementedException();
+    }
+}
