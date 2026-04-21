@@ -174,20 +174,31 @@ public class TableStorageUserRepository : IUserRepository
 
     public UserEntity? GetUser(int id)
     {
+        //try
+        //{
+        //    var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
+        //        partitionKey: "UserId",
+        //        rowKey: id.ToString()
+        //    );
+
+        //    return GetByEmail(EmailText.Create(lookupResponse.Value.Email));
+        //}
+        //catch (RequestFailedException ex) when (ex.Status == 404)
+        //{
+        //    return null;
+        //}
         try
         {
-            var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
-                partitionKey: "UserId",
-                rowKey: id.ToString()
-            );
+            var user = _tableClient.Query<UserTableStorageEntity>().FirstOrDefault(x => x.Id == id);
 
-            return GetByEmail(EmailText.Create(lookupResponse.Value.Email));
+            if (user == null) return null;
+
+            return GetByEmail(EmailText.Create(user.Email));
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
             return null;
         }
-
     }
 
     public IEnumerable<NoteItemEntity> GetUserNotes(int id)
@@ -223,7 +234,36 @@ public class TableStorageUserRepository : IUserRepository
 
     public bool UpdateUser(UserEntity user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Find user
+            var getUser = GetUser(user.Id);
+
+            // Check is user exists
+            if (getUser == null) return false;
+
+            // Get user from table
+            var existingUser = _tableClient.GetEntity<UserTableStorageEntity>(
+                partitionKey: getUser.Email,
+                rowKey: getUser.Email
+            );
+
+            var updateUser = existingUser.Value;
+
+            // Update user
+            updateUser.FirstName = user.FirstName;
+            updateUser.LastName = user.LastName;
+            updateUser.Age = user.Age;
+
+            // Save changes
+            _tableClient.UpdateEntity(updateUser, updateUser.ETag, TableUpdateMode.Merge);
+
+            return true;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return false;
+        }
     }
 
     public bool DeleteUser(int id)
@@ -241,7 +281,7 @@ public class TableStorageUserRepository : IUserRepository
 
             return true;
         }
-        catch (Exception ex)
+        catch (RequestFailedException ex) when (ex.Status == 404)
         {
             return false;
         }

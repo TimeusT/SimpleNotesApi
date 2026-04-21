@@ -98,6 +98,7 @@ SQL Database:
 Azure Table Storage (NoSQL - follows AP from CAP Theorum):
 - mostly used for 'read' - optimised for fast key-based lookups but can also write
 - stores non-relational structured data (structured NoSQL data)
+- it is schemaless = each entity has different properties
 - In the context of shopping list:
   - PartitionKey = User
   - RowKey = List Items

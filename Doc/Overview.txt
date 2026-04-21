@@ -142,4 +142,3 @@ CAP Theorum:
 https://www.ibm.com/think/topics/cap-theorem
 
 -------------------------------------------------------
-
