@@ -1,4 +1,7 @@
-﻿namespace SimpleNotes.Domain.Entities;
+﻿using Azure;
+using Azure.Data.Tables;
+
+namespace SimpleNotes.Domain.Entities;
 
 // Here are all the properties that we can use for this class
 public class NoteItemEntity
@@ -18,4 +21,16 @@ public class NoteItemEntity
 
     // Linked user
     public UserEntity User { get; set; } = null!; // Navigation back to UserEntity
+}
+
+public class NoteTableStorageEntity : NoteItemEntity, ITableEntity
+{
+    public required string PartitionKey { get; set; }
+
+    public required string RowKey { get; set; }
+
+    public DateTimeOffset? Timestamp { get; set; }
+
+    public ETag ETag { get; set; }
+
 }

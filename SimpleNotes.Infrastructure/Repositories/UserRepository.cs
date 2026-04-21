@@ -29,11 +29,11 @@ public class UserRepository : IUserRepository
     }
 
     // Get their id
-    public UserEntity? GetUser(int id)
+    public UserEntity? GetUser(string uniqueId)
     {
         return _context.Users
             .Include(x => x.Address)
-            .FirstOrDefault(x => x.Id == id);
+            .FirstOrDefault(x => x.UniqueId == uniqueId);
     }
 
     // Get their email
@@ -45,10 +45,11 @@ public class UserRepository : IUserRepository
     }
 
     // Get notes using User Id
-    public IEnumerable<NoteItemEntity> GetUserNotes(int id)
+    public IEnumerable<NoteItemEntity> GetUserNotes(string uniqueId)
     {
-        // return the list of notes
-        return _context.Notes.Where(n => n.UserId == id).ToList();
+        // return the list of notes        
+        return _context.Notes
+            .Where(n => n.User.UniqueId == uniqueId).ToList();
     }
 
     // Create user
@@ -99,13 +100,13 @@ public class UserRepository : IUserRepository
     }
 
     // Delete user
-    public bool DeleteUser(int id)
+    public bool DeleteUser(string uniqueId)
     {
         // Find user that matched Id
         var user = _context.Users
             .Include(n => n.Notes)
             .Include(a => a.Address)
-            .FirstOrDefault(u => u.Id == id);
+            .FirstOrDefault(u => u.UniqueId == uniqueId);
 
         // If no user, then false
         if (user == null) return false;
@@ -173,14 +174,14 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public UserEntity? GetUser(int id)
+    public UserEntity? GetUser(string uniqueId)
     {
         try
         {
             // Lookup table
             var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
                 partitionKey: "UserId",
-                rowKey: id.ToString()
+                rowKey: uniqueId
             );
 
             // GetByEmail after finding the Lookup table (since this takes ID)
@@ -192,54 +193,46 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public IEnumerable<NoteItemEntity> GetUserNotes(int id)
+    public IEnumerable<NoteItemEntity> GetUserNotes(string uniqueId)
     {
         throw new NotImplementedException();
     }
 
     public UserEntity CreateUser(UserEntity user)
     {
-        try
+        // Create entity
+        var newUser = new TableEntity
         {
-            // Create entity
-            var newUser = new TableEntity
-            {
-                PartitionKey = user.Email!,
-                RowKey = user.Email!,
-            };
+            PartitionKey = user.Email!,
+            RowKey = user.Email!,
+        };
 
-            // Create lookup entity
-            var lookupUser = new UserIdLookupEntity
-            {
-                PartitionKey = "UserId",
-                RowKey = user.Id.ToString(),
-                Email = user.Email!,
-            };
+        // Create lookup entity
+        var lookupUser = new UserIdLookupEntity
+        {
+            PartitionKey = "UserId",
+            RowKey = user.UniqueId,
+            Email = user.Email!,
+        };
 
-            // Assign properties
-            newUser["Email"] = user.Email;
-            newUser["Id"] = user.Id;
-            newUser["FirstName"] = user.FirstName;
-            newUser["LastName"] = user.LastName;
-            newUser["Age"] = user.Age;
-            newUser["JoinDate"] = user.JoinDate;
 
-            //_tableClient.AddEntity(newUser);
+        // Assign properties
+        newUser["Email"] = user.Email;
+        newUser["FirstName"] = user.FirstName;
+        newUser["LastName"] = user.LastName;
+        newUser["Age"] = user.Age;
+        newUser["JoinDate"] = user.JoinDate;
+        newUser["UniqueId"] = user.UniqueId;
 
-            var transation = new List<TableTransactionAction>
+        var transation = new List<TableTransactionAction>
             {
                 new TableTransactionAction(TableTransactionActionType.Add, newUser),
                 new TableTransactionAction(TableTransactionActionType.Add, lookupUser)
             };
 
-            _tableClient.SubmitTransaction(transation);
+        _tableClient.SubmitTransaction(transation);
 
-            return user;
-        }
-        catch
-        {
-            throw;
-        }
+        return user;
     }
 
     public bool UpdateUser(UserEntity user)
@@ -247,7 +240,7 @@ public class TableStorageUserRepository : IUserRepository
         try
         {
             // Find user
-            var getUser = GetUser(user.Id);
+            var getUser = GetUser(user.UniqueId);
 
             // Check is user exists
             if (getUser == null) return false;
@@ -276,12 +269,12 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public bool DeleteUser(int id)
+    public bool DeleteUser(string uniqueId)
     {
         try
         {
             // GetUser by id then get email
-            var user = GetUser(id);
+            var user = GetUser(uniqueId);
 
             // Delete entity
             _tableClient.DeleteEntity(
@@ -292,7 +285,7 @@ public class TableStorageUserRepository : IUserRepository
             // Delete lookup entity
             _tableClient.DeleteEntity(
                 partitionKey: "UserId",
-                rowKey: id.ToString()
+                rowKey: uniqueId
             );
 
             return true;

@@ -1,4 +1,6 @@
-﻿using SimpleNotes.Domain.Entities;
+﻿using Azure.Data.Tables;
+using Microsoft.Extensions.Options;
+using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
 using SimpleNotes.Infrastructure.Interfaces;
 
@@ -66,4 +68,63 @@ public class NoteRepository : INoteRepository
         return true;
     }
 
+}
+
+
+public class NoteTableStorageOptions
+{
+    public required string ConnectionString { get; set; }
+    public string NoteTableName { get; set; } = "SimpleNotesNote";
+}
+
+public class TableStorageNoteRepository : INoteRepository
+{
+    private readonly TableClient _tableClient;
+
+    public TableStorageNoteRepository(IOptions<NoteTableStorageOptions> options)
+    {
+        var serviceClient = new TableServiceClient(options.Value.ConnectionString);
+        _tableClient = serviceClient.GetTableClient(options.Value.NoteTableName);
+        _tableClient.CreateIfNotExists();
+    }
+
+    public IEnumerable<NoteItemEntity> List()
+    {
+        try
+        {
+            var notes = _tableClient.Query<NoteTableStorageEntity>();
+            var allNotes = new List<NoteTableStorageEntity>();
+
+            foreach (var note in notes)
+            {
+                allNotes.Add(note);
+            }
+
+            return allNotes;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public NoteItemEntity? Get(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public NoteItemEntity Create(NoteItemEntity note)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Delete(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Update(NoteItemEntity note)
+    {
+        throw new NotImplementedException();
+    }
 }

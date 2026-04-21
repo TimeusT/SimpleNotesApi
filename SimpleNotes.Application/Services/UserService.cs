@@ -36,11 +36,11 @@ public class UserService : IUserService
         }
     }
 
-    public Result<UserDomain?> GetUser(int id)
+    public Result<UserDomain?> GetUser(string uniqueId)
     {
         try
         {
-            var user = _userRepository.GetUser(id)?.ToDomain();
+            var user = _userRepository.GetUser(uniqueId)?.ToDomain();
 
             if (user == null)
             {
@@ -74,11 +74,11 @@ public class UserService : IUserService
         }
     }
 
-    public Result<IEnumerable<NoteDomain>> GetUserNotes(int id)
+    public Result<IEnumerable<NoteDomain>> GetUserNotes(string uniqueId)
     {
         try
         {
-            var userNotes = _userRepository.GetUserNotes(id).Select(n => n.ToDomain());
+            var userNotes = _userRepository.GetUserNotes(uniqueId).Select(n => n.ToDomain());
 
             return Result.Ok(userNotes);
         }
@@ -92,7 +92,7 @@ public class UserService : IUserService
     {
         try
         {
-            var userExists = _userRepository.GetUser(user.Id);
+            var userExists = _userRepository.GetUser(user.UniqueId);
 
             if (userExists != null)
             {
@@ -129,18 +129,18 @@ public class UserService : IUserService
         }
     }
 
-    public Result<bool> DeleteUser(int id)
+    public Result<bool> DeleteUser(string uniqueId)
     {
         try
         {
-            var userExists = _userRepository.GetUser(id);
+            var userExists = _userRepository.GetUser(uniqueId);
 
             if (userExists == null)
             {
                 return Result.Fail(new ValidationError().WithError("Id", "User ID does not exist."));
             }
 
-            var userDelete = _userRepository.DeleteUser(id);
+            var userDelete = _userRepository.DeleteUser(uniqueId);
 
             return Result.Ok(userDelete);
         }

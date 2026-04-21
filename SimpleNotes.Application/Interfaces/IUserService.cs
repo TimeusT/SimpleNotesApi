@@ -8,15 +8,15 @@ public interface IUserService
     // List all users
     Result<IEnumerable<UserDomain>> ListUsers();
     // Get by Id
-    Result<UserDomain?> GetUser(int id);
+    Result<UserDomain?> GetUser(string uniqueId);
     // Get by Email
     Result<UserDomain?> GetByEmail(EmailText email);
     // Get notes with User Id
-    Result<IEnumerable<NoteDomain>> GetUserNotes(int id);
+    Result<IEnumerable<NoteDomain>> GetUserNotes(string uniqueId);
     // Create user
     Result<UserDomain> CreateUser(UserDomain user);
     // Update user
     Result<bool> UpdateUser(UserDomain user);
     // Delete user
-    Result<bool> DeleteUser(int id);
+    Result<bool> DeleteUser(string uniqueId);
 }

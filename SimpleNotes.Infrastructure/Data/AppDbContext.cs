@@ -20,6 +20,9 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<UserEntity>()
+            .HasIndex(u => u.UniqueId).IsUnique();
+
+        modelBuilder.Entity<UserEntity>()
             .HasOne(u => u.Address)
             .WithOne(a => a.User)
             .HasForeignKey<AddressEntity>(a => a.Id);

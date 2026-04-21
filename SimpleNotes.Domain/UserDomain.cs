@@ -2,7 +2,7 @@
 
 public class UserDomain
 {
-    public int Id { get; private set; }
+    public string UniqueId { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public int Age { get; private set; }
@@ -15,7 +15,7 @@ public class UserDomain
         string lName,
         int age,
         DateTime joinDate,
-        int? id = default,
+        string? uniqueId = default,
         EmailText? email = default,
         AddressDomain? address = default
         )
@@ -24,7 +24,7 @@ public class UserDomain
         LastName = lName;
         Age = age;
         JoinDate = joinDate;
-        Id = id ?? 0;
+        UniqueId = uniqueId ?? Guid.NewGuid().ToString();
         Email = email;
         Address = address;
     }

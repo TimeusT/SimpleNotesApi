@@ -7,15 +7,15 @@ public interface IUserRepository
 {
     IEnumerable<UserEntity> ListUsers();
 
-    UserEntity? GetUser(int id);
+    UserEntity? GetUser(string uniqueId);
 
     UserEntity? GetByEmail(EmailText id);
 
-    IEnumerable<NoteItemEntity> GetUserNotes(int id);
+    IEnumerable<NoteItemEntity> GetUserNotes(string uniqueId);
 
     UserEntity CreateUser(UserEntity user);
 
     bool UpdateUser(UserEntity user);
 
-    bool DeleteUser(int id);
+    bool DeleteUser(string uniqueId);
 }

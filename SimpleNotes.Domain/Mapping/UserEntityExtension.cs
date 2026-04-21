@@ -12,7 +12,7 @@ public static class UserEntityExtension
             entity.LastName,
             entity.Age,
             entity.JoinDate,
-            entity.Id,
+            entity.UniqueId,
             EmailText.Create(entity.Email),
             entity.ToAddressDomain()
         );

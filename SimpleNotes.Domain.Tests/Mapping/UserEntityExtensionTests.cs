@@ -25,7 +25,7 @@ public class UserEntityExtensionTests
         // Assert
         Assert.NotNull(validDomain);
 
-        Assert.Equal(validUser.Id, validDomain.Id);
+        Assert.Equal(validUser.UniqueId, validDomain.UniqueId);
         Assert.Equal(validUser.FirstName, validDomain.FirstName);
         Assert.Equal(validUser.LastName, validDomain.LastName);
         Assert.Equal(validUser.Age, validDomain.Age);

@@ -10,7 +10,7 @@ public static class UserDomainExtension
     {
         return new UserResponse
         {
-            Id = domain.Id,
+            Id = domain.UniqueId,
             FirstName = domain.FirstName,
             LastName = domain.LastName,
             Age = domain.Age,
@@ -37,7 +37,7 @@ public static class UserDomainExtension
     {
         return new UserEntity
         {
-            Id = domain.Id,
+            UniqueId = domain.UniqueId,
             FirstName = domain.FirstName,
             LastName = domain.LastName,
             Age = domain.Age,

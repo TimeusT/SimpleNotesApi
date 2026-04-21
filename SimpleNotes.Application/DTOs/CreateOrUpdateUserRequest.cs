@@ -5,7 +5,7 @@ namespace SimpleNotes.Application.DTOs;
 
 public class UserResponse
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public int Age { get; set; }
@@ -103,7 +103,7 @@ public class UpdateUserRequest
 
 public static class UpdateUserRequestExtension
 {
-    public static UserDomain ToDomain(this UpdateUserRequest request, int id)
+    public static UserDomain ToDomain(this UpdateUserRequest request, string id)
     {
         return new UserDomain
         (
