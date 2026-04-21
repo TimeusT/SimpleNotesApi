@@ -139,24 +139,19 @@ public class TableStorageUserRepository : IUserRepository
     {
         try
         {
-            // get all entities
             var entities = _tableClient.Query<UserTableStorageEntity>();
-
-            // make a list
             var list = new List<UserTableStorageEntity>();
 
-            // store entites into list
             foreach (var entity in entities)
             {
                 list.Add(entity);
             }
 
-            // return list
             return list;
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
-            return null; // use throw?
+            throw;
         }
     }
 
@@ -204,7 +199,6 @@ public class TableStorageUserRepository : IUserRepository
     {
         try
         {
-            // create the new user
             var newUser = new TableEntity
             {
                 PartitionKey = user.Email!,
@@ -217,7 +211,6 @@ public class TableStorageUserRepository : IUserRepository
             newUser["Age"] = user.Age;
             newUser["JoinDate"] = user.JoinDate;
 
-            // add to table
             _tableClient.AddEntity(newUser);
 
             return user;
@@ -235,6 +228,22 @@ public class TableStorageUserRepository : IUserRepository
 
     public bool DeleteUser(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // GetUser by id then get email
+            var user = GetUser(id);
+
+            // Delete entity
+            _tableClient.DeleteEntity(
+                partitionKey: user?.Email,
+                rowKey: user?.Email
+            );
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
     }
 }
