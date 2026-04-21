@@ -47,7 +47,5 @@ public class UserIdLookupEntity : ITableEntity
 
     public ETag ETag { get; set; }
 
-    public required int Id { get; set; }
-
     public required string Email { get; set; }
 }

@@ -135,6 +135,7 @@ public class TableStorageUserRepository : IUserRepository
         _tableClient = serviceClient.GetTableClient(options.Value.UserTableName);
         _tableClient.CreateIfNotExists();
     }
+
     public IEnumerable<UserEntity> ListUsers()
     {
         try
@@ -174,26 +175,16 @@ public class TableStorageUserRepository : IUserRepository
 
     public UserEntity? GetUser(int id)
     {
-        //try
-        //{
-        //    var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
-        //        partitionKey: "UserId",
-        //        rowKey: id.ToString()
-        //    );
-
-        //    return GetByEmail(EmailText.Create(lookupResponse.Value.Email));
-        //}
-        //catch (RequestFailedException ex) when (ex.Status == 404)
-        //{
-        //    return null;
-        //}
         try
         {
-            var user = _tableClient.Query<UserTableStorageEntity>().FirstOrDefault(x => x.Id == id);
+            // Lookup table
+            var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
+                partitionKey: "UserId",
+                rowKey: id.ToString()
+            );
 
-            if (user == null) return null;
-
-            return GetByEmail(EmailText.Create(user.Email));
+            // GetByEmail after finding the Lookup table (since this takes ID)
+            return GetByEmail(EmailText.Create(lookupResponse.Value.Email));
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
@@ -210,11 +201,22 @@ public class TableStorageUserRepository : IUserRepository
     {
         try
         {
+            // Create entity
             var newUser = new TableEntity
             {
                 PartitionKey = user.Email!,
                 RowKey = user.Email!,
             };
+
+            // Create lookup entity
+            var lookupUser = new UserIdLookupEntity
+            {
+                PartitionKey = "UserId",
+                RowKey = user.Id.ToString(),
+                Email = user.Email!,
+            };
+
+            // Assign properties
             newUser["Email"] = user.Email;
             newUser["Id"] = user.Id;
             newUser["FirstName"] = user.FirstName;
@@ -222,11 +224,19 @@ public class TableStorageUserRepository : IUserRepository
             newUser["Age"] = user.Age;
             newUser["JoinDate"] = user.JoinDate;
 
-            _tableClient.AddEntity(newUser);
+            //_tableClient.AddEntity(newUser);
+
+            var transation = new List<TableTransactionAction>
+            {
+                new TableTransactionAction(TableTransactionActionType.Add, newUser),
+                new TableTransactionAction(TableTransactionActionType.Add, lookupUser)
+            };
+
+            _tableClient.SubmitTransaction(transation);
 
             return user;
         }
-        catch (Exception ex)
+        catch
         {
             throw;
         }
@@ -277,6 +287,12 @@ public class TableStorageUserRepository : IUserRepository
             _tableClient.DeleteEntity(
                 partitionKey: user?.Email,
                 rowKey: user?.Email
+            );
+
+            // Delete lookup entity
+            _tableClient.DeleteEntity(
+                partitionKey: "UserId",
+                rowKey: id.ToString()
             );
 
             return true;

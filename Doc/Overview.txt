@@ -142,3 +142,7 @@ CAP Theorum:
 https://www.ibm.com/think/topics/cap-theorem
 
 -------------------------------------------------------
+
+Transaction (process) - Unit of work (Terminology)
+- When processing multiple things at the same time
+- This makes sure they both fail or succeed together
