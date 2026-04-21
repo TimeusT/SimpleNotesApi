@@ -22,13 +22,14 @@ public class NoteController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var notes = _noteService.List().Map(notes => notes.Select(n => n.ToResponse()));
+        var notes = _noteService.List();
 
         if (notes.IsFailed)
         {
             return notes.GetFailedActionResult();
         }
 
+        var noteResponse = notes.Value.Select(x => x.ToResponse());
         return Ok(notes.Value);
     }
 

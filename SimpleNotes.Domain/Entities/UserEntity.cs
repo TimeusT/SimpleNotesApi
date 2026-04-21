@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.Data.Tables;
+using System.Runtime.Serialization;
 
 namespace SimpleNotes.Domain.Entities;
 
@@ -17,8 +18,10 @@ public class UserEntity
 
     public DateTime JoinDate { get; set; }
 
+    [IgnoreDataMember]
     public ICollection<NoteItemEntity> Notes { get; set; } = new List<NoteItemEntity>(); // Navigation (points to NoteItemEntity)
 
+    [IgnoreDataMember]
     // Link Address one-to-one relation
     public AddressEntity? Address { get; set; }
 }

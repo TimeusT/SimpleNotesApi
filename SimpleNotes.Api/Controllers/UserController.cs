@@ -26,14 +26,15 @@ public class UserController : ControllerBase
     public IActionResult GetAllUsers()
     {
         // Convert to Response
-        var users = _userService.ListUsers().Map(user => user.Select(u => u.ToResponse()));
+        var users = _userService.ListUsers();
 
         if (users.IsFailed)
         {
             return users.GetFailedActionResult();
         }
         // return all users
-        return Ok(users);
+        var responseUsers = users.Value.Select(x => x.ToResponse());
+        return Ok(responseUsers);
     }
 
     [HttpGet("{id:int}")]

@@ -143,7 +143,7 @@ public class TableStorageUserRepository : IUserRepository
             var entities = _tableClient.Query<UserTableStorageEntity>();
 
             // make a list
-            var list = new List<UserEntity>();
+            var list = new List<UserTableStorageEntity>();
 
             // store entites into list
             foreach (var entity in entities)
@@ -156,14 +156,12 @@ public class TableStorageUserRepository : IUserRepository
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
-            return null;
+            return null; // use throw?
         }
-
     }
 
     public UserEntity? GetByEmail(EmailText email)
     {
-        // TODO
         try
         {
             var entityResponse = _tableClient.GetEntity<UserTableStorageEntity>(
@@ -181,7 +179,6 @@ public class TableStorageUserRepository : IUserRepository
 
     public UserEntity? GetUser(int id)
     {
-        // TODO
         try
         {
             var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
@@ -205,7 +202,30 @@ public class TableStorageUserRepository : IUserRepository
 
     public UserEntity CreateUser(UserEntity user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // create the new user
+            var newUser = new TableEntity
+            {
+                PartitionKey = user.Email!,
+                RowKey = user.Email!,
+            };
+            newUser["Email"] = user.Email;
+            newUser["Id"] = user.Id;
+            newUser["FirstName"] = user.FirstName;
+            newUser["LastName"] = user.LastName;
+            newUser["Age"] = user.Age;
+            newUser["JoinDate"] = user.JoinDate;
+
+            // add to table
+            _tableClient.AddEntity(newUser);
+
+            return user;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
     public bool UpdateUser(UserEntity user)
