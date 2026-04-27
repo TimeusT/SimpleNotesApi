@@ -8,6 +8,8 @@ public class NoteItemEntity
 {
     public int Id { get; set; }
 
+    public string UniqueId { get; set; } = Guid.NewGuid().ToString();
+
     public string Title { get; set; } = string.Empty;
 
     public string? Content { get; set; }

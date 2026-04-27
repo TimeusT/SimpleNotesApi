@@ -38,11 +38,11 @@ public class NoteService : INoteService
         }
     }
 
-    public Result<NoteDomain?> Get(int id)
+    public Result<NoteDomain?> Get(string uniqueId)
     {
         try
         {
-            var isNoteExist = _noteRepository.Get(id)?.ToDomain();
+            var isNoteExist = _noteRepository.Get(uniqueId)?.ToDomain();
 
             if (isNoteExist == null)
             {
@@ -62,7 +62,7 @@ public class NoteService : INoteService
         try
         {
             //Validate userid exist in db, if not return Result.Fail
-            var isUserExist = _userRepository.GetUser(note.UserId);
+            var isUserExist = _userRepository.GetUser(note.UserId.ToString());
 
             if (isUserExist == null)
             {
@@ -91,7 +91,7 @@ public class NoteService : INoteService
     {
         try
         {
-            var isNoteExist = _noteRepository.Get(note.Id);
+            var isNoteExist = _noteRepository.Get(note.UniqueId);
 
             if (isNoteExist == null)
             {
@@ -112,11 +112,11 @@ public class NoteService : INoteService
         }
     }
 
-    public Result<bool> Delete(int id)
+    public Result<bool> Delete(string uniqueId)
     {
         try
         {
-            var isNoteExist = _noteRepository.Get(id);
+            var isNoteExist = _noteRepository.Get(uniqueId);
 
             if (isNoteExist == null)
             {
@@ -124,7 +124,7 @@ public class NoteService : INoteService
             }
 
             // call delete on repo
-            var noteDelete = _noteRepository.Delete(id);
+            var noteDelete = _noteRepository.Delete(uniqueId);
 
             return Result.Ok(noteDelete);
         }

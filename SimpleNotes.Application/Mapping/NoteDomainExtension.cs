@@ -10,7 +10,7 @@ public static class NoteDomainExtension
     {
         return new NoteResponse
         {
-            Id = domain.Id,
+            Id = domain.UniqueId,
             Title = domain.Title.Value,
             Content = domain.Content?.Value,
             LastUpdatedAt = domain.LastUpdatedAt,
@@ -22,7 +22,7 @@ public static class NoteDomainExtension
     {
         return new NoteItemEntity
         {
-            Id = domain.Id,
+            UniqueId = domain.UniqueId,
             Title = domain.Title.Value,
             Content = domain.Content?.Value,
             CreatedAt = domain.CreatedAt,

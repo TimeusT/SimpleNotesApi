@@ -34,9 +34,9 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public IActionResult GetById(string uniqueId)
     {
-        var existingNote = _noteService.Get(id);
+        var existingNote = _noteService.Get(uniqueId);
 
         // If there IS a note
         if (existingNote.IsSuccess && existingNote.Value != null)
@@ -69,10 +69,10 @@ public class NoteController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] UpdateNoteRequest noteItem)
+    public IActionResult Update(string uniqueId, [FromBody] UpdateNoteRequest noteItem)
     {
         // Request to domain
-        var domainNote = noteItem.ToDomain(id);
+        var domainNote = noteItem.ToDomain(uniqueId);
 
         // call the service
         var updatedNote = _noteService.Update(domainNote);
@@ -90,9 +90,9 @@ public class NoteController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(string uniqueId)
     {
-        var deleted = _noteService.Delete(id);
+        var deleted = _noteService.Delete(uniqueId);
 
         if (deleted.IsFailed)
         {

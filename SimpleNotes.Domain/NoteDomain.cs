@@ -2,7 +2,7 @@
 
 public class NoteDomain
 {
-    public int Id { get; private set; }
+    public string UniqueId { get; private set; }
     public AlphaText Title { get; private set; }
     public AlphaText? Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -13,14 +13,14 @@ public class NoteDomain
         AlphaText title,
         int userId,
         AlphaText? content = default,
-        int? id = default,
+        string? uniqueId = default,
         DateTime? createdAt = default,
         DateTime? lastUpdatedAt = default)
     {
         Title = title;
         UserId = userId;
         Content = content;
-        Id = id ?? 0;
+        UniqueId = uniqueId ?? Guid.NewGuid().ToString();
         CreatedAt = createdAt ?? DateTime.UtcNow;
         LastUpdatedAt = lastUpdatedAt ?? DateTime.UtcNow;
     }

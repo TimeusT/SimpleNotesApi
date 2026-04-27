@@ -48,3 +48,18 @@ public class UserIdLookupEntity : ITableEntity
 
     public required string Email { get; set; }
 }
+
+public static class TableEntityExtension
+{
+    public static TableEntity ToTableEntity(this UserEntity user, string email)
+    {
+        return new TableEntity
+        {
+            PartitionKey = email,
+            RowKey = email,
+            ["FirstName"] = user.FirstName,
+            ["LastName"] = user.LastName,
+            ["Age"] = user.Age
+        };
+    }
+}

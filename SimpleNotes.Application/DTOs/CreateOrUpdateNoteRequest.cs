@@ -44,15 +44,20 @@ public class UpdateNoteRequest
 
 public static class UpdateNoteRequestExtension
 {
-    public static NoteDomain ToDomain(this UpdateNoteRequest request, int id)
+    public static NoteDomain ToDomain(this UpdateNoteRequest request, string id)
     {
-        return new NoteDomain(AlphaText.Create(request.Title), request.UserId, AlphaText.Create(request.Content), id);
+        return new NoteDomain(
+            AlphaText.Create(request.Title),
+            request.UserId,
+            AlphaText.Create(request.Content),
+            id
+        );
     }
 }
 
 public class NoteResponse
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Content { get; set; }
     public DateTime LastUpdatedAt { get; set; }

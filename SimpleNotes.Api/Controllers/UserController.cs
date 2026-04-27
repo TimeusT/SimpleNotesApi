@@ -37,10 +37,10 @@ public class UserController : ControllerBase
         return Ok(responseUsers);
     }
 
-    [HttpGet("{id:int}")]
-    public IActionResult GetUserId(int id)
+    [HttpGet("{uniqueId:guid}")]
+    public IActionResult GetUserId(string uniqueId)
     {
-        var user = _userService.GetUser(id);
+        var user = _userService.GetUser(uniqueId);
 
         // If there IS a note
         if (user.IsSuccess && user.Value != null)
@@ -89,20 +89,23 @@ public class UserController : ControllerBase
     }
     // Get all the notes with the user Id
     [HttpGet("{id}/note")]
-    public IActionResult GetUserNotes(int id)
+    public IActionResult GetUserNotes(string uniqueId)
     {
         // USING UserId, Find Notes
-        var user = _userService.GetUser(id);
+        var user = _userService.GetUser(uniqueId);
+
         // Error handling
         if (user.IsFailed)
         {
             return user.GetFailedActionResult();
         }
+
         // List all notes with same userID
-        var listNotes = _userService.GetUserNotes(id);
+        var listNotes = _userService.GetUserNotes(uniqueId);
 
         // To response
         var noteResponse = listNotes.Value.Select(n => n.ToResponse());
+
         // return Ok(notesFound)
         return Ok(noteResponse);
     }
@@ -122,14 +125,14 @@ public class UserController : ControllerBase
 
         var userResponse = userCreated.Value.ToResponse();
         // Return ok + user
-        return CreatedAtAction(nameof(GetUserId), new { id = userResponse.Id }, userResponse);
+        return CreatedAtAction(nameof(GetUserId), new { uniqueId = userResponse.UniqueId }, userResponse);
     }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateUser(int id, [FromBody] UpdateUserRequest user)
+    [HttpPut("{uniqueId:guid}")]
+    public IActionResult UpdateUser(string uniqueId, [FromBody] UpdateUserRequest user)
     {
         // Convert to Domain
-        var userDomain = user.ToDomain(id);
+        var userDomain = user.ToDomain(uniqueId);
         // Call the service
         var userUpdated = _userService.UpdateUser(userDomain);
         // Error handling
@@ -143,11 +146,11 @@ public class UserController : ControllerBase
         return Ok(userResponse);
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult DeleteUser(int id)
+    [HttpDelete("{uniqueId:guid}")]
+    public IActionResult DeleteUser(string uniqueId)
     {
         // Error handling
-        var deleted = _userService.DeleteUser(id);
+        var deleted = _userService.DeleteUser(uniqueId);
 
         if (deleted.IsFailed)
         {

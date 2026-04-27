@@ -23,10 +23,10 @@ public class NoteRepository : INoteRepository
     }
 
     // Getting the ID
-    public NoteItemEntity? Get(int id)
+    public NoteItemEntity? Get(string uniqueId)
     {
         //_context.Notes.Find(id);
-        return _context.Notes.FirstOrDefault(x => x.Id == id);
+        return _context.Notes.FirstOrDefault(x => x.UniqueId == uniqueId);
     }
 
     // Create method
@@ -41,7 +41,7 @@ public class NoteRepository : INoteRepository
     // Update note
     public bool Update(NoteItemEntity note)
     {
-        var existingNote = _context.Notes.Find(note.Id);
+        var existingNote = _context.Notes.Find(note.UniqueId);
 
         if (existingNote == null) return false;
 
@@ -55,12 +55,11 @@ public class NoteRepository : INoteRepository
     }
 
     // Delete Note
-    public bool Delete(int id)
+    public bool Delete(string uniqueId)
     {
-        var existingNote = _context.Notes.Find(id);
+        var existingNote = _context.Notes.Find(uniqueId);
 
-        if (existingNote == null)
-            return false;
+        if (existingNote == null) return false;
 
         _context.Notes.Remove(existingNote);
         _context.SaveChanges();
@@ -108,7 +107,7 @@ public class TableStorageNoteRepository : INoteRepository
         }
     }
 
-    public NoteItemEntity? Get(int id)
+    public NoteItemEntity? Get(string uniqueId)
     {
         throw new NotImplementedException();
     }
@@ -118,7 +117,7 @@ public class TableStorageNoteRepository : INoteRepository
         throw new NotImplementedException();
     }
 
-    public bool Delete(int id)
+    public bool Delete(string uniqueId)
     {
         throw new NotImplementedException();
     }

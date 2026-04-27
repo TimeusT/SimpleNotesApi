@@ -143,6 +143,12 @@ https://www.ibm.com/think/topics/cap-theorem
 
 -------------------------------------------------------
 
-Transaction - Unit of work
+Transaction (process) - Unit of work (Terminology)
 - When processing multiple things at the same time
 - This makes sure they both fail or succeed together
+
+
+Get the user
+Map it to TableEntity so no address and note issues
+	- 
+Update the entity

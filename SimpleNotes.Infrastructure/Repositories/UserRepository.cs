@@ -141,7 +141,10 @@ public class TableStorageUserRepository : IUserRepository
     {
         try
         {
-            var entities = _tableClient.Query<UserTableStorageEntity>();
+            var entities = _tableClient.Query<UserTableStorageEntity>(
+                filter: "PartitionKey ne 'UserId'"
+            );
+
             var list = new List<UserTableStorageEntity>();
 
             foreach (var entity in entities)
@@ -239,31 +242,25 @@ public class TableStorageUserRepository : IUserRepository
     {
         try
         {
-            // Find user
-            var getUser = GetUser(user.UniqueId);
-
-            // Check is user exists
-            if (getUser == null) return false;
-
-            // Get user from table
-            var existingUser = _tableClient.GetEntity<UserTableStorageEntity>(
-                partitionKey: getUser.Email,
-                rowKey: getUser.Email
+            // Find the user
+            var lookupUser = _tableClient.GetEntity<UserIdLookupEntity>(
+                partitionKey: "UserId",
+                rowKey: user.UniqueId
             );
 
-            var updateUser = existingUser.Value;
-
-            // Update user
-            updateUser.FirstName = user.FirstName;
-            updateUser.LastName = user.LastName;
-            updateUser.Age = user.Age;
+            // Map to TableEntity because there is address and note
+            var tableUser = user.ToTableEntity(lookupUser.Value.Email);
 
             // Save changes
-            _tableClient.UpdateEntity(updateUser, updateUser.ETag, TableUpdateMode.Merge);
+            _tableClient.UpdateEntity(tableUser, ETag.All, TableUpdateMode.Merge);
 
             return true;
         }
-        catch (RequestFailedException ex) when (ex.Status == 404)
+        catch (RequestFailedException ex) when (ex.Status == 404) // For a specific error
+        {
+            return false;
+        }
+        catch (Exception ex) // For generic errors
         {
             return false;
         }
@@ -273,20 +270,36 @@ public class TableStorageUserRepository : IUserRepository
     {
         try
         {
-            // GetUser by id then get email
+            // GetUser by id 
             var user = GetUser(uniqueId);
 
-            // Delete entity
-            _tableClient.DeleteEntity(
-                partitionKey: user?.Email,
-                rowKey: user?.Email
-            );
+            // Check user exists
+            if (user == null) return false;
 
-            // Delete lookup entity
-            _tableClient.DeleteEntity(
-                partitionKey: "UserId",
-                rowKey: uniqueId
-            );
+            // Get user entity
+            var userEntity = new TableEntity
+            {
+                PartitionKey = user.Email,
+                RowKey = user.Email
+            };
+
+            // Get matching lookup entity
+            var lookupEntity = new UserIdLookupEntity
+            {
+                PartitionKey = "UserId",
+                RowKey = uniqueId,
+                Email = user.Email!
+            };
+
+            // Create transaction
+            var transaction = new List<TableTransactionAction>
+            {
+                new TableTransactionAction(TableTransactionActionType.Delete, userEntity),
+                new TableTransactionAction(TableTransactionActionType.Delete, lookupEntity)
+            };
+
+            // Delete transaction
+            _tableClient.SubmitTransaction(transaction);
 
             return true;
         }

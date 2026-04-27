@@ -11,7 +11,7 @@ public static class NoteEntityExtension
             AlphaText.Create(entity.Title),
             entity.UserId,
             AlphaText.Create(entity.Content),
-            entity.Id,
+            entity.UniqueId,
             entity.CreatedAt,
             entity.LastUpdatedAt
         );

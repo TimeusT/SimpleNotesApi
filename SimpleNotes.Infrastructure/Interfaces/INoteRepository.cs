@@ -6,11 +6,11 @@ public interface INoteRepository
 {
     IEnumerable<NoteItemEntity> List();
 
-    NoteItemEntity? Get(int id);
+    NoteItemEntity? Get(string uniqueId);
 
     NoteItemEntity Create(NoteItemEntity note);
 
     bool Update(NoteItemEntity note);
 
-    bool Delete(int id);
+    bool Delete(string uniqueId);
 }

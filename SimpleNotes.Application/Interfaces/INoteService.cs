@@ -7,12 +7,12 @@ public interface INoteService
 {
     Result<IEnumerable<NoteDomain>> List();
 
-    Result<NoteDomain?> Get(int id);
+    Result<NoteDomain?> Get(string uniqueId);
 
     Result<NoteDomain> Create(NoteDomain note);
 
     Result<bool> Update(NoteDomain note);
 
-    Result<bool> Delete(int id);
+    Result<bool> Delete(string uniqueId);
 }
 
