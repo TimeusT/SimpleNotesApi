@@ -88,4 +88,23 @@ FRONTEND:
  6. Hooks
 	- Naming convention is "use[Action]"
 	- Uses mutations to update (replace) old data with new data
-	
+
+
+
+
+What I learnt in order:
+C#
+- ASP.NET MVC Model
+- Swagger UI
+- Singleton, Scoped and Transient
+- Clean Architecture format
+- Connecting to SQL DB
+- DTO and DI
+
+REACT
+- Auth0 SPA
+- Forms
+- CORS (Cross Origin Resource Sharing)
+
+- Moving from SQL to Table Storage
+- Partition and Row keys

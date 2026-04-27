@@ -1,4 +1,5 @@
-﻿using Azure.Data.Tables;
+﻿using Azure;
+using Azure.Data.Tables;
 using Microsoft.Extensions.Options;
 using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
@@ -69,7 +70,6 @@ public class NoteRepository : INoteRepository
 
 }
 
-
 public class NoteTableStorageOptions
 {
     public required string ConnectionString { get; set; }
@@ -92,6 +92,7 @@ public class TableStorageNoteRepository : INoteRepository
         try
         {
             var notes = _tableClient.Query<NoteTableStorageEntity>();
+
             var allNotes = new List<NoteTableStorageEntity>();
 
             foreach (var note in notes)
@@ -101,7 +102,7 @@ public class TableStorageNoteRepository : INoteRepository
 
             return allNotes;
         }
-        catch
+        catch (RequestFailedException ex) when (ex.Status == 404)
         {
             throw;
         }

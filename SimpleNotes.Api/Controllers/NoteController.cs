@@ -33,7 +33,7 @@ public class NoteController : ControllerBase
         return Ok(notes.Value);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{uniqueId:guid}")]
     public IActionResult GetById(string uniqueId)
     {
         var existingNote = _noteService.Get(uniqueId);
@@ -68,7 +68,7 @@ public class NoteController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = responseNote.Id }, responseNote);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{uniqueId:guid}")]
     public IActionResult Update(string uniqueId, [FromBody] UpdateNoteRequest noteItem)
     {
         // Request to domain
@@ -89,7 +89,7 @@ public class NoteController : ControllerBase
         return Ok(responseNote);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{uniqueId:guid}")]
     public IActionResult Delete(string uniqueId)
     {
         var deleted = _noteService.Delete(uniqueId);

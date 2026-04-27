@@ -147,8 +147,10 @@ Transaction (process) - Unit of work (Terminology)
 - When processing multiple things at the same time
 - This makes sure they both fail or succeed together
 
+OData - syntax
 
-Get the user
-Map it to TableEntity so no address and note issues
-	- 
-Update the entity
+-------------------------------------------------------
+
+Notes table should look like:
+UserUniqueId	NoteUniqueId	Title		Content
+1				1				test		test

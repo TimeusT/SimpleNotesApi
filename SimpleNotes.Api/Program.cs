@@ -9,8 +9,14 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<TableStorageOptions>(
-    builder.Configuration.GetSection(nameof(TableStorageOptions))
+// Service provider for Azure Table Storage
+builder.Services.Configure<UserTableStorageOptions>(
+    builder.Configuration.GetSection(nameof(UserTableStorageOptions))
+);
+
+// For notes
+builder.Services.Configure<NoteTableStorageOptions>(
+    builder.Configuration.GetSection(nameof(NoteTableStorageOptions))
 );
 
 // Add services to the container.
@@ -30,7 +36,7 @@ builder.Services.AddControllers()
 
 // Register the service with a specific lifetime
 builder.Services.AddScoped<INoteService, NoteService>();
-builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<INoteRepository, TableStorageNoteRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, TableStorageUserRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();

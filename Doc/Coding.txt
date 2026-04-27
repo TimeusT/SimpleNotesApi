@@ -91,3 +91,5 @@ MEDIA QUERY
 
 React Context:
 https://react.dev/learn/passing-data-deeply-with-context#step-1-create-the-context
+
+GUID - Global Unique Identifier

@@ -120,7 +120,7 @@ public class UserRepository : IUserRepository
     }
 }
 
-public class TableStorageOptions
+public class UserTableStorageOptions
 {
     public required string ConnectionString { get; set; }
     public string UserTableName { get; set; } = "SimpleNotesUser";
@@ -130,7 +130,7 @@ public class TableStorageUserRepository : IUserRepository
 {
     private readonly TableClient _tableClient;
 
-    public TableStorageUserRepository(IOptions<TableStorageOptions> options)
+    public TableStorageUserRepository(IOptions<UserTableStorageOptions> options)
     {
         var serviceClient = new TableServiceClient(options.Value.ConnectionString);
         _tableClient = serviceClient.GetTableClient(options.Value.UserTableName);
