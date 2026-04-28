@@ -10,6 +10,8 @@ public class NoteItemEntity
 
     public string UniqueId { get; set; } = Guid.NewGuid().ToString();
 
+    public string Email { get; set; } = string.Empty;
+
     public string Title { get; set; } = string.Empty;
 
     public string? Content { get; set; }
@@ -19,7 +21,7 @@ public class NoteItemEntity
     public DateTime LastUpdatedAt { get; set; }
 
     // Required foreign key
-    public int UserId { get; set; }
+    public int UserId { get; set; } // is NOT the UniqueId
 
     // Linked user
     public UserEntity User { get; set; } = null!; // Navigation back to UserEntity
@@ -34,5 +36,18 @@ public class NoteTableStorageEntity : NoteItemEntity, ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
 
     public ETag ETag { get; set; }
+}
 
+public static class TableNoteEntityExtension
+{
+    public static TableEntity ToTableEntity(this NoteItemEntity entity)
+    {
+        return new TableEntity
+        {
+            PartitionKey = entity.Email,
+            RowKey = entity.UniqueId,
+            ["Title"] = entity.Title,
+            ["Content"] = entity.Content
+        };
+    }
 }

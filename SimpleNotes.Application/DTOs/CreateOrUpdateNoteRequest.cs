@@ -14,7 +14,7 @@ public class CreateNoteRequest
     public string? Content { get; set; }
 
     [Required]
-    public int UserId { get; set; }
+    public string Email { get; set; } = string.Empty;
 }
 
 public static class CreateNoteRequestExtension
@@ -23,7 +23,7 @@ public static class CreateNoteRequestExtension
     {
         return new NoteDomain(
             AlphaText.Create(request.Title),
-            request.UserId,
+            EmailText.Create(request.Email),
             AlphaText.Create(request.Content));
     }
 }
@@ -39,7 +39,7 @@ public class UpdateNoteRequest
     public string? Content { get; set; }
 
     [Required]
-    public int UserId { get; set; }
+    public string Email { get; set; } = string.Empty;
 }
 
 public static class UpdateNoteRequestExtension
@@ -48,7 +48,7 @@ public static class UpdateNoteRequestExtension
     {
         return new NoteDomain(
             AlphaText.Create(request.Title),
-            request.UserId,
+            EmailText.Create(request.Email),
             AlphaText.Create(request.Content),
             id
         );
@@ -57,8 +57,9 @@ public static class UpdateNoteRequestExtension
 
 public class NoteResponse
 {
-    public string Id { get; set; }
+    public string UniqueId { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public string? Content { get; set; }
     public DateTime LastUpdatedAt { get; set; }
     public int UserId { get; set; }

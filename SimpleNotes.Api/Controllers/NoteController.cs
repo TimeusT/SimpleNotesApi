@@ -65,7 +65,7 @@ public class NoteController : ControllerBase
 
         var responseNote = createNoteResult.Value.ToResponse();
 
-        return CreatedAtAction(nameof(GetById), new { id = responseNote.Id }, responseNote);
+        return CreatedAtAction(nameof(GetById), new { uniqueId = responseNote.UniqueId }, responseNote);
     }
 
     [HttpPut("{uniqueId:guid}")]

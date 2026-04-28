@@ -155,8 +155,9 @@ Notes table should look like:
 UserUniqueId	NoteUniqueId	Title		Content
 1				1				test		test
 
-1. Create note
-2. Make sure table uses UserUniqueId and NoteUniqueId
-3. Get note with uniqueId
-4. Delete
-5. Update
+Table Storage:	UniqueUserId, UniqueId, Title, Content
+Lookup:			"NoteId", UniqueId, UniqueUserId, Title, Content
+
+No need for lookup because we already have everything
+Use Email as partition key
+Already know email because you need to log in to make a note

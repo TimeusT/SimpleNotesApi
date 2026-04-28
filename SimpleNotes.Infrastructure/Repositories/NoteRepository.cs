@@ -110,21 +110,87 @@ public class TableStorageNoteRepository : INoteRepository
 
     public NoteItemEntity? Get(string uniqueId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Get the note with uniqueId
+            var note = _tableClient
+                .Query<NoteTableStorageEntity>(n => n.RowKey == uniqueId)
+                .FirstOrDefault();
+
+            return note;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            throw;
+        }
     }
 
     public NoteItemEntity Create(NoteItemEntity note)
     {
-        throw new NotImplementedException();
-    }
+        // Create entity
+        var newNote = new TableEntity
+        {
+            PartitionKey = note.Email,
+            RowKey = note.UniqueId
+        };
 
-    public bool Delete(string uniqueId)
-    {
-        throw new NotImplementedException();
+        // Assign properties
+        newNote["UniqueId"] = note.UniqueId;
+        newNote["Email"] = note.Email;
+        newNote["Title"] = note.Title;
+        newNote["Content"] = note.Content;
+        newNote["CreatedAt"] = note.CreatedAt;
+        newNote["LastUpdatedAt"] = note.LastUpdatedAt;
+
+        // Transaction
+        var transaction = new List<TableTransactionAction>
+            {
+                new TableTransactionAction(TableTransactionActionType.Add, newNote),
+            };
+
+        _tableClient.SubmitTransaction(transaction);
+
+        // return note
+        return note;
     }
 
     public bool Update(NoteItemEntity note)
     {
+        try
+        {
+            //// Find the user
+            //var getNote = _tableClient.GetEntity<NoteTableStorageEntity>(
+            //    partitionKey: note.Email,
+            //    rowKey: note.UniqueId
+            //);
+
+            //// Convert to TableEntity to ignore UserId and User
+            //var tableNote = getNote.ToTableEntity();
+
+            //// Save changes
+            //_tableClient.UpdateEntity(getNote, ETag.All, TableUpdateMode.Merge);
+
+            //return true;
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    public bool Delete(string uniqueId)
+    {
+        // Get user by id
+
+        // Check existence        
+
+        // Get entity
+
+        // Delete
+
+        //return true
+
         throw new NotImplementedException();
     }
 }

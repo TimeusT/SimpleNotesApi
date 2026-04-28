@@ -61,12 +61,12 @@ public class NoteService : INoteService
     {
         try
         {
-            //Validate userid exist in db, if not return Result.Fail
-            var isUserExist = _userRepository.GetUser(note.UserId.ToString());
+            // Validate email exist in db, if not return Result.Fail
+            var isUserExist = _userRepository.GetByEmail(note.Email);
 
             if (isUserExist == null)
             {
-                return Result.Fail(new ValidationError().WithError("UserId", "User ID does not exist."));
+                return Result.Fail(new ValidationError().WithError("Email", "Email does not exist."));
             }
 
             // convert domain to entity

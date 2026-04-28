@@ -10,11 +10,11 @@ public static class NoteDomainExtension
     {
         return new NoteResponse
         {
-            Id = domain.UniqueId,
+            UniqueId = domain.UniqueId,
+            Email = domain.Email.Value,
             Title = domain.Title.Value,
             Content = domain.Content?.Value,
-            LastUpdatedAt = domain.LastUpdatedAt,
-            UserId = domain.UserId
+            LastUpdatedAt = domain.LastUpdatedAt
         };
     }
 
@@ -23,11 +23,11 @@ public static class NoteDomainExtension
         return new NoteItemEntity
         {
             UniqueId = domain.UniqueId,
+            Email = domain.Email.Value,
             Title = domain.Title.Value,
             Content = domain.Content?.Value,
             CreatedAt = domain.CreatedAt,
-            LastUpdatedAt = domain.LastUpdatedAt,
-            UserId = domain.UserId
+            LastUpdatedAt = domain.LastUpdatedAt
         };
     }
 }
