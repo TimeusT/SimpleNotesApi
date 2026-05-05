@@ -47,7 +47,8 @@ public static class TableNoteEntityExtension
             PartitionKey = entity.Email,
             RowKey = entity.UniqueId,
             ["Title"] = entity.Title,
-            ["Content"] = entity.Content
+            ["Content"] = entity.Content,
+            ["LastUpdatedAt"] = entity.LastUpdatedAt
         };
     }
 }

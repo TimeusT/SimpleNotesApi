@@ -158,20 +158,20 @@ public class TableStorageNoteRepository : INoteRepository
     {
         try
         {
-            //// Find the user
-            //var getNote = _tableClient.GetEntity<NoteTableStorageEntity>(
-            //    partitionKey: note.Email,
-            //    rowKey: note.UniqueId
-            //);
+            // Find the user
+            var getNote = _tableClient.GetEntity<NoteTableStorageEntity>(
+                partitionKey: note.Email,
+                rowKey: note.UniqueId
+            );
 
-            //// Convert to TableEntity to ignore UserId and User
-            //var tableNote = getNote.ToTableEntity();
+            // Convert to TableEntity to ignore UserId and User
+            // Also because UpdateEntity param is TableEntity
+            var tableNote = getNote.ToTableEntity();
 
-            //// Save changes
-            //_tableClient.UpdateEntity(getNote, ETag.All, TableUpdateMode.Merge);
+            // Save changes
+            _tableClient.UpdateEntity(tableNote, ETag.All, TableUpdateMode.Merge);
 
-            //return true;
-            throw new NotImplementedException();
+            return true;
         }
         catch (Exception ex)
         {

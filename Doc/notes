@@ -1,6 +1,6 @@
 SimpleNotesApi Project
 
-Quiz:
+ASP.NET Quiz:
 - What are the 4 layers in ASP.NET MVC?
 - What is the purpose of Dependency Injection?
 - Explain what FirstOrDefault does and why we use it.
@@ -12,6 +12,33 @@ Quiz:
 - Explain try...catch...
 - What is the purpose of ToDomain, ToEntity, and ToResponse?
 
+Vue.js Quiz:
+- You have this:
+	<p>{{ fullName }}</p>
+  Should fullName be a method or computed property, and why?
+- A child component needs to update a value stored in the parent.
+  Question:
+	a) Why can’t the child modify the prop directly?
+	b) What is the correct pattern to update the parent?
+- Rewrite this using v-model:
+	<input :value="name" @input="name = $event.target.value">
+  Then answer:
+	What two Vue features does v-model combine?
+- You see this code:
+	watch: {
+	  price(val) {
+		this.total = val * 2;
+	  }}
+  Question:
+	a) Why is this not ideal?
+	b) What should it be replaced with?
+- You’re building a reusable <card> component.
+	a) When should you use props?
+	b) When should you use slots?
+- What is the advantage of this:
+	const count = ref(0);
+	const double = computed(() => count.value * 2);
+  over the Options API approach?
 
 CONCEPTS:
 - CORS (Cross Origin Resource Sharing)
@@ -98,7 +125,8 @@ C#
 - Swagger UI
 - Singleton, Scoped and Transient
 - Clean Architecture format
-- Connecting to SQL DB
+- Connecting to SQL DB (Migration)
+- Service and Interfaces
 - DTO and DI
 
 REACT
@@ -106,5 +134,8 @@ REACT
 - Forms
 - CORS (Cross Origin Resource Sharing)
 
+C#
 - Moving from SQL to Table Storage
 - Partition and Row keys
+
+Vue JS
