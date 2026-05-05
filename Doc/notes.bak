@@ -1,6 +1,6 @@
 SimpleNotesApi Project
 
-Quiz:
+ASP.NET Quiz:
 - What are the 4 layers in ASP.NET MVC?
 - What is the purpose of Dependency Injection?
 - Explain what FirstOrDefault does and why we use it.
@@ -11,6 +11,30 @@ Quiz:
 - What are Interfaces in C# and why do we use them?
 - Explain try...catch...
 - What is the purpose of ToDomain, ToEntity, and ToResponse?
+
+Vue.js Quiz:
+- You have this:
+	<p>{{ fullName }}</p>
+  Should fullName be a method or computed property, and why?
+- A child component needs to update a value stored in the parent.
+  Question:
+	a) Why can’t the child modify the prop directly?
+	b) What is the correct pattern to update the parent?
+- Rewrite this using v-model:
+	<input :value="name" @input="name = $event.target.value">
+  Then answer:
+	What two Vue features does v-model combine?
+- You see this code:
+	watch: {
+	  price(val) {
+		this.total = val * 2;
+	  }}
+  Question:
+	a) Why is this not ideal?
+	b) What should it be replaced with?
+- You’re building a reusable <card> component.
+	a) When should you use props?
+	b) When should you use slots?
 
 
 CONCEPTS:
@@ -95,15 +119,20 @@ FRONTEND:
 What I learnt in order:
 C#
 - ASP.NET MVC Model
+- Swagger UI
 - Singleton, Scoped and Transient
 - Clean Architecture format
-- Connecting to SQL DB
-- DTO (Domain Transfer Object) and DI (Dependency Injection)
+- Connecting to SQL DB (Migration)
+- Service and Interfaces
+- DTO and DI
 
 REACT
-- Auth0 SPA (Single Page Authentication)
+- Auth0 SPA
 - Forms
 - CORS (Cross Origin Resource Sharing)
 
+C#
 - Moving from SQL to Table Storage
 - Partition and Row keys
+
+Vue JS

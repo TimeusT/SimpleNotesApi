@@ -151,13 +151,3 @@ OData - syntax
 
 -------------------------------------------------------
 
-Notes table should look like:
-UserUniqueId	NoteUniqueId	Title		Content
-1				1				test		test
-
-Table Storage:	UniqueUserId, UniqueId, Title, Content
-Lookup:			"NoteId", UniqueId, UniqueUserId, Title, Content
-
-No need for lookup because we already have everything
-Use Email as partition key
-Already know email because you need to log in to make a note

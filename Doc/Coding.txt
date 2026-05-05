@@ -93,3 +93,207 @@ React Context:
 https://react.dev/learn/passing-data-deeply-with-context#step-1-create-the-context
 
 GUID - Global Unique Identifier
+
+-------------------------------------------------------
+
+		Vue JS
+Things you NEED to know:
+Used to build user interfaces adn single-page applications.
+Focuses on the view layer (UI) while providing tools and
+patterns for building scalable, maintainable front-end applications.
+
+Vue.js is built around a few core ideas:
+	- Reactive data binding
+	- Component-based architecture
+	- One-way data flow (props down, events up)
+	- Efficient rendering through caching
+	- Flexible composition with the Composition API
+
+- Directives:
+	v-bind (:) → bind data to attributes
+	v-model → two-way binding (forms)
+	v-if / v-else / v-show → conditional rendering
+	v-for → loops
+	v-on (@) → event listeners
+	Example:
+		<button @click="count++">Clicked {{ count }} times</button>
+	- Its about data ownership
+
+- Methods 
+	- Do something when you tell them to
+	- Use when need to trigger logic via an event)
+	Example:
+		methods: {						>		methods: {
+		  greet() {		  				>		  methodName(param){
+			console.log("Hello");		>		    action;
+		  }}		  					>		  }}
+
+- Computed
+	- Calculate something automatically and cache it
+	- Use when:
+		- You're returning a value based on existing state
+		- Deriving data from other data
+		- Performance optimization
+		- You want clean templates
+	Example (filtering lists / formatting values / combining data):
+		computed: {
+		  filteredUsers() {
+		    return this.users.filter(u => u.active);
+		  }}
+
+- Watch
+	- React when something changes
+	- NOT for returning values
+	- Use when you need to:
+		- call an API
+		- perform async work
+		- react to changes over time
+	- Example
+		- Search input → fetch API
+		- Form changes → autosave
+		- Route changes → reload data
+
+- Props
+	- Pass data
+	- Passing data into a component
+	- Props are how a parent gives data to a child
+	- ! Props are READ-ONLY, do not modify them
+	- Use props when:
+		- Data comes from a parent
+		- You want reusable components
+		- You want a one-way data flow
+	Example:
+	[Parent]
+		<user-card :name="username" />
+	[Child]
+		export default {
+		  props: {
+			name: String
+		  }}
+	[HTML]
+		<p>{{ name }}</p>
+
+- Emits
+	- Send events
+	- Sending events back up
+	- Props go down, Emits go up
+	- Use Emits when:
+		- A child needs to notify the parent
+		- You're handling user interaction
+		- You want to keep components decoupled
+	Example:
+	[Parent]
+		methods: {
+		  handleUpdate(newName) {
+			this.username = newName;
+		  }}
+	[HTML]
+		<user-card @updateName="handleUpdate" />
+	[Child]
+		export default {
+		  emits: ['updateName'],
+		  methods: {
+			changeName() {
+			  this.$emit('updateName', 'John');
+			}
+		  }
+		}
+	[HTML]
+		<button @click="changeName">Change Name</button>
+
+- Slots
+	- Passes structure (HTML)
+	- Slots let a parent inject content into a child component
+	- With slots, parents can control the content
+	The basic idea:
+	[Parent HTML]
+		<card>
+		  <h2>Hello</h2>
+		  <p>This is inside the card</p>
+		</card>
+	[Child HTML]
+		<div class="card">
+		  <slot></slot>
+		</div>
+
+- V-model
+	- Under the hood:
+		- prop: modelValue
+		- emit: update:modelValue
+	- This is how two-way binging works between components
+	- Two-way binding means data flows in both directions between your UI and your state
+		- UI updates data
+		- Data updates UI
+	Example usage:
+		<custom-input v-model="name" />
+
+- Composition API (modern Vue)
+	- Gives more control, better code organisation and makes large applications easier to manage
+	- Key building blocks:
+		- setup() → the entry point where everything happens
+		- ref() → reactive values
+			import { ref } from 'vue';
+			const count = ref(0);
+		- reactive() → reactive objects
+			import { reactive } from 'vue';
+			const user = reactive({
+			  name: "John",
+			  age: 25
+			});
+		- computed() → derived values
+			import { computed } from 'vue';
+			const doublee = computed (() => count.value * 2);
+		- watch() → react to changes
+			import { watch } from 'vue';
+			watch(count, (newVal) => {
+			  console.log(newVal);
+			});
+		- Return values → expose to template
+			return { count, increment };
+
+- Event Handling & Modifiers
+	- v-on (@ shorthand) to listen to events
+	[HTML]
+		<button @click="increment">Click me</button>
+	[JS]
+		methods: {
+		  increment() {
+		    this.count++;
+		  }}
+	Passing arguments:
+	[HTML]
+		<button @click="add(5)">Add</button>
+	[JS]
+		methods: {
+		  add(num) {
+		    this.count += num;
+		  }}
+	- .prevent → Prevent default behavior
+		<form @submit.prevent="submitForm">  |  Stops page reload on form submit
+	- .stop → Stop event bubbling
+		<button @click.stop="doSomething">  |  Prevents the event from propagating to parent elements
+	- .once → Runs only once
+		<button @click.once="init">  |  Useful for one-time actions
+	- .self → Only trigger if event comes from the element itself
+		<div @click.self="close">  |  Ignores clicks from child elements
+	- .capture → Use capture phase
+		<div @click.capture="handle">  |  Runs before normal phase (advanced use)
+
+- Key Attribute (critical for performance)
+	<li v-for="item in items" :key="item.id">
+
+- Caching
+	- Storing a result so you don't have to recompute it again
+		computed: {
+		  fullName() {
+			return this.first + " " + this.last;
+		  }}
+	- Run this once
+	- Store (cache) the result
+	- Only re-run if first or last changes
+
+	Cache vs Memory
+	- Cache stores computed values/results
+	- Memory stores data
+	- Cache updates when dependencies change
+	- Memory changes whenever you assign

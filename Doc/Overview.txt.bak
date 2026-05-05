@@ -160,4 +160,4 @@ Lookup:			"NoteId", UniqueId, UniqueUserId, Title, Content
 
 No need for lookup because we already have everything
 Use Email as partition key
-
+Already know email because you need to log in to make a note
