@@ -136,5 +136,8 @@ C#
 - Partition and Row keys
 
 Vue JS
+<<<<<<< HEAD
 - Methods, Computed and Watch
 - Props, Emit and Slots
+=======
+>>>>>>> 335444a79817876454f6f96ba01e8ed61d3cd74e

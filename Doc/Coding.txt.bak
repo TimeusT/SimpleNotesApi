@@ -295,9 +295,13 @@ Vue.js is built around a few core ideas:
 	- Cache stores computed values/results
 	- Memory stores data
 	- Cache updates when dependencies change
+<<<<<<< HEAD
 	- Memory changes whenever you assign
 	
 	When the CPU needs data:
 	1. It checks cache first
 	2. If the data is there (cache hit), it gets it very quickly
 	3. If not (cache miss), it fetches from RAM (memory)
+=======
+	- Memory changes whenever you assign
+>>>>>>> 335444a79817876454f6f96ba01e8ed61d3cd74e
