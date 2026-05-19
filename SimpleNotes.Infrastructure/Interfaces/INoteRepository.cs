@@ -4,13 +4,13 @@ namespace SimpleNotes.Infrastructure.Interfaces;
 
 public interface INoteRepository
 {
-    IEnumerable<NoteItemEntity> List();
+    Task<IEnumerable<NoteItemEntity>> ListAsync();
 
-    NoteItemEntity? Get(int id);
+    Task<NoteItemEntity?> GetAsync(int id);
 
-    NoteItemEntity Create(NoteItemEntity note);
+    Task<NoteItemEntity> CreateAsync(NoteItemEntity note);
 
-    bool Update(NoteItemEntity note);
+    Task<bool> UpdateAsync(NoteItemEntity note);
 
-    bool Delete(int id);
+    Task<bool> DeleteAsync(int id);
 }

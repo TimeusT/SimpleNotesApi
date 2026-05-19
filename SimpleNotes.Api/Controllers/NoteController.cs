@@ -11,7 +11,6 @@ namespace SimpleNotes.Api.Controllers;
 
 public class NoteController : ControllerBase
 {
-    // This is where you use DI to get an instance of the NoteService class
     private readonly INoteService _noteService;
 
     public NoteController(INoteService noteService)
@@ -20,9 +19,9 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
-        var notes = _noteService.List();
+        var notes = await _noteService.ListAsync();
 
         if (notes.IsFailed)
         {
@@ -30,33 +29,31 @@ public class NoteController : ControllerBase
         }
 
         var noteResponse = notes.Value.Select(x => x.ToResponse());
+
         return Ok(notes.Value);
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    [ActionName(nameof(GetAsync))]
+    public async Task<IActionResult> GetAsync(int id)
     {
-        var existingNote = _noteService.Get(id);
+        var existingNote = await _noteService.GetAsync(id);
 
-        // If there IS a note
         if (existingNote.IsSuccess && existingNote.Value != null)
         {
             var responseNote = existingNote.Value.ToResponse();
             return Ok(responseNote);
         }
 
-        // If there ISNT a note
         return existingNote.GetFailedActionResult();
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] CreateNoteRequest noteItem)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateNoteRequest noteItem)
     {
-        // turn to domain
         var domainNote = noteItem.ToDomain();
 
-        // call the service
-        var createNoteResult = _noteService.Create(domainNote);
+        var createNoteResult = await _noteService.CreateAsync(domainNote);
 
         if (createNoteResult.IsFailed)
         {
@@ -65,34 +62,30 @@ public class NoteController : ControllerBase
 
         var responseNote = createNoteResult.Value.ToResponse();
 
-        return CreatedAtAction(nameof(GetById), new { id = responseNote.Id }, responseNote);
+        return CreatedAtAction(nameof(GetAsync), new { id = responseNote.Id }, responseNote);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] UpdateNoteRequest noteItem)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateNoteRequest noteItem)
     {
-        // Request to domain
         var domainNote = noteItem.ToDomain(id);
 
-        // call the service
-        var updatedNote = _noteService.Update(domainNote);
+        var updatedNote = await _noteService.UpdateAsync(domainNote);
 
-        // check update response
         if (updatedNote.IsFailed)
         {
             return updatedNote.GetFailedActionResult();
         }
 
-        // create response
         var responseNote = domainNote.ToResponse();
 
         return Ok(responseNote);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> DeleteAsync(int id)
     {
-        var deleted = _noteService.Delete(id);
+        var deleted = await _noteService.DeleteAsync(id);
 
         if (deleted.IsFailed)
         {

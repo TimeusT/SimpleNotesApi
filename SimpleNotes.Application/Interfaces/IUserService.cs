@@ -5,18 +5,17 @@ namespace SimpleNotes.Application.Interfaces;
 
 public interface IUserService
 {
-    // List all users
-    Result<IEnumerable<UserDomain>> ListUsers();
-    // Get by Id
-    Result<UserDomain?> GetUser(int id);
-    // Get by Email
-    Result<UserDomain?> GetByEmail(EmailText email);
-    // Get notes with User Id
-    Result<IEnumerable<NoteDomain>> GetUserNotes(int id);
-    // Create user
-    Result<UserDomain> CreateUser(UserDomain user);
-    // Update user
-    Result<bool> UpdateUser(UserDomain user);
-    // Delete user
-    Result<bool> DeleteUser(int id);
+    Task <Result<IEnumerable<UserDomain>>> ListUsersAsync();
+    
+    Task<Result<UserDomain?>> GetUserAsync(int id);
+    
+    Task<Result<UserDomain?>> GetByEmailAsync(EmailText email);
+    
+    Task<Result<IEnumerable<NoteDomain>>> GetUserNotesAsync(int id);
+    
+    Task<Result<UserDomain>> CreateUserAsync(UserDomain user);
+    
+    Task<Result<bool>> UpdateUserAsync(UserDomain user);
+    
+    Task<Result<bool>> DeleteUserAsync(int id);
 }

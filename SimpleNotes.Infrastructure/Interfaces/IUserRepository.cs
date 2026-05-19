@@ -5,17 +5,17 @@ namespace SimpleNotes.Infrastructure.Interfaces;
 
 public interface IUserRepository
 {
-    IEnumerable<UserEntity> ListUsers();
+    Task<IEnumerable<UserEntity>> ListUsersAsync();
 
-    UserEntity? GetUser(int id);
+    Task<UserEntity?> GetUserAsync(int id);
 
-    UserEntity? GetByEmail(EmailText id);
+    Task<UserEntity?> GetByEmailAsync(EmailText id);
 
-    IEnumerable<NoteItemEntity> GetUserNotes(int id);
+    Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id);
 
-    UserEntity CreateUser(UserEntity user);
+    Task<UserEntity> CreateUserAsync(UserEntity user);
 
-    bool UpdateUser(UserEntity user);
+    Task<bool> UpdateUserAsync(UserEntity user);
 
-    bool DeleteUser(int id);
+    Task<bool> DeleteUserAsync(int id);
 }

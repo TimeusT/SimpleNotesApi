@@ -19,18 +19,19 @@ public class NoteService : INoteService
         _userRepository = userRepository;
     }
 
-    public Result<IEnumerable<NoteDomain>> List()
+    public async Task<Result<IEnumerable<NoteDomain>>> ListAsync()
     {
         try
         {
-            var notes = _noteRepository.List().Select(x => x.ToDomain());
+            var notes = await _noteRepository.ListAsync();
+            var notesDomain = notes.Select(x => x.ToDomain());
 
-            if (notes == null)
+            if (notesDomain == null)
             {
                 return Result.Fail(new ValidationError().WithError("Id", "No note exists."));
             }
 
-            return Result.Ok(notes);
+            return Result.Ok(notesDomain);
         }
         catch (Exception ex)
         {
@@ -38,18 +39,19 @@ public class NoteService : INoteService
         }
     }
 
-    public Result<NoteDomain?> Get(int id)
+    public async Task<Result<NoteDomain?>> GetAsync(int id)
     {
         try
         {
-            var isNoteExist = _noteRepository.Get(id)?.ToDomain();
+            var isNoteExist = await _noteRepository.GetAsync(id);
+            var noteDomain = isNoteExist?.ToDomain();
 
-            if (isNoteExist == null)
+            if (noteDomain == null)
             {
                 return Result.Fail(new ValidationError().WithError("Id", "Note ID does not exist."));
             }
 
-            return isNoteExist;
+            return noteDomain;
         }
         catch (Exception ex)
         {
@@ -57,28 +59,21 @@ public class NoteService : INoteService
         }
     }
 
-    public Result<NoteDomain> Create(NoteDomain note)
+    public async Task<Result<NoteDomain>> CreateAsync(NoteDomain note)
     {
         try
         {
-            //Validate userid exist in db, if not return Result.Fail
-            var isUserExist = _userRepository.GetUser(note.UserId);
+            var isUserExist =  await _userRepository.GetUserAsync(note.UserId);
 
             if (isUserExist == null)
             {
                 return Result.Fail(new ValidationError().WithError("UserId", "User ID does not exist."));
             }
 
-            // convert domain to entity
             var noteEntity = note.ToEntity();
-
-            // call create method in repo
-            var noteCreate = _noteRepository.Create(noteEntity);
-
-            // convert entity to domain
+            var noteCreate = await _noteRepository.CreateAsync(noteEntity);
             var noteDomain = noteCreate.ToDomain();
 
-            // returns domain
             return Result.Ok(noteDomain);
         }
         catch (Exception ex)
@@ -87,22 +82,20 @@ public class NoteService : INoteService
         }
     }
 
-    public Result<bool> Update(NoteDomain note)
+    public async Task<Result<bool>> UpdateAsync(NoteDomain note)
     {
         try
         {
-            var isNoteExist = _noteRepository.Get(note.Id);
+            var isNoteExist = await _noteRepository.GetAsync(note.Id);
 
             if (isNoteExist == null)
             {
                 return Result.Fail(new ValidationError().WithError("Id", "Note ID does not exist."));
             }
 
-            // convert domain to entity
             var noteEntity = note.ToEntity();
 
-            // call update method
-            var noteUpdate = _noteRepository.Update(noteEntity);
+            var noteUpdate = await _noteRepository.UpdateAsync(noteEntity);
 
             return Result.Ok(noteUpdate);
         }
@@ -112,19 +105,18 @@ public class NoteService : INoteService
         }
     }
 
-    public Result<bool> Delete(int id)
+    public async Task<Result<bool>> DeleteAsync(int id)
     {
         try
         {
-            var isNoteExist = _noteRepository.Get(id);
+            var isNoteExist = await _noteRepository.GetAsync(id);
 
             if (isNoteExist == null)
             {
                 return Result.Fail(new ValidationError(404).WithError("Id", "Note ID does not exist."));
             }
 
-            // call delete on repo
-            var noteDelete = _noteRepository.Delete(id);
+            var noteDelete = await _noteRepository.DeleteAsync(id);
 
             return Result.Ok(noteDelete);
         }

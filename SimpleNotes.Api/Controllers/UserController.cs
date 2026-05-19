@@ -14,7 +14,6 @@ namespace SimpleNotes.Api.Controllers;
 
 public class UserController : ControllerBase
 {
-    // DI
     private readonly IUserService _userService;
 
     public UserController(IUserService userService)
@@ -23,24 +22,25 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAllUsers()
+    public async Task<IActionResult> GetAllUsers()
     {
         // Convert to Response
-        var users = _userService.ListUsers();
+        var users = await _userService.ListUsersAsync();
 
         if (users.IsFailed)
         {
             return users.GetFailedActionResult();
         }
+
         // return all users
         var responseUsers = users.Value.Select(x => x.ToResponse());
         return Ok(responseUsers);
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult GetUserId(int id)
+    public async Task<IActionResult> GetUserId(int id)
     {
-        var user = _userService.GetUser(id);
+        var user = await _userService.GetUserAsync(id);
 
         // If there IS a note
         if (user.IsSuccess && user.Value != null)
@@ -54,7 +54,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{email}")]
-    public IActionResult GetByEmail(string email)
+    public async Task<IActionResult> GetByEmailAsync(string email)
     {
         if (!TryCreateEmailText(email, out EmailText emailText))
         {
@@ -63,7 +63,7 @@ public class UserController : ControllerBase
             return BadRequest(validationError);
         }
 
-        var userEmail = _userService.GetByEmail(emailText);
+        var userEmail = await _userService.GetByEmailAsync(emailText);
 
         if (userEmail.IsSuccess && userEmail.Value != null)
         {
@@ -87,56 +87,62 @@ public class UserController : ControllerBase
             return false;
         }
     }
+
     // Get all the notes with the user Id
     [HttpGet("{id}/note")]
-    public IActionResult GetUserNotes(int id)
+    public async Task<IActionResult> GetUserNotes(int id)
     {
         // USING UserId, Find Notes
-        var user = _userService.GetUser(id);
-        // Error handling
+        var user = await _userService.GetUserAsync(id);
+
         if (user.IsFailed)
         {
             return user.GetFailedActionResult();
         }
+
         // List all notes with same userID
-        var listNotes = _userService.GetUserNotes(id);
+        var listNotes = await _userService.GetUserNotesAsync(id);
 
         // To response
         var noteResponse = listNotes.Value.Select(n => n.ToResponse());
+
         // return Ok(notesFound)
         return Ok(noteResponse);
     }
 
     [HttpPost]
-    public IActionResult CreateUser([FromBody] CreateUserRequest user)
+    public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest user)
     {
-        // Convert to Domain
         var userDomain = user.ToDomain();
+
         // Call the service
-        var userCreated = _userService.CreateUser(userDomain);
-        // Convert to Response
+        var userCreated = await _userService.CreateUserAsync(userDomain);
+
         if (userCreated.IsFailed)
         {
             return userCreated.GetFailedActionResult();
         }
 
+        // Convert to response
         var userResponse = userCreated.Value.ToResponse();
+        
         // Return ok + user
         return CreatedAtAction(nameof(GetUserId), new { id = userResponse.Id }, userResponse);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateUser(int id, [FromBody] UpdateUserRequest user)
+    public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UpdateUserRequest user)
     {
-        // Convert to Domain
         var userDomain = user.ToDomain(id);
+
         // Call the service
-        var userUpdated = _userService.UpdateUser(userDomain);
-        // Error handling
+        var userUpdated = await _userService.UpdateUserAsync(userDomain);
+
         if (userUpdated.IsFailed)
         {
             return userUpdated.GetFailedActionResult();
         }
+
         // Create Response
         var userResponse = userDomain.ToResponse();
 
@@ -144,10 +150,9 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteUser(int id)
+    public async Task<IActionResult> DeleteUserAsync(int id)
     {
-        // Error handling
-        var deleted = _userService.DeleteUser(id);
+        var deleted = await _userService.DeleteUserAsync(id);
 
         if (deleted.IsFailed)
         {

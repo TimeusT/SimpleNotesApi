@@ -17,11 +17,12 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public Result<IEnumerable<UserDomain>> ListUsers()
+    public async Task<Result<IEnumerable<UserDomain>>> ListUsersAsync()
     {
         try
         {
-            var users = _userRepository.ListUsers().Select(x => x.ToDomain());
+            var entities = await _userRepository.ListUsersAsync();
+            var users = entities.Select(x => x.ToDomain());
 
             if (users == null)
             {
@@ -36,18 +37,19 @@ public class UserService : IUserService
         }
     }
 
-    public Result<UserDomain?> GetUser(int id)
+    public async Task<Result<UserDomain?>> GetUserAsync(int id)
     {
         try
         {
-            var user = _userRepository.GetUser(id)?.ToDomain();
+            var user = await _userRepository.GetUserAsync(id);
+            var userDomain = user?.ToDomain();
 
-            if (user == null)
+            if (userDomain == null)
             {
                 return Result.Fail(new ValidationError().WithError("Id", "User ID does not exist."));
             }
 
-            return user;
+            return userDomain;
         }
         catch (Exception ex)
         {
@@ -55,18 +57,19 @@ public class UserService : IUserService
         }
     }
 
-    public Result<UserDomain?> GetByEmail(EmailText email)
+    public async Task<Result<UserDomain?>> GetByEmailAsync(EmailText email)
     {
         try
         {
-            var userEmail = _userRepository.GetByEmail(email)?.ToDomain();
+            var userEmail = await _userRepository.GetByEmailAsync(email);
+            var userDomain = userEmail?.ToDomain();
 
-            if (userEmail == null)
+            if (userDomain == null)
             {
                 return Result.Fail(new ValidationError().WithError("Email", "This email does not exist."));
             }
 
-            return userEmail;
+            return userDomain;
         }
         catch (Exception ex)
         {
@@ -74,13 +77,14 @@ public class UserService : IUserService
         }
     }
 
-    public Result<IEnumerable<NoteDomain>> GetUserNotes(int id)
+    public async Task<Result<IEnumerable<NoteDomain>>> GetUserNotesAsync(int id)
     {
         try
         {
-            var userNotes = _userRepository.GetUserNotes(id).Select(n => n.ToDomain());
+            var userNotes = await _userRepository.GetUserNotesAsync(id);
+            var userNotesDomain = userNotes.Select(n => n.ToDomain());
 
-            return Result.Ok(userNotes);
+            return Result.Ok(userNotesDomain);
         }
         catch (Exception ex)
         {
@@ -88,11 +92,11 @@ public class UserService : IUserService
         }
     }
 
-    public Result<UserDomain> CreateUser(UserDomain user)
+    public async Task<Result<UserDomain>> CreateUserAsync(UserDomain user)
     {
         try
         {
-            var userExists = _userRepository.GetUser(user.Id);
+            var userExists = await _userRepository.GetUserAsync(user.Id);
 
             if (userExists != null)
             {
@@ -100,9 +104,7 @@ public class UserService : IUserService
             }
 
             var userEntity = user.ToEntity();
-
-            var userCreate = _userRepository.CreateUser(userEntity);
-
+            var userCreate = await _userRepository.CreateUserAsync(userEntity);
             var userDomain = userCreate.ToDomain();
 
             return Result.Ok(userDomain);
@@ -113,13 +115,12 @@ public class UserService : IUserService
         }
     }
 
-    public Result<bool> UpdateUser(UserDomain user)
+    public async Task<Result<bool>> UpdateUserAsync(UserDomain user)
     {
         try
         {
             var userEntiy = user.ToEntity();
-
-            var userUpdate = _userRepository.UpdateUser(userEntiy);
+            var userUpdate = await _userRepository.UpdateUserAsync(userEntiy);
 
             return Result.Ok(userUpdate);
         }
@@ -129,18 +130,18 @@ public class UserService : IUserService
         }
     }
 
-    public Result<bool> DeleteUser(int id)
+    public async Task<Result<bool>> DeleteUserAsync(int id)
     {
         try
         {
-            var userExists = _userRepository.GetUser(id);
+            var userExists = await _userRepository.GetUserAsync(id);
 
             if (userExists == null)
             {
                 return Result.Fail(new ValidationError().WithError("Id", "User ID does not exist."));
             }
 
-            var userDelete = _userRepository.DeleteUser(id);
+            var userDelete = await _userRepository.DeleteUserAsync(id);
 
             return Result.Ok(userDelete);
         }

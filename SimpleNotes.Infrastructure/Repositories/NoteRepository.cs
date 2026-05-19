@@ -1,4 +1,5 @@
-﻿using SimpleNotes.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
 using SimpleNotes.Infrastructure.Interfaces;
 
@@ -6,7 +7,6 @@ namespace SimpleNotes.Infrastructure.Repositories;
 
 public class NoteRepository : INoteRepository
 {
-    // Need a private list to store the notes in memory
     private readonly AppDbContext _context;
 
     public NoteRepository(AppDbContext context)
@@ -14,32 +14,27 @@ public class NoteRepository : INoteRepository
         _context = context;
     }
 
-    // Get all notes
-    public IEnumerable<NoteItemEntity> List()
+    public async Task<IEnumerable<NoteItemEntity>> ListAsync()
     {
-        return _context.Notes.ToList();
+        return await _context.Notes.ToListAsync();
     }
 
-    // Getting the ID
-    public NoteItemEntity? Get(int id)
+    public async Task<NoteItemEntity?> GetAsync(int id)
     {
-        //_context.Notes.Find(id);
-        return _context.Notes.FirstOrDefault(x => x.Id == id);
+        return await _context.Notes.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    // Create method
-    public NoteItemEntity Create(NoteItemEntity note)
+    public async Task<NoteItemEntity> CreateAsync(NoteItemEntity note)
     {
-        // !! If userId doesn't match, return NotFound()
         _context.Notes.Add(note);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+
         return note;
     }
 
-    // Update note
-    public bool Update(NoteItemEntity note)
+    public async Task<bool> UpdateAsync(NoteItemEntity note)
     {
-        var existingNote = _context.Notes.Find(note.Id);
+        var existingNote = await _context.Notes.FindAsync(note.Id);
 
         if (existingNote == null) return false;
 
@@ -47,21 +42,20 @@ public class NoteRepository : INoteRepository
         existingNote.Content = note.Content;
         existingNote.LastUpdatedAt = DateTime.UtcNow;
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return true;
     }
 
-    // Delete Note
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        var existingNote = _context.Notes.Find(id);
+        var existingNote = await _context.Notes.FindAsync(id);
 
         if (existingNote == null)
             return false;
 
         _context.Notes.Remove(existingNote);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return true;
     }

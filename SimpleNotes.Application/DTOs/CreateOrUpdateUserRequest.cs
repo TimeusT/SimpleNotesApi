@@ -60,6 +60,7 @@ public static class CreateUserRequestExtension
             request.LastName,
             request.Age,
             request.JoinDate,
+            id:0,
             email: EmailText.Create(request.Email),
             address: request.ToAddressDomain()
         );

@@ -9,76 +9,60 @@ using SimpleNotes.Infrastructure.Interfaces;
 
 namespace SimpleNotes.Infrastructure.Repositories;
 
-/*
-Here should be where we update the database using the data
-*/
-
 public class UserRepository : IUserRepository
 {
-    // DI
     private readonly AppDbContext _context;
     public UserRepository(AppDbContext context)
     {
         _context = context;
     }
 
-    // List all users
-    public IEnumerable<UserEntity> ListUsers()
+    public async Task<IEnumerable<UserEntity>> ListUsersAsync()
     {
-        return _context.Users.Include(x => x.Address).ToList();
+        return await _context.Users.Include(x => x.Address).ToListAsync();
     }
 
-    // Get their id
-    public UserEntity? GetUser(int id)
+    public async Task<UserEntity?> GetUserAsync(int id)
     {
-        return _context.Users
+        return await _context.Users
             .Include(x => x.Address)
-            .FirstOrDefault(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    // Get their email
-    public UserEntity? GetByEmail(EmailText email)
+    public async Task<UserEntity?> GetByEmailAsync(EmailText email)
     {
-        return _context.Users
+        return await _context.Users
             .Include(x => x.Address)
-            .FirstOrDefault(e => e.Email == email.Value);
+            .FirstOrDefaultAsync(e => e.Email == email.Value);
     }
 
-    // Get notes using User Id
-    public IEnumerable<NoteItemEntity> GetUserNotes(int id)
+    public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id)
     {
-        // return the list of notes
-        return _context.Notes.Where(n => n.UserId == id).ToList();
+        return await _context.Notes.Where(n => n.UserId == id).ToListAsync();
     }
 
-    // Create user
-    public UserEntity CreateUser(UserEntity user)
+    public async Task<UserEntity> CreateUserAsync(UserEntity user)
     {
-        // Create user
         _context.Users.Add(user);
-        // Save
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return user;
     }
 
-    // Update user
-    public bool UpdateUser(UserEntity user)
+    public async Task<bool> UpdateUserAsync(UserEntity user)
     {
         if (user == null) return false;
 
-        var updatedUser = _context.Users
+        var updatedUser = await _context.Users
             .Include(u => u.Address)
-            .FirstOrDefault(u => u.Id == user.Id);
+            .FirstOrDefaultAsync(u => u.Id == user.Id);
 
         if (updatedUser == null) return false;
 
-        // Update User
         updatedUser.FirstName = user.FirstName;
         updatedUser.LastName = user.LastName;
         updatedUser.Age = user.Age;
 
-        // Update or create address
         if (updatedUser.Address == null && user.Address != null)
         {
             updatedUser.Address = new AddressEntity();
@@ -93,27 +77,23 @@ public class UserRepository : IUserRepository
             updatedUser.Address.Country = user.Address.Country;
         }
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return true;
     }
 
-    // Delete user
-    public bool DeleteUser(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
-        // Find user that matched Id
-        var user = _context.Users
+        var user = await _context.Users
             .Include(n => n.Notes)
             .Include(a => a.Address)
-            .FirstOrDefault(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == id);
 
-        // If no user, then false
         if (user == null) return false;
 
-        // Remove user and address
         _context.Users.Remove(user);
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return true;
     }
@@ -136,14 +116,14 @@ public class TableStorageUserRepository : IUserRepository
         _tableClient.CreateIfNotExists();
     }
 
-    public IEnumerable<UserEntity> ListUsers()
+    public async Task<IEnumerable<UserEntity>> ListUsersAsync()
     {
         try
         {
-            var entities = _tableClient.Query<UserTableStorageEntity>();
+            var entities = _tableClient.QueryAsync<UserTableStorageEntity>();
             var list = new List<UserTableStorageEntity>();
 
-            foreach (var entity in entities)
+            await foreach (var entity in entities)
             {
                 list.Add(entity);
             }
@@ -156,11 +136,11 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public UserEntity? GetByEmail(EmailText email)
+    public async Task<UserEntity?> GetByEmailAsync(EmailText email)
     {
         try
         {
-            var entityResponse = _tableClient.GetEntity<UserTableStorageEntity>(
+            var entityResponse = await _tableClient.GetEntityAsync<UserTableStorageEntity>(
                 partitionKey: email.Value,
                 rowKey: email.Value
             );
@@ -173,18 +153,18 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public UserEntity? GetUser(int id)
+    public async Task<UserEntity?> GetUserAsync(int id)
     {
         try
         {
             // Lookup table
-            var lookupResponse = _tableClient.GetEntity<UserIdLookupEntity>(
+            var lookupResponse = await _tableClient.GetEntityAsync<UserIdLookupEntity>(
                 partitionKey: "UserId",
                 rowKey: id.ToString()
             );
 
             // GetByEmail after finding the Lookup table (since this takes ID)
-            return GetByEmail(EmailText.Create(lookupResponse.Value.Email));
+            return await GetByEmailAsync(EmailText.Create(lookupResponse.Value.Email));
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
@@ -192,12 +172,12 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public IEnumerable<NoteItemEntity> GetUserNotes(int id)
+    public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public UserEntity CreateUser(UserEntity user)
+    public async Task<UserEntity> CreateUserAsync(UserEntity user)
     {
         try
         {
@@ -232,7 +212,7 @@ public class TableStorageUserRepository : IUserRepository
                 new TableTransactionAction(TableTransactionActionType.Add, lookupUser)
             };
 
-            _tableClient.SubmitTransaction(transation);
+            await _tableClient.SubmitTransactionAsync(transation);
 
             return user;
         }
@@ -242,18 +222,18 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public bool UpdateUser(UserEntity user)
+    public async Task<bool> UpdateUserAsync(UserEntity user)
     {
         try
         {
             // Find user
-            var getUser = GetUser(user.Id);
+            var getUser = await GetUserAsync(user.Id);
 
             // Check is user exists
             if (getUser == null) return false;
 
             // Get user from table
-            var existingUser = _tableClient.GetEntity<UserTableStorageEntity>(
+            var existingUser = await _tableClient.GetEntityAsync<UserTableStorageEntity>(
                 partitionKey: getUser.Email,
                 rowKey: getUser.Email
             );
@@ -266,7 +246,7 @@ public class TableStorageUserRepository : IUserRepository
             updateUser.Age = user.Age;
 
             // Save changes
-            _tableClient.UpdateEntity(updateUser, updateUser.ETag, TableUpdateMode.Merge);
+            await _tableClient.UpdateEntityAsync(updateUser, updateUser.ETag, TableUpdateMode.Merge);
 
             return true;
         }
@@ -276,24 +256,22 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public bool DeleteUser(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
         try
         {
-            // GetUser by id then get email
-            var user = GetUser(id);
+            // Find user
+            var user = await GetUserAsync(id);
 
-            // Delete entity
-            _tableClient.DeleteEntity(
-                partitionKey: user?.Email,
-                rowKey: user?.Email
-            );
-
-            // Delete lookup entity
-            _tableClient.DeleteEntity(
-                partitionKey: "UserId",
-                rowKey: id.ToString()
-            );
+            // Delete entity and lookup entity
+            await Task.WhenAll(_tableClient.DeleteEntityAsync(
+                    partitionKey: user?.Email,
+                    rowKey: user?.Email
+                ),
+                _tableClient.DeleteEntityAsync(
+                    partitionKey: "UserId",
+                    rowKey: id.ToString()
+                ));
 
             return true;
         }

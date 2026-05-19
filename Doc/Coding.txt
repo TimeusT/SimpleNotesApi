@@ -91,3 +91,6 @@ MEDIA QUERY
 
 React Context:
 https://react.dev/learn/passing-data-deeply-with-context#step-1-create-the-context
+
+-------------------------------------------------------
+Task (Asynchronous tasks) "async" and "await"
