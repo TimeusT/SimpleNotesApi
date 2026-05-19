@@ -17,45 +17,51 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<UserEntity>> ListUsersAsync()
-    {
-        return await _context.Users.Include(x => x.Address).ToListAsync();
-    }
-
-    public async Task<UserEntity?> GetUserAsync(int id)
+    public async Task<IEnumerable<UserEntity>> ListUsersAsync(CancellationToken cancellationToken)
     {
         return await _context.Users
             .Include(x => x.Address)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<UserEntity?> GetByEmailAsync(EmailText email)
+    public async Task<UserEntity?> GetUserAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _context.Users
+            .Include(x => x.Address)
+            .FirstOrDefaultAsync(x => x.Id == id,
+                cancellationToken);
+    }
+
+    public async Task<UserEntity?> GetByEmailAsync(EmailText email, CancellationToken cancellationToken)
     {
         return await _context.Users
             .Include(x => x.Address)
             .FirstOrDefaultAsync(e => e.Email == email.Value);
     }
 
-    public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id)
+    public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id, CancellationToken cancellationToken)
     {
-        return await _context.Notes.Where(n => n.UserId == id).ToListAsync();
+        return await _context.Notes
+            .Where(n => n.UserId == id)
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<UserEntity> CreateUserAsync(UserEntity user)
+    public async Task<UserEntity> CreateUserAsync(UserEntity user, CancellationToken cancellationToken)
     {
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return user;
     }
 
-    public async Task<bool> UpdateUserAsync(UserEntity user)
+    public async Task<bool> UpdateUserAsync(UserEntity user, CancellationToken cancellationToken)
     {
         if (user == null) return false;
 
         var updatedUser = await _context.Users
             .Include(u => u.Address)
-            .FirstOrDefaultAsync(u => u.Id == user.Id);
+            .FirstOrDefaultAsync(u => u.Id == user.Id,
+                cancellationToken);
 
         if (updatedUser == null) return false;
 
@@ -77,23 +83,24 @@ public class UserRepository : IUserRepository
             updatedUser.Address.Country = user.Address.Country;
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return true;
     }
 
-    public async Task<bool> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
         var user = await _context.Users
             .Include(n => n.Notes)
             .Include(a => a.Address)
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == id,
+                cancellationToken);
 
         if (user == null) return false;
 
         _context.Users.Remove(user);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -116,14 +123,14 @@ public class TableStorageUserRepository : IUserRepository
         _tableClient.CreateIfNotExists();
     }
 
-    public async Task<IEnumerable<UserEntity>> ListUsersAsync()
+    public async Task<IEnumerable<UserEntity>> ListUsersAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var entities = _tableClient.QueryAsync<UserTableStorageEntity>();
+            var entities = _tableClient.QueryAsync<UserTableStorageEntity>(cancellationToken: cancellationToken);
             var list = new List<UserTableStorageEntity>();
 
-            await foreach (var entity in entities)
+            await foreach (var entity in entities.WithCancellation(cancellationToken))
             {
                 list.Add(entity);
             }
@@ -136,11 +143,12 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public async Task<UserEntity?> GetByEmailAsync(EmailText email)
+    public async Task<UserEntity?> GetByEmailAsync(EmailText email, CancellationToken cancellationToken)
     {
         try
         {
             var entityResponse = await _tableClient.GetEntityAsync<UserTableStorageEntity>(
+                cancellationToken: cancellationToken,
                 partitionKey: email.Value,
                 rowKey: email.Value
             );
@@ -153,18 +161,19 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public async Task<UserEntity?> GetUserAsync(int id)
+    public async Task<UserEntity?> GetUserAsync(int id, CancellationToken cancellationToken)
     {
         try
         {
             // Lookup table
             var lookupResponse = await _tableClient.GetEntityAsync<UserIdLookupEntity>(
+                cancellationToken: cancellationToken,
                 partitionKey: "UserId",
                 rowKey: id.ToString()
             );
 
             // GetByEmail after finding the Lookup table (since this takes ID)
-            return await GetByEmailAsync(EmailText.Create(lookupResponse.Value.Email));
+            return await GetByEmailAsync(EmailText.Create(lookupResponse.Value.Email), cancellationToken);
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
@@ -172,12 +181,12 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id)
+    public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<UserEntity> CreateUserAsync(UserEntity user)
+    public async Task<UserEntity> CreateUserAsync(UserEntity user, CancellationToken cancellationToken)
     {
         try
         {
@@ -222,12 +231,12 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public async Task<bool> UpdateUserAsync(UserEntity user)
+    public async Task<bool> UpdateUserAsync(UserEntity user, CancellationToken cancellationToken)
     {
         try
         {
             // Find user
-            var getUser = await GetUserAsync(user.Id);
+            var getUser = await GetUserAsync(user.Id, cancellationToken);
 
             // Check is user exists
             if (getUser == null) return false;
@@ -256,12 +265,14 @@ public class TableStorageUserRepository : IUserRepository
         }
     }
 
-    public async Task<bool> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
             // Find user
-            var user = await GetUserAsync(id);
+            var user = await GetUserAsync(id, cancellationToken);
 
             // Delete entity and lookup entity
             await Task.WhenAll(_tableClient.DeleteEntityAsync(

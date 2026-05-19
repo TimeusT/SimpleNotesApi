@@ -19,11 +19,13 @@ public class NoteService : INoteService
         _userRepository = userRepository;
     }
 
-    public async Task<Result<IEnumerable<NoteDomain>>> ListAsync()
+    public async Task<Result<IEnumerable<NoteDomain>>> ListAsync(CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
-            var notes = await _noteRepository.ListAsync();
+            var notes = await _noteRepository.ListAsync(cancellationToken);
             var notesDomain = notes.Select(x => x.ToDomain());
 
             if (notesDomain == null)
@@ -39,11 +41,13 @@ public class NoteService : INoteService
         }
     }
 
-    public async Task<Result<NoteDomain?>> GetAsync(int id)
+    public async Task<Result<NoteDomain?>> GetAsync(int id, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
-            var isNoteExist = await _noteRepository.GetAsync(id);
+            var isNoteExist = await _noteRepository.GetAsync(id, cancellationToken);
             var noteDomain = isNoteExist?.ToDomain();
 
             if (noteDomain == null)
@@ -59,11 +63,13 @@ public class NoteService : INoteService
         }
     }
 
-    public async Task<Result<NoteDomain>> CreateAsync(NoteDomain note)
+    public async Task<Result<NoteDomain>> CreateAsync(NoteDomain note, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        
         try
         {
-            var isUserExist =  await _userRepository.GetUserAsync(note.UserId);
+            var isUserExist =  await _userRepository.GetUserAsync(note.UserId, cancellationToken);
 
             if (isUserExist == null)
             {
@@ -71,7 +77,7 @@ public class NoteService : INoteService
             }
 
             var noteEntity = note.ToEntity();
-            var noteCreate = await _noteRepository.CreateAsync(noteEntity);
+            var noteCreate = await _noteRepository.CreateAsync(noteEntity, cancellationToken);
             var noteDomain = noteCreate.ToDomain();
 
             return Result.Ok(noteDomain);
@@ -82,11 +88,13 @@ public class NoteService : INoteService
         }
     }
 
-    public async Task<Result<bool>> UpdateAsync(NoteDomain note)
+    public async Task<Result<bool>> UpdateAsync(NoteDomain note, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
-            var isNoteExist = await _noteRepository.GetAsync(note.Id);
+            var isNoteExist = await _noteRepository.GetAsync(note.Id, cancellationToken);
 
             if (isNoteExist == null)
             {
@@ -95,7 +103,7 @@ public class NoteService : INoteService
 
             var noteEntity = note.ToEntity();
 
-            var noteUpdate = await _noteRepository.UpdateAsync(noteEntity);
+            var noteUpdate = await _noteRepository.UpdateAsync(noteEntity, cancellationToken);
 
             return Result.Ok(noteUpdate);
         }
@@ -105,18 +113,20 @@ public class NoteService : INoteService
         }
     }
 
-    public async Task<Result<bool>> DeleteAsync(int id)
+    public async Task<Result<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         try
         {
-            var isNoteExist = await _noteRepository.GetAsync(id);
+            var isNoteExist = await _noteRepository.GetAsync(id, cancellationToken);
 
             if (isNoteExist == null)
             {
                 return Result.Fail(new ValidationError(404).WithError("Id", "Note ID does not exist."));
             }
 
-            var noteDelete = await _noteRepository.DeleteAsync(id);
+            var noteDelete = await _noteRepository.DeleteAsync(id, cancellationToken);
 
             return Result.Ok(noteDelete);
         }

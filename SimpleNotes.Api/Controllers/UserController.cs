@@ -22,10 +22,10 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
     {
         // Convert to Response
-        var users = await _userService.ListUsersAsync();
+        var users = await _userService.ListUsersAsync(cancellationToken);
 
         if (users.IsFailed)
         {
@@ -34,13 +34,14 @@ public class UserController : ControllerBase
 
         // return all users
         var responseUsers = users.Value.Select(x => x.ToResponse());
+
         return Ok(responseUsers);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetUserId(int id)
+    public async Task<IActionResult> GetUserId(int id, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserAsync(id);
+        var user = await _userService.GetUserAsync(id, cancellationToken);
 
         // If there IS a note
         if (user.IsSuccess && user.Value != null)
@@ -54,7 +55,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{email}")]
-    public async Task<IActionResult> GetByEmailAsync(string email)
+    public async Task<IActionResult> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         if (!TryCreateEmailText(email, out EmailText emailText))
         {
@@ -63,7 +64,7 @@ public class UserController : ControllerBase
             return BadRequest(validationError);
         }
 
-        var userEmail = await _userService.GetByEmailAsync(emailText);
+        var userEmail = await _userService.GetByEmailAsync(emailText, cancellationToken);
 
         if (userEmail.IsSuccess && userEmail.Value != null)
         {
@@ -90,10 +91,10 @@ public class UserController : ControllerBase
 
     // Get all the notes with the user Id
     [HttpGet("{id}/note")]
-    public async Task<IActionResult> GetUserNotes(int id)
+    public async Task<IActionResult> GetUserNotes(int id, CancellationToken cancellationToken)
     {
         // USING UserId, Find Notes
-        var user = await _userService.GetUserAsync(id);
+        var user = await _userService.GetUserAsync(id, cancellationToken);
 
         if (user.IsFailed)
         {
@@ -101,7 +102,7 @@ public class UserController : ControllerBase
         }
 
         // List all notes with same userID
-        var listNotes = await _userService.GetUserNotesAsync(id);
+        var listNotes = await _userService.GetUserNotesAsync(id, cancellationToken);
 
         // To response
         var noteResponse = listNotes.Value.Select(n => n.ToResponse());
@@ -111,12 +112,12 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest user)
+    public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest user, CancellationToken cancellationToken)
     {
         var userDomain = user.ToDomain();
 
         // Call the service
-        var userCreated = await _userService.CreateUserAsync(userDomain);
+        var userCreated = await _userService.CreateUserAsync(userDomain, cancellationToken);
 
         if (userCreated.IsFailed)
         {
@@ -131,12 +132,12 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UpdateUserRequest user)
+    public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UpdateUserRequest user, CancellationToken cancellationToken)
     {
         var userDomain = user.ToDomain(id);
 
         // Call the service
-        var userUpdated = await _userService.UpdateUserAsync(userDomain);
+        var userUpdated = await _userService.UpdateUserAsync(userDomain, cancellationToken);
 
         if (userUpdated.IsFailed)
         {
@@ -150,9 +151,9 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUserAsync(int id)
+    public async Task<IActionResult> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
-        var deleted = await _userService.DeleteUserAsync(id);
+        var deleted = await _userService.DeleteUserAsync(id, cancellationToken);
 
         if (deleted.IsFailed)
         {

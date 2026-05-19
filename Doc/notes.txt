@@ -1,0 +1,93 @@
+SimpleNotesApi Project
+
+Quiz:
+- What are the 4 layers in ASP.NET MVC?
+- What is the purpose of Dependency Injection?
+- Explain what FirstOrDefault does and why we use it.
+- What was the purpose of the extensions?
+- Why do you use Data Transfer Object?
+- What is the difference between Object and Parameters and when do we use them?
+- What are the three steps in testing?
+- What are Interfaces in C# and why do we use them?
+- Explain try...catch...
+- What is the purpose of ToDomain, ToEntity, and ToResponse?
+
+
+CONCEPTS:
+- CORS (Cross Origin Resource Sharing)
+- Registering Service + Interface in Program.cs
+- Serialization = converting a data structure or object into a format that can be stored (like JSON)
+- Deserialization
+- Auth0
+	BACKEND
+		- Primary Types
+		- HTTP Query + Response
+		- Generic Types
+		- DTO
+		- Mapping
+		- Interfaces
+		- Fluent Results
+		- LINQ
+		- Method Overload/Constructor Overload
+		- MOQ Mock and X Unit testing
+		- Singleton, Scoped, Transient
+		- Task (Asynchronous code)
+		- Cancellation Token
+	FRONTEND
+		- React Query
+		- SPA
+		- Hook forms
+		- Mutations
+		- Yup schema
+		- useState
+		- MUI (Material UI)
+		- Grid + Box
+		- Modal
+		- TextField (helperText and error)
+		- Alerts
+
+
+BACKEND:
+ 1. Create entities (Domain)
+	-  Contains all attributes of the entity
+
+ 2. IRepository + Repository
+	- All the actions done to the API
+	- Direct interaction with the DB
+
+ 3. IService + Service
+		- ToDomain() -> Domain
+		- ToEntity() -> Domain Extension
+	- Server side error handling
+	- Entity ExtensionS
+	
+ 4. Controller
+		- ToResponse() -> Domain Extension
+	- HTTP Response (Ok, NotFound...)
+	- Entry Point
+	
+	
+FRONTEND:
+ 1. Index 
+	- Is the entry point where parents wrap children
+	- Auth0 Login
+ 2. App 
+	- Routing
+ 3. Pages
+	- Home = main page with everything, checks authentication
+	- All forms
+	- MUI Lists to display all user notes
+	- Live update of notes (Edit and Delete)
+	- Snackbar and client-side error handling
+	- Modal (for the edit note popup)
+	- Alerts (for error message)
+ 4. Types
+	- Same as entities
+ 5. API
+	- Calls to the API directly
+	- All actions are done through here
+	- Same as Repository
+ 6. Hooks
+	- Naming convention is "use[Action]"
+	- Uses mutations to update (replace) old data with new data
+	

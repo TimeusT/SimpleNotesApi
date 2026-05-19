@@ -5,14 +5,14 @@ namespace SimpleNotes.Application.Interfaces;
 
 public interface INoteService
 {
-    Task<Result<IEnumerable<NoteDomain>>> ListAsync();
+    Task<Result<IEnumerable<NoteDomain>>> ListAsync(CancellationToken cancellationToken);
 
-    Task<Result<NoteDomain?>> GetAsync(int id);
+    Task<Result<NoteDomain?>> GetAsync(int id, CancellationToken cancellationToken);
 
-    Task<Result<NoteDomain>> CreateAsync(NoteDomain note);
+    Task<Result<NoteDomain>> CreateAsync(NoteDomain note, CancellationToken cancellationToken);
 
-    Task<Result<bool>> UpdateAsync(NoteDomain note);
+    Task<Result<bool>> UpdateAsync(NoteDomain note, CancellationToken cancellationToken);
 
-    Task<Result<bool>> DeleteAsync(int id);
+    Task<Result<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
 }
 

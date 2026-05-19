@@ -94,3 +94,12 @@ https://react.dev/learn/passing-data-deeply-with-context#step-1-create-the-conte
 
 -------------------------------------------------------
 Task (Asynchronous tasks) "async" and "await"
+
+Cancellation Token:
+When something requests cancellation (client disconnect, timeout, app shutdown, etc.), ASP.NET Core marks the CancellationToken as cancelled.
+Your code passes that token into async operations, and cancellation-aware operations notice the signal and stop early.
+Everythihg shares the same token. If the token is cancelled, all async code that refers to that token can't do anything.
+Which is why its in param so you can use it every time you call the token.
+NEED "cancellationToken.ThrowIfCancellationRequested();" at the start of your service to check the token status.
+Don't need to add for repository layer unless it has a lot of logic
+In short: A cancellationToken is a shared “stop requested” signal passed through async operations so they can exit early cooperatively.

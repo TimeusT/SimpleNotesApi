@@ -19,9 +19,9 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
     {
-        var notes = await _noteService.ListAsync();
+        var notes = await _noteService.ListAsync(cancellationToken);
 
         if (notes.IsFailed)
         {
@@ -35,9 +35,9 @@ public class NoteController : ControllerBase
 
     [HttpGet("{id}")]
     [ActionName(nameof(GetAsync))]
-    public async Task<IActionResult> GetAsync(int id)
+    public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
     {
-        var existingNote = await _noteService.GetAsync(id);
+        var existingNote = await _noteService.GetAsync(id, cancellationToken);
 
         if (existingNote.IsSuccess && existingNote.Value != null)
         {
@@ -49,11 +49,11 @@ public class NoteController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateNoteRequest noteItem)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateNoteRequest noteItem, CancellationToken cancellationToken)
     {
         var domainNote = noteItem.ToDomain();
 
-        var createNoteResult = await _noteService.CreateAsync(domainNote);
+        var createNoteResult = await _noteService.CreateAsync(domainNote, cancellationToken);
 
         if (createNoteResult.IsFailed)
         {
@@ -66,11 +66,11 @@ public class NoteController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateNoteRequest noteItem)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateNoteRequest noteItem, CancellationToken cancellationToken)
     {
         var domainNote = noteItem.ToDomain(id);
 
-        var updatedNote = await _noteService.UpdateAsync(domainNote);
+        var updatedNote = await _noteService.UpdateAsync(domainNote, cancellationToken);
 
         if (updatedNote.IsFailed)
         {
@@ -83,9 +83,9 @@ public class NoteController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(int id)
+    public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var deleted = await _noteService.DeleteAsync(id);
+        var deleted = await _noteService.DeleteAsync(id, cancellationToken);
 
         if (deleted.IsFailed)
         {
