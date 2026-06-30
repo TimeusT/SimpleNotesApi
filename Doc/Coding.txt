@@ -93,13 +93,256 @@ React Context:
 https://react.dev/learn/passing-data-deeply-with-context#step-1-create-the-context
 
 -------------------------------------------------------
+
 Task (Asynchronous tasks) "async" and "await"
 
 Cancellation Token:
 When something requests cancellation (client disconnect, timeout, app shutdown, etc.), ASP.NET Core marks the CancellationToken as cancelled.
 Your code passes that token into async operations, and cancellation-aware operations notice the signal and stop early.
+
 Everythihg shares the same token. If the token is cancelled, all async code that refers to that token can't do anything.
 Which is why its in param so you can use it every time you call the token.
+
 NEED "cancellationToken.ThrowIfCancellationRequested();" at the start of your service to check the token status.
-Don't need to add for repository layer unless it has a lot of logic
+Don't need to add for repository layer unless it has a lot of logic.
+
 In short: A cancellationToken is a shared “stop requested” signal passed through async operations so they can exit early cooperatively.
+
+-------------------------------------------------------
+
+Polly in C#
+Making code more resilient = desiging the application so it continues working even when things go wrong (timeout).
+Use in repository layer because its the layer before the DB
+
+Strategies:
+Reactive
+- Retry
+- Circuit-breaker = stop trying if something is broken or busy. This can improve performance by freeing up space and resources
+- Fallback
+- Hedging = executes parallel actions when things are slow and waits for the fastest one
+
+Proactive
+- Timeout
+- Rate Limiter = constrains executions to not exceeed a certain rate
+
+Reactive strategy provides access to ShouldHandle which lets you decide whether the
+	resilience should manage the fault or result returned after execution
+
+Using Retry:
+var retryPolicy = new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions
+    {
+        MaxRetryAttempts = 2,
+        Delay = TimeSpan.FromSeconds(2)
+    })
+    .Build()
+	
+1. Run and find exception
+2. Waits 2 seconds
+3. Runs again
+4. Exception -> waits 2 second
+5. Runs one more time
+6. Gives error
+
+! Does not rerun the wrapper in repo, it reruns the code inside !
+
+-------------------------------------------------------
+
+Transactions in C#
+The System.Transactions.Transaction API is a .NET ambient transaction system that allows multiple operations (even
+	across libraries and databases) to participate in a single coordinated transaction, often via TransactionScope.
+
+-------------------------------------------------------
+
+Creating a tool for the LLM to use
+Tool uses a weather API to get current data
+LLM using a tool = "Function Calling"
+
+The model acts like a router: it reads the prompt, decides a specific function (tool) is needed, and writes out a
+	JSON block containing the exact parameters required to run that tool.
+When telling the LLM about your tool, you provide a schema declaration
+Your application code then captures that JSON, executes the real function, and feeds the results back to the LLM
+	so it can write a final human response
+
+The LLM is a project manager that reads a request, decides what tasks are needed, delegates those tasks to the
+	engineering team (your application), and then writes a final report for the client (the user). It does not
+	access systems or store information itself — all data access and memory are handled by the engineering team.
+	
+Semantic Kernel does not give the LLM tools — it defines a safe, structured way for your application to
+	expose capabilities that the LLM can request.
+	
+-------------------------------------------------------
+SMTP (Simple Mail Transfer Protocol) Server
+To send an email, I need to connect to a service (smtp) and get a port.
+Different ports represent different ways of securing a connection to the server. (Port 587 is most common)
+STARTTLS is a security ecryption command so sensitive information isnt readable when traveling through networks.
+You need to establish a connection first, then authenticate:
+	using var client = new SmtpClient();
+
+	await client.ConnectAsync(
+		"smtp.gmail.com",
+		587,
+		SecureSocketOptions.StartTls);
+
+	await client.AuthenticateAsync(
+		"your@gmail.com",
+		"your-app-password");
+
+Make the client reusable so it doesnt establish connection all the time.
+
+-------------------------------------------------------
+Preprocessor Directives (https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives)
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status
+
+-------------------------------------------------------
+- Did you actually do the work?
+- Can you explain your decisions?
+- Do you understand the underlying concepts?
+
+
+1. What did you do to make your code testable?
+2. How did you use C# and .NET in our project?
+3. What did you do to make your code secure?
+4. How did you redesign your data access pattern when converting from SQL to Table Storage?
+5. What are the steps you take to solve a problem?
+
+
+
+1. Tell me about your role at Tbyte. What did you actually build?
+	I was tasked to build a activity tracking application where I developed both the back and front end features. For
+	the back I used C# and .NET framework in Visual Studio, while using React and typescript for the front end in
+	Visual Studio Code. The app was developed to act as their second brain so they can look at it in the event that
+	they forget something. I implemented authentication so that every note
+	is unique to each user, and users can create, update, search and delete them. The feature I found most difficult
+	was implementing Auth0 since I had never used a third party authentication method before. However it improved
+	my understanding of wrappers in C#.
+	- ASP.NET web API
+	- OAuth
+	- 
+
+2. You mentioned Clean Architecture. How did you apply it?
+	By separating my code into those layers, I maintain a clean folder structure while easily identifying the purpose
+	of each layer. For example, the domain layer contains entities, the application later handles the services and
+	DTO. The infrastructure layer is the primary connection to the database, which contains all the repositories.
+	This means all the code in there, should be accessing the database in some way - read, write and update.
+	Using the feature called 'CreateNote' as an example, the domain layer maps the users input into the NoteDomain
+	class. It uses the service layer 'CreateNote' to map it into another class called NoteEntity. The service layer
+	business logic before accessesing the create function from the infrastructure layer. In the infrastructure,
+	it creates the entity in the database and the process is done. Each layer gains access to another layer using
+	Dependency Injection. 
+	- Clean architecture
+	- SOLID principle
+	- DDD 
+
+3. Walk me through the Azure Table Storage migration and how you redesigned the data model.
+	The migration to Azure Table Storage only required change in the infrastructure layer since we're only changing
+	the database. Unlike SQL, the Table Storage structure uses Partition and Row keys as the two main identifiers
+	when search through the table. Instead of using and ID, I used a GUID, otherwise it would have to perform a
+	search for existing IDs which complicates things, defeating the purpose of table storage. The reason for
+	switching to table storage is to enhance search efficiency. However, table storage is mostly used for read,
+	so when developing the write operations like 'Create' and 'Update', it contained a few extra steps compared to
+	SQL. In SQL, update was simple however in Table Storage, each parameter had to be updated manually, including
+	those that did not change. The Partition key I used is the user email, then the GUID for the Row key. These two
+	keys help narrow the to the least amount of matches, making the search time quick. 
+	- Table Storage parttion strategy
+	- Table Storage transation and batch
+
+4. How did you use C# and .NET? Walk me through the backend feature you built.
+	I used Visual Studio as my IDE, using the web API .NET framework. I kept my Software Development Kit (SDK) at 8
+	since it was the safest version for my code. I created a controller to act as my entry point where it uses
+	routing which helped decide which HTTP action will be used. For every service, I created an interface which I
+	configured in my program file. I made sure to isolate each layer using the Clean Achitecture structure and kept
+	their operations within their own role. The authentication is done in the front end using Auth0, the backend was
+	made to handle data related operations.
+	- ASP.NET web api
+	- Semantic Kernel
+
+5. You mention writing quality, testable and secure code. What does that mean?
+
+
+6. You mention integrating LLM using Semantic Kernal. Tell me about that.
+7. Tell me about a difficult technical problem you solved.
+
+
+
+
+Potential follow-up questions:
+1:
+What was the application?
+Who used it?
+What features did you build?
+What percentage of the project did you own?
+What was the hardest feature?
+How much backend vs frontend work did you do?
+
+2:
+Explain Clean Architecture.
+Why is it useful?
+What belongs in the Domain layer?
+What belongs in the Infrastructure layer?
+Give an example from your project.
+What dependencies are allowed?
+How did this improve maintainability?
+
+3:
+Why migrate?
+Why Azure Table Storage?
+What problems existed with SQL?
+What data model did you design?
+What were the PartitionKey and RowKey?
+What queries changed?
+Why were they faster?
+What limitations did Table Storage introduce?
+How did you handle relationships?
+What trade-offs did you make?
+
+4:
+Controllers?
+Dependency Injection?
+Entity Framework?
+Async/await?
+Middleware?
+Authentication?
+Services?
+Repositories?
+LINQ?
+Validation?
+Error handling?
+
+5:
+Testable
+	Dependency Injection
+	Interfaces
+	Mocking
+	Unit tests
+	Separation of concerns
+Clean
+	Naming
+	Small methods
+	SOLID
+	Readability
+	Reusability
+Secure
+	Input validation
+	Authentication
+	Authorization
+	Parameterized SQL
+	Secrets management
+	HTTPS
+	Avoiding sensitive logging
+	
+6:
+What was the problem?
+Which model?
+Why Semantic Kernel?
+What is function calling?
+What prompts did you write?
+What challenges did you encounter?
+How did you evaluate responses?
+What would you improve?
+
+-------------------------------------------------------
+
+var okValues = (IAsyncEnumerable<VectorSearchResult<RecordInfo>>)okSend.Value!;
+
+This basically sets okSend.Value as that type. Can only do it to objects

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
+using Polly.Retry;
 using SimpleNotes.Application.Interfaces;
 using SimpleNotes.Application.Services;
 using SimpleNotes.Infrastructure;
@@ -27,6 +29,17 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     });
+
+// Polly retry
+var retryPolicy = new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions
+    {
+        MaxRetryAttempts = 2,
+        Delay = TimeSpan.FromSeconds(2)
+    })
+    .Build();
+
+builder.Services.AddSingleton(retryPolicy);
 
 // Register the service with a specific lifetime
 builder.Services.AddScoped<INoteService, NoteService>();

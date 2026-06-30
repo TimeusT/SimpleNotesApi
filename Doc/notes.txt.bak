@@ -31,6 +31,8 @@ CONCEPTS:
 		- Method Overload/Constructor Overload
 		- MOQ Mock and X Unit testing
 		- Singleton, Scoped, Transient
+		- Task (Asynchronous code)
+		- Cancellation Token
 	FRONTEND
 		- React Query
 		- SPA

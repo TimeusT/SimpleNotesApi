@@ -1,0 +1,303 @@
+AI agent
+- Reactive agents
+	- Respond instantly to inputs
+	- No long-term planning
+- Goal-based agents
+	- Work toward specific objectives
+	- Plan multiple steps
+- Learning agents
+	- Improve over time using feedback
+	- Often based on reinforcement learning concepts Reinforcement Learning
+- Multi-agent systems
+	- Multiple AI agents working together
+	- Each has a role (researcher, coder, reviewer, etc.)
+	
+Agent Architecture (Core loop)
+- Observe
+	> Reason
+	> Plan
+	> Act
+	> Evaluate
+	> Repeat
+This loop creates autonomy
+	
+"An AI agent = a language model + tools + memory + a loop that keeps working until a goal is completed."
+
+-------------------------------------------------------
+Difference bewteen an AI and a Model
+The LLM itself:
+	- Gernerates text
+	- Reasons
+	- Predicts responses
+The AI application:
+	- Conversation memory
+	- Web browsing
+	- Tools/actions
+	- Safety systems
+	- UI
+	- APIs
+	- Orchestration
+
+Model = Trained prediction engine (Engine)
+AI    = Full intelligent system using models (Vehicle using the engine)
+
+-------------------------------------------------------
+Semantic Kernel
+Is and open-source SDK (Software Development Kit) created by Microsoft for building AI applications that combine:
+- Large language models
+- Traditional programming logic
+- External tools and APIs
+Its like a bridge between AI reasoning and real software systems.
+It helps you:
+- Give an AI a goal
+- Connect it to tools
+- Let it plan and execute steps
+- Keep everything structured and controllable
+
+Core idea:
+"Kernel" = AI + plugins + orchestration layer
+- AI model = brain (reasoning)
+- Plugins = tools (functions)
+	- These are functions the AI can call, like: SendEmail(), SearchDatabase()...
+- Kernel = coordinator (decides what runs when)
+	- Break tasks into steps
+	- Decide which plugins to call
+	- Chain multiple actors together
+It moves AI from chatting with a model to building software systems that use AI as a reasoning engine
+
+"Semantic Kernel = AI + plug-in functions + planner that decides what to run"
+
+
+In the context of AI Semantic Kernel (SK), a vector database (vector DB) is one of the key building blocks
+	used to give large language models “memory” and context beyond the current prompt.
+A Vector Database stores and searches embeddings - which are numerical representations of the text (or image, audio, etc.)
+How Semantic Kernel gets context for new prompts:
+	1. User sends a prompt
+	2. SK embeds the prompt (there is an embedding model that does this)
+	3. Semantic search in vector DB (gets related past conversation context - vector data that is close together)
+	4. Context injection (takes the top results and injects into LLM prompt - Retrieval Augmented Generation)
+	5. LLM generates final answer
+
+Does not need a local DB for small projects, its built-in
+Vector store:
+Embed the user question
+	↓
+Search vector DB (top K relevant chunks)
+	↓
+Inject those chunks into the prompt
+	↓
+Send to Azure OpenAI via Semantic Kernel
+	↓
+Return answer
+
+To create embedding generator
+1. link your ai and embedding model
+2. then embed the property
+3. then upsert it into collection
+	public async Task GenerateEmbeddingsAndUpsertAsync(
+		ITextEmbeddingGenerationService textEmbeddingGenerationService,
+		VectorStoreCollection<ulong, Hotel> collection)
+	{
+		// Upsert a record.
+		string descriptionText = "A place where everyone can be happy.";
+		ulong hotelId = 1;
+
+		// Generate the embedding.
+		ReadOnlyMemory<float> embedding =
+			await textEmbeddingGenerationService.GenerateEmbeddingAsync(descriptionText);
+
+		// Create a record and upsert with the already generated embedding.
+		await collection.UpsertAsync(new Hotel
+		{
+			HotelId = hotelId,
+			HotelName = "Hotel Happy",
+			Description = descriptionText,
+			DescriptionEmbedding = embedding,
+			Tags = new[] { "luxury", "pool" }
+		});
+	}
+	
+To search
+1. embed the prompt
+2. then VectorSearchResult the embedded prompt,
+3. return result
+	public async Task GenerateEmbeddingsAndSearchAsync(
+		ITextEmbeddingGenerationService textEmbeddingGenerationService,
+		VectorStoreCollection<ulong, Hotel> collection)
+	{
+		// Upsert a record.
+		string descriptionText = "Find me a hotel with happiness in mind.";
+
+		// Generate the embedding.
+		ReadOnlyMemory<float> searchEmbedding =
+			await textEmbeddingGenerationService.GenerateEmbeddingAsync(descriptionText);
+
+		// Search using the already generated embedding.
+		IAsyncEnumerable<VectorSearchResult<Hotel>> searchResult = collection.SearchAsync(searchEmbedding, top: 1);
+		List<VectorSearchResult<Hotel>> resultItems = await searchResult.ToListAsync();
+
+		// Print the first search result.
+		Console.WriteLine("Score for first result: " + resultItems.FirstOrDefault()?.Score);
+		Console.WriteLine("Hotel description for first result: " + resultItems.FirstOrDefault()?.Record.Description);
+	}
+
+Vector Dimensions sizes = size of the emedded array ([1, 2, 3] -> 3 dimensions)
+Bigger Dimension = more precise semantic distinctions
+
+-------------------------------------------------------
+OpenAI Actions
+They are integrations that allow an AI model to call external APIs and perform real-world tasks.
+"They turn a chatbot into a system that can do things outside the chat"
+
+Normally, a model from OpenAI can only:
+- Generate text
+- Reason
+- Give advice
+But with Actions:
+- Book appointments
+- Query databases
+- Send emails
+
+How Actions work:
+1. API description
+	- define endpoint URL, Inputs (parameters), Authentication method
+2. Model decides when to use it
+	- The GPT: reads your request, decides if a tool is needed, calls the API
+3. API returns data
+	- External service responds with JSON
+4. Model uses the results
+	- The AI: interprets the response, formats it, ccontinues reasoning if needed
+
+-------------------------------------------------------
+How to build an AI agent with C# and openAI
+	User Request
+	   ↓
+	OpenAI Model (reasoning)
+	   ↓
+	Tool Selection
+	   ↓
+	C# Functions / APIs
+	   ↓
+	Result
+	   ↓
+	Model decides next step
+
+There are 3 common approaches:
+1. Raw OpenAI SDK (Starter)
+2. Semantic Kernel
+3. Microsoft AutoGen
+
+-------------------------------------------------------
+Where is the memory stored?
+>   AI memory is usually an external database retrieval system connected to a model. It can summarise chats
+	into Semantic Memory (Vector Search). This means its summarised into concepts and allows similarity matching.
+	Different memory types are stored in differnt places:
+		Conversation Hisotry  -		Redis (open-source , in-memory data store used primarily as a cache, database,
+									message broker and streaming engine. These are hosted in the cloud. eg:AWS or Google Cloud)
+		User preferences      -		SLQ/NoSQL (Hosted on enterprise cloud servers. Companies with strict privacy
+									requirements might host these databases on their own physical local servers)
+		Semantic memory       -		Vector databses (Like Pinecone. Using cloud-native infrastructure)
+		Files/documents		  -		Object storage
+		Session state 		  -		Redis/Cache (Like conversation memory)
+	
+How does it know what tools to use?
+>   LLMs predict which tools it has been presented is suitable for satisfyig the prompt. They are trained
+	on: Language, APIs, structured formats and programming patters. So they are good at deciding when tools are
+	needed, generating valid arguments and chaining workflows.
+	The model decides on: user intent, tool descriptions, prior converations, examples and system
+	instructions - Probabilistic reasoning.
+		User Prompt
+			↓
+		Tokenization
+			↓
+		Embeddings (Each token becomes a vector. Words/concepts used similarly become mathematically close.)
+			↓
+		Positional Encoding ("dog bites man" != "man bites dog")
+			↓
+		Transformer Attention (Computes relating tokens, relating concepts, what context influences meaning)
+			↓
+		Internal Semantic Representation (Categorises tokens into layers - later layers -> intent, reasoning...)
+			↓
+		Intent Prediction (Intent is distributed across activations and encoded in neural state - like the human brain)
+			↓
+		Tool Relevance Estimation (Tool descriptions are also embedded and goes through the same steps before association/matching)
+			↓
+		Action Prediction (Produces multiple outputs, calls the one with highest probability)
+			↓
+		Tool Call
+
+How does it implement the parameters into the tools?
+>   It generates output (usually JSON), and the system validates + executes it. When defining tools, you give the
+	model a contract. It then generates the tool using the tokens. For example:
+	{
+	  "name": "get_weather",
+	  "description": "Get weather for a city and date",
+	  "parameters": {
+		"type": "object",
+		"properties": {
+		  "city": { "type": "string" },
+		  "date": { "type": "string" }
+		},
+		"required": ["city"]
+	  }}
+	  
+	User: "Do I need an umbrella in Brisbane tomorrow?"
+	Model sees:
+	  - "umbrella" → weather
+	  - "tomorrow" → date field
+	  - "Brisbane" → location field
+	Then maps:
+	  city = Brisbane
+	  date = tomorrow
+	
+	Parameter filling in LLM tool use is emergent structured generation: the model uses learned semantic representations
+	to map user intent into schema-constrained token sequences, which are then validated and executed by external
+	runtime systems.
+
+How do people train AI?
+>   Modern LLMs are trained on a mix of:
+	- Text (books, articles, web pages)
+	- Code (GitHub-style repositories)
+	- Conversations (dialogue datasets)
+	- Structured data (documentation, APIs, manuals)
+	The fundamental training format - almost everything becomes a prediction.
+	For example: ["The weather in Brisbane is"] → [" sunny"]
+	
+	How training actually works:
+	1. Tokenization
+	2. Embedding ("Brisbane" → [0.12, -0.88, 0.44, ...] meaning starts to exist mathematically)
+	3. Transformer forward pass (Processes tokens through layers. Transformer Neural Network Architecture)
+	4. Prediction (probability disctribution over next token)
+	5. Loss Calculation (Model compares its predicted probability distribution against the actual next token in the training data)
+	6. Backward Pass / Backpropagation (The system works backward through the Transformer neural network layers, from the output to
+		input. System calculates the 'gradient' for every 'weight' (parameter) in the network. Gradients show how much changing each
+		parameter changes the overall error)
+	7. Optimization / Weight Update (Takes the gradients and adjust the weights by a fraction so it doesnt ruin prior knowledge. These
+		weights move in the exact direction that reduces the loss score for the next time it sees similar data.)
+	8. Iteration (The AI repeats steps 1-7 simultaneously across thousands of tokens called a "batch". This is repeated billions of
+		times across the entire dataset)
+
+Parallel matrix operations
+>   They are the foundational engine of modern AI training. It lets the AI go through the process of giving a response faster by
+	letting things run simultaneously across many parameters instead of one at a time.
+
+
+Conversation History: Using Semantic Kernel
+User Prompt
+	↓
+Load Recent Chat History
+	↓
+Search Vector Memory
+	↓
+Build Prompt
+	↓
+Azure OpenAI
+	↓
+Save Conversation\
+
+-------------------------------------------------------
+How AI can be implemented into SimpleNotesApi:
+1. Summaries notes / Notes chatbot
+2. Categorising notes
+3. Create a note (Tool) - using context, it will fill out the Title and Content
+4. Batch delete notes (Tool)

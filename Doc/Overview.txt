@@ -9,6 +9,12 @@ Request    ->    	Controller action					->		Service class				->		Repository clas
 Response    <-		Map Domain object to Response DTO			Call repository
 																Map Entity to Domain
 
+Try to keep the repository layer 1-to-1 with the DB.
+E.g.: NotesRepository should not have any users (in update)
+
+Service layer is usually the place where you define te transaction boundary. It represents a business operation
+"This is where all changes for this use case are committed together."
+
 -------------------------------------------------------
 
 Rules:
@@ -59,6 +65,10 @@ X Unit Testing	 - Use for automated tests
 				 - Catch bugs early
 				 - Verifies single unit behaviors (unit means method/class/small logic)
 				 
+Only use the function you are testing. Do not use other functions to assign.
+When tesing whether a function was called, use '.Verify(expression, times)'. For example:
+	emailService.Verify(x => x.SendEmailAsync(It.Is<EmailRequest>(x => x == email)), Times.Once);
+This verifies that emailService was called 'Once' and that the function was called using 'email' as the param
 -------------------------------------------------------
 
 Monoliphic + Aggregate Root
@@ -89,6 +99,7 @@ Writing the code:
 2. Create the new features and make sure it works
 - You can see what is breaking the code
 3. delete ONLY WHEN the new code works perfectly
+4. If there is an error, it should always return the error and not a success case.
 
 -------------------------------------------------------
 
@@ -147,5 +158,22 @@ Transaction (process) - Unit of work (Terminology)
 - When processing multiple things at the same time
 - This makes sure they both fail or succeed together
 
+DbContext is a unit of work because it is 'Scoped' (Scoped = per request.
+	Everything that happens between the request and response = 1 unit of work).
+	It trackc changes until it becomes a response
 
-If there is an error, it should always return the error and not a success case.
+SaveChanges() triggers the commit the changes to DB
+
+Distributed systems, each domain are on their own, but you want Eventual Consistency
+
+-------------------------------------------------------
+Value type = passes values (small)
+Reference type = passes a reference (big)
+
+Only these two because of how memory works: cache and long term data
+
+Read:
+JavaScript Genrator (W3school)
+Iterating with Async Enumerables in C# (Microsoft)
+
+

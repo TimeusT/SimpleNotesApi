@@ -33,6 +33,8 @@ CONCEPTS:
 		- Singleton, Scoped, Transient
 		- Task (Asynchronous code)
 		- Cancellation Token
+		- Resilience Strategies
+		- Transactions
 	FRONTEND
 		- React Query
 		- SPA

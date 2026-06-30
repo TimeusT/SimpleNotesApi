@@ -2,6 +2,7 @@
 using Azure.Data.Tables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Polly;
 using SimpleNotes.Domain;
 using SimpleNotes.Domain.Entities;
 using SimpleNotes.Infrastructure.Data;
@@ -12,97 +13,122 @@ namespace SimpleNotes.Infrastructure.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _context;
-    public UserRepository(AppDbContext context)
+    private readonly ResiliencePipeline _pipeline;
+
+    public UserRepository(AppDbContext context, ResiliencePipeline pipeline)
     {
         _context = context;
+        _pipeline = pipeline;
     }
 
     public async Task<IEnumerable<UserEntity>> ListUsersAsync(CancellationToken cancellationToken)
     {
-        return await _context.Users
-            .Include(x => x.Address)
-            .ToListAsync(cancellationToken);
+        return await _pipeline.ExecuteAsync(async token =>
+        {
+            return await _context.Users
+                .Include(x => x.Address)
+                .ToListAsync(token);
+        }, cancellationToken);
     }
 
     public async Task<UserEntity?> GetUserAsync(int id, CancellationToken cancellationToken)
     {
-        return await _context.Users
-            .Include(x => x.Address)
-            .FirstOrDefaultAsync(x => x.Id == id,
-                cancellationToken);
+        return await _pipeline.ExecuteAsync(async token =>
+        {
+            return await _context.Users
+                .Include(x => x.Address)
+                .FirstOrDefaultAsync(x => x.Id == id,
+                    cancellationToken);
+        });
     }
 
     public async Task<UserEntity?> GetByEmailAsync(EmailText email, CancellationToken cancellationToken)
     {
-        return await _context.Users
-            .Include(x => x.Address)
-            .FirstOrDefaultAsync(e => e.Email == email.Value);
+        return await _pipeline.ExecuteAsync(async token =>
+        {
+            return await _context.Users
+                .Include(x => x.Address)
+                .FirstOrDefaultAsync(e => e.Email == email.Value,
+                    cancellationToken);
+        });
     }
 
     public async Task<IEnumerable<NoteItemEntity>> GetUserNotesAsync(int id, CancellationToken cancellationToken)
     {
-        return await _context.Notes
-            .Where(n => n.UserId == id)
-            .ToListAsync(cancellationToken);
+        return await _pipeline.ExecuteAsync(async token =>
+        {
+            return await _context.Notes
+               .Where(n => n.UserId == id)
+               .ToListAsync(cancellationToken);
+        });
     }
 
     public async Task<UserEntity> CreateUserAsync(UserEntity user, CancellationToken cancellationToken)
     {
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync(cancellationToken);
+        return await _pipeline.ExecuteAsync(async token =>
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return user;
+            return user;
+        });
     }
 
     public async Task<bool> UpdateUserAsync(UserEntity user, CancellationToken cancellationToken)
     {
-        if (user == null) return false;
-
-        var updatedUser = await _context.Users
-            .Include(u => u.Address)
-            .FirstOrDefaultAsync(u => u.Id == user.Id,
-                cancellationToken);
-
-        if (updatedUser == null) return false;
-
-        updatedUser.FirstName = user.FirstName;
-        updatedUser.LastName = user.LastName;
-        updatedUser.Age = user.Age;
-
-        if (updatedUser.Address == null && user.Address != null)
+        return await _pipeline.ExecuteAsync(async token =>
         {
-            updatedUser.Address = new AddressEntity();
-        }
+            if (user == null) return false;
 
-        if (updatedUser.Address != null && user.Address != null)
-        {
-            updatedUser.Address.StreetNo = user.Address.StreetNo;
-            updatedUser.Address.City = user.Address.City;
-            updatedUser.Address.State = user.Address.State;
-            updatedUser.Address.PostalCode = user.Address.PostalCode;
-            updatedUser.Address.Country = user.Address.Country;
-        }
+            var updatedUser = await _context.Users
+                .Include(u => u.Address)
+                .FirstOrDefaultAsync(u => u.Id == user.Id,
+                    cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            if (updatedUser == null) return false;
 
-        return true;
+            updatedUser.FirstName = user.FirstName;
+            updatedUser.LastName = user.LastName;
+            updatedUser.Age = user.Age;
+
+            if (updatedUser.Address == null && user.Address != null)
+            {
+                updatedUser.Address = new AddressEntity();
+            }
+
+            if (updatedUser.Address != null && user.Address != null)
+            {
+                updatedUser.Address.StreetNo = user.Address.StreetNo;
+                updatedUser.Address.City = user.Address.City;
+                updatedUser.Address.State = user.Address.State;
+                updatedUser.Address.PostalCode = user.Address.PostalCode;
+                updatedUser.Address.Country = user.Address.Country;
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return true;
+        });
     }
 
     public async Task<bool> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .Include(n => n.Notes)
-            .Include(a => a.Address)
-            .FirstOrDefaultAsync(u => u.Id == id,
-                cancellationToken);
+        return await _pipeline.ExecuteAsync(async token =>
+        {
+            var user = await _context.Users
+                .Include(n => n.Notes)
+                .Include(a => a.Address)
+                .FirstOrDefaultAsync(u => u.Id == id,
+                    cancellationToken);
 
-        if (user == null) return false;
+            if (user == null) return false;
 
-        _context.Users.Remove(user);
+            _context.Users.Remove(user);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+            return true;
+        });
     }
 }
 
