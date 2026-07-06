@@ -19,7 +19,7 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> ListAsync(CancellationToken cancellationToken)
     {
         var notes = await _noteService.ListAsync(cancellationToken);
 
@@ -28,7 +28,7 @@ public class NoteController : ControllerBase
             return notes.GetFailedActionResult();
         }
 
-        var noteResponse = notes.Value.Select(x => x.ToResponse());
+        //var noteResponse = notes.Value.Select(x => x.ToResponse());
 
         return Ok(notes.Value);
     }
