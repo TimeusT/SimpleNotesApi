@@ -172,11 +172,38 @@ Reference type = passes a reference (big)
 
 Only these two because of how memory works: cache and long term data
 
-Read:
-JavaScript Genrator (W3school)
+JavaScript Generator (W3school)
 Iterating with Async Enumerables in C# (Microsoft)
 
 
 Understand every line in the entry point (Program.cs)
 
 Read the ASP.NET articles by Microsoft, DDD, Clean architect, 
+
+
+[ApiController]
+[Route("api/[controller]")]
+
+public class NoteController : ControllerBase
+{
+    private readonly INoteService _noteService;
+
+    public NoteController(INoteService noteService)
+    {
+        _noteService = noteService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ListAsync(CancellationToken cancellationToken)
+    {
+        var notes = await _noteService.ListAsync(cancellationToken);
+
+        if (notes.IsFailed)
+        {
+            return notes.GetFailedActionResult();
+        }
+
+        //var noteResponse = notes.Value.Select(x => x.ToResponse());
+
+        return Ok(notes.Value);
+    }
