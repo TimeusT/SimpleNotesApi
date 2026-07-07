@@ -65,7 +65,7 @@ X Unit Testing	 - Use for automated tests
 				 - Catch bugs early
 				 - Verifies single unit behaviors (unit means method/class/small logic)
 				 
-Only use the function you are testing. Do not use other functions to assign.
+Only use the function you are testing. Do not use other functions, pay attention to the arrage part.
 When tesing whether a function was called, use '.Verify(expression, times)'. For example:
 	emailService.Verify(x => x.SendEmailAsync(It.Is<EmailRequest>(x => x == email)), Times.Once);
 This verifies that emailService was called 'Once' and that the function was called using 'email' as the param
@@ -172,8 +172,10 @@ Reference type = passes a reference (big)
 
 Only these two because of how memory works: cache and long term data
 
-Read:
-JavaScript Genrator (W3school)
+JavaScript Generator (W3school)
 Iterating with Async Enumerables in C# (Microsoft)
 
 
+Understand every line in the entry point (Program.cs)
+
+Read the ASP.NET articles by Microsoft, DDD, Clean architect, 

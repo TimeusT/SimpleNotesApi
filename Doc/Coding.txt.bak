@@ -342,5 +342,9 @@ How did you evaluate responses?
 What would you improve?
 
 -------------------------------------------------------
-TODO:
-Write tests for the rest of the controller
+Explicit type casting
+var okValues = (IAsyncEnumerable<VectorSearchResult<RecordInfo>>)okSend.Value!;
+
+This basically sets okSend.Value as that type. Can only do it to objects.
+It turns the weakly-typed objct and forces it to be a
+strongly-typed var okValues = (IAsyncEnumerable<VectorSearchResult<RecordInfo>>)okSend.Value!;

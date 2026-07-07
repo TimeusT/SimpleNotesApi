@@ -14,21 +14,7 @@ public class NoteControllerTests
     public async Task Given_CancellationToken_When_GetAllAsync_Then_ReturnOkValues()
     {
         // Arrange
-        var allNotes = new List<NoteDomain>
-        {
-            new NoteDomain(
-                AlphaText.Create("Test one"),
-                1,
-                AlphaText.Create("This is a test note one"),
-                1
-            ),
-            new NoteDomain(
-                AlphaText.Create("Test two"),
-                2,
-                AlphaText.Create("This is a test note two"),
-                2
-            )
-        };
+        var allNotes = AllNotes();
 
         var token = new CancellationToken();
 
@@ -57,27 +43,15 @@ public class NoteControllerTests
         Assert.Equal(allNotes[1].Title, returnedNotes[1].Title);
         Assert.Equal(allNotes[1].Content!, returnedNotes[1].Content);
         Assert.Equal(allNotes[1].UserId, returnedNotes[1].UserId);
+
+        Assert.Equal(allNotes, returnedNotes);
     }
 
     [Fact]
     public async Task Given_ValidId_When_GetAsync_Then_ReturnOkNoteResponse()
     {
         // Arrange
-        var allNotes = new List<NoteDomain>
-        {
-            new NoteDomain(
-                AlphaText.Create("Test one"),
-                1,
-                AlphaText.Create("This is a test note one"),
-                1
-            ),
-            new NoteDomain(
-                AlphaText.Create("Test two"),
-                2,
-                AlphaText.Create("This is a test note two"),
-                2
-            )
-        };
+        var allNotes = AllNotes();
 
         var token = new CancellationToken();
 
@@ -100,44 +74,6 @@ public class NoteControllerTests
         Assert.Equal(allNotes[1].Content!, noteResponse.Content);
         Assert.Equal(allNotes[1].UserId, noteResponse.UserId);
     }
-
-    //[Fact]
-    //public void Given_ValidCreateNoteRequest_When_CreateNote_Then_ReturnCreatedAtAction()
-    //{
-    //    // Assign or Arrange
-    //    // Mock the Service Interface
-    //    var mockNoteService = new Mock<INoteService>();
-    //    // Mock the create method
-    //    var mockCreateNote = new NoteDomain(
-    //        AlphaText.Create("Test"),
-    //        1,
-    //        AlphaText.Create("This is a test note"),
-    //        1
-    //        );
-    //    // It.IsAny is a Moq feature that matches any 'NoteDomain' object passed to the 'Create' method
-    //    mockNoteService.Setup(service => service.Create(It.IsAny<NoteDomain>())).Returns(mockCreateNote);
-
-    //    // Create controller with the mocked service
-    //    var controller = new NoteController(mockNoteService.Object);
-
-    //    var validNoteRequest = new CreateNoteRequest
-    //    {
-    //        Title = "Test",
-    //        Content = "Testing",
-    //        UserId = 1
-    //    };
-
-    //    // Act
-    //    var result = controller.Create(validNoteRequest);
-
-    //    // Assert
-    //    // Check for 201 response
-    //    var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-    //    // Check that the correct action was called
-    //    Assert.Equal("GetById", createdAtActionResult.ActionName);
-    //    // Ensure correct ID is passed
-    //    Assert.Equal(1, createdAtActionResult.RouteValues["id"]);
-    //}
 
     [Fact]
     public async Task Given_ValidCreateNoteRequest_When_CreateNote_Then_ReturnCreatedAtAction()
@@ -204,7 +140,7 @@ public class NoteControllerTests
                 n.Title.Value == updatedNote.Title &&
                 n.Content!.Value == updatedNote.Content),
             token))
-            .ReturnsAsync(Result.Ok());
+            .ReturnsAsync(Result.Ok(true));
 
         var controller = new NoteController(service.Object);
 
@@ -235,7 +171,7 @@ public class NoteControllerTests
 
         var service = new Mock<INoteService>();
         service.Setup(x => x.DeleteAsync(noteId, token))
-            .ReturnsAsync(Result.Ok());
+            .ReturnsAsync(Result.Ok(true));
 
         var controller = new NoteController(service.Object);
         
@@ -243,8 +179,32 @@ public class NoteControllerTests
         var result = await controller.DeleteAsync(noteId, token);
 
         // Assert
-        Assert.IsType<NoContentResult>(result);
+        var noContentResult = Assert.IsType<NoContentResult>(result);
+
+        Assert.Equal(204, noContentResult.StatusCode);
 
         service.Verify(s => s.DeleteAsync(noteId, token), Times.Once());
+    }
+
+    // Helper Function
+    public static List<NoteDomain> AllNotes()
+    {
+        var allNotes = new List<NoteDomain>
+        {
+            new NoteDomain(
+                AlphaText.Create("Test one"),
+                1,
+                AlphaText.Create("This is a test note one"),
+                1
+            ),
+            new NoteDomain(
+                AlphaText.Create("Test two"),
+                2,
+                AlphaText.Create("This is a test note two"),
+                2
+            )
+        };
+
+        return allNotes;
     }
 }

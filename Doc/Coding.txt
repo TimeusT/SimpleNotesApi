@@ -342,7 +342,8 @@ How did you evaluate responses?
 What would you improve?
 
 -------------------------------------------------------
-
+Explicit type casting
 var okValues = (IAsyncEnumerable<VectorSearchResult<RecordInfo>>)okSend.Value!;
 
-This basically sets okSend.Value as that type. Can only do it to objects
+This basically sets okSend.Value as that type. Can only do it to objects. It turns the weakly-typed object and
+forces it to be a strongly-typed var okValues = (IAsyncEnumerable<VectorSearchResult<RecordInfo>>)okSend.Value!;
